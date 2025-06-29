@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {
-    "dev": "nodemon",
+    "dev": "node --watch",
     "start": "node",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
