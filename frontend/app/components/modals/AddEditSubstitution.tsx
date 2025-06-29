@@ -3,12 +3,7 @@ import axios from "axios";
 import { Plus, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
-const AddEditSubstitution = ({
-  mode,
-  setMode,
-  ,
-  teachers,
-}) => {
+const AddEditSubstitution = ({ mode, setMode, teachers }) => {
   const [formData, setFormData] = useState({
     class: "",
     period: "",
@@ -52,7 +47,7 @@ const AddEditSubstitution = ({
     ).data.substitutions;
 
     setMode({ mode: null, sub: null });
-    location.reload()
+    location.reload();
   };
   const handleEditSave = async (_id) => {
     await axios.patch(
@@ -64,7 +59,7 @@ const AddEditSubstitution = ({
     ).data.substitutions;
     console.log(newSubstitutions);
     setMode(null);
-    location.reload()
+    location.reload();
   };
 
   if (mode && mode.mode) {
