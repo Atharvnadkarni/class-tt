@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { X, Save, Plus, Egg, EggFried, CircleAlert } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
@@ -24,7 +24,15 @@ interface WeeklyTimetableProps {
   teacherMode?: boolean;
 }
 
-export default function WeeklyTimetable({
+export default function WeeklyTimetable() {
+  return (
+    <Suspense>
+      <WeeklyTimetablee />
+    </Suspense>
+  );
+}
+
+function WeeklyTimetablee({
   isReadOnly = false,
   selectedClass = "1A",
   classTimetables = {},

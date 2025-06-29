@@ -5,7 +5,7 @@ import WeeklyTimetable from "../../weekly-timetable";
 import CurrentPeriodBanner from "../../current-period-banner";
 import TeacherDetails from "../../teacher-details";
 import { Clock, Shield, Plus, ArrowRightLeft, Save } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import AdminTeacherDetails from "../components/AdminTeacherDetails";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -15,6 +15,13 @@ import Tabs from "@/tabs";
 import { classes } from "@/subjects";
 
 export default function AdminPage() {
+  return (
+    <Suspense>
+      <AdminPagee />
+    </Suspense>
+  );
+}
+function AdminPagee() {
   const [selectedClass, setSelectedClass] = useState("1A");
   const [classTimetables, setClassTimetables] = useState<{
     [key: string]: any;
