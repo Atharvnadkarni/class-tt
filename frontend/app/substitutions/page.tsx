@@ -51,13 +51,15 @@ const SubstitutionPage = () => {
   useEffect(() => {
     const fetchSubs = async () => {
       const subs = await (
-        await axios.get("http://localhost:4000/api/substitution")
+        await axios.get(
+          "https://class-tt-backend.onrender.com/api/substitution"
+        )
       ).data.substitutions;
       setSubs(subs);
     };
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher")
+        await axios.get("https://class-tt-backend.onrender.com/api/teacher")
       ).data.teacher;
       setTeachers(teachers);
     };
@@ -201,17 +203,17 @@ const SubstitutionPage = () => {
                         setIsModalOpen={setDeleteModalOpen}
                         deleteAction={async () => {
                           await axios.delete(
-                            "http://localhost:4000/api/substitution/" +
+                            "https://class-tt-backend.onrender.com/api/substitution/" +
                               sub._id +
                               "/"
                           );
                           const newSubs = await (
                             await axios.get(
-                              "http://localhost:4000/api/substitution"
+                              "https://class-tt-backend.onrender.com/api/substitution"
                             )
                           ).data.substitutions;
-                          setDeleteModalOpen(false)
-                          setSubs(newSubs)
+                          setDeleteModalOpen(false);
+                          setSubs(newSubs);
                         }}
                       />
                     )}

@@ -29,7 +29,7 @@ const SubstituteButton = ({ currentClass }) => {
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher")
+        await axios.get("https://class-tt-backend.onrender.com/api/teacher")
       ).data.teacher;
       setTeachers(teachers);
     };
@@ -37,12 +37,15 @@ const SubstituteButton = ({ currentClass }) => {
   }, []);
   const handleSave = async () => {
     const newSub = await (
-      await axios.post("http://localhost:4000/api/substitution", {
-        class: formData.class,
-        period: formData.period,
-        teacher: formData.teacher,
-        date: formData.day,
-      })
+      await axios.post(
+        "https://class-tt-backend.onrender.com/api/substitution",
+        {
+          class: formData.class,
+          period: formData.period,
+          teacher: formData.teacher,
+          date: formData.day,
+        }
+      )
     ).data;
 
     setIsModalOpen(false);
@@ -55,9 +58,6 @@ const SubstituteButton = ({ currentClass }) => {
   const handleCancel = () => {
     setIsModalOpen(false);
   };
-  
-
-  
 
   return (
     <div>

@@ -36,7 +36,7 @@ export default function TeacherPage() {
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher")
+        await axios.get("https://class-tt-backend.onrender.com/api/teacher")
       ).data.teacher;
       setAllTeachers(teachers);
     };
@@ -98,7 +98,9 @@ export default function TeacherPage() {
             <div className="grid grid-cols-4 gap-2">
               {/* {} */}
               {JSON.stringify(allTeachers) != "[]" &&
-                allTeachers.map((teacher) => <TeacherCard {...{ teacher, setMode, setAllTeachers }} />)}
+                allTeachers.map((teacher) => (
+                  <TeacherCard {...{ teacher, setMode, setAllTeachers }} />
+                ))}
             </div>
           </div>
         </div>
