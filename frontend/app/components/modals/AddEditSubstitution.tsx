@@ -6,7 +6,7 @@ import { useEffect, useState } from "react";
 const AddEditSubstitution = ({
   mode,
   setMode,
-  setAllSubstitutions,
+  ,
   teachers,
 }) => {
   const [formData, setFormData] = useState({
@@ -52,8 +52,7 @@ const AddEditSubstitution = ({
     ).data.substitutions;
 
     setMode({ mode: null, sub: null });
-    console.log(newSubstitutions);
-    setAllSubstitutions(newSubstitutions);
+    location.reload()
   };
   const handleEditSave = async (_id) => {
     await axios.patch(
@@ -65,7 +64,7 @@ const AddEditSubstitution = ({
     ).data.substitutions;
     console.log(newSubstitutions);
     setMode(null);
-    setAllSubstitutions(newSubstitutions);
+    location.reload()
   };
 
   if (mode && mode.mode) {
