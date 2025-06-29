@@ -68,7 +68,7 @@ const SubstituteButton = ({ currentClass }) => {
         <ArrowRightLeft className="h-4 w-4" />
         Substitute
       </button>
-      <AddEditSubstitution {...{ mode, setMode, setAllSubstitutions }} />
+      <AddEditSubstitution {...{ mode, setMode, teachers }} />
     </div>
   );
 };
