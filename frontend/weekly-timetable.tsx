@@ -332,6 +332,7 @@ function WeeklyTimetablee({
 
   const handleSave = () => {
     if (!selectedCell) return;
+    console.log(formData)
 
     const cellKey = `${selectedCell.day}-${selectedCell.period.name}`;
     if (formData.subject.join("/").trim()) {
@@ -510,15 +511,15 @@ function WeeklyTimetablee({
                       value={
                         formData.batchwise ? "" : formData.subject[0].subject
                       }
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setFormData((prev) => ({
                           ...prev,
                           subject: [
                             { ...prev.subject[0], subject: e.target.value },
                             { subject: "", teacher: "" },
                           ],
-                        }))
-                      }
+                        }));
+                      }}
                       disabled={formData.batchwise}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
