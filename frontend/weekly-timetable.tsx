@@ -336,6 +336,7 @@ function WeeklyTimetablee({
 
     const cellKey = `${selectedCell.day}-${selectedCell.period.name}`;
     if (formData.subject.join("/").trim()) {
+      console.log("bloc 1")
       setClassTimetables((prev) => ({
         ...prev,
         [selectedClass]: {
@@ -348,6 +349,7 @@ function WeeklyTimetablee({
         },
       }));
     } else {
+      console.log("bloc 2")
       // Remove entry if subject is empty
       setClassTimetables((prev) => {
         const newClassTimetables = { ...prev };
