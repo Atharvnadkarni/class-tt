@@ -81,6 +81,7 @@ function AdminPagee() {
     }
   }, []);
   useEffect(() => {
+    console.log(classTimetables)
     if (JSON.stringify(classTimetables) != "{}") {
       localStorage.setItem("classTimetables", JSON.stringify(classTimetables));
     }
