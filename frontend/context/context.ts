@@ -33,12 +33,26 @@ export const timeTableSlice = createSlice({
   },
 });
 
+export const classSlice = createSlice({
+  name: "classSlice",
+  initialState: {
+    class: "",
+  },
+  reducers: {
+    setClass: (state, { payload }) => {
+      return { class: payload };
+    },
+  },
+});
+
 export const { addTeacher, setTeachers, deleteTeacher } = teachersSlice.actions;
 export const { setTimeTables } = timeTableSlice.actions;
+export const { setClass } = classSlice.actions;
 
 export default configureStore({
   reducer: {
     teachers: teachersSlice.reducer,
     timetable: timeTableSlice.reducer,
+    class: classSlice.reducer,
   },
 });

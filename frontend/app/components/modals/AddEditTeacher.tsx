@@ -45,18 +45,18 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-    dispatch(
-      addTeacher({
+
+    const newTeacher = await axios.post(
+      "https://class-tt-backend.onrender.com/api/teacher",
+      {
         name: formData.teacherName,
         class: "",
         subjects: subs2SubGroup(subs),
-      })
+      }
     );
-    await axios.post("https://class-tt-backend.onrender.com/api/teacher", {
-      name: formData.teacherName,
-      class: "",
-      subjects: subs2SubGroup(subs),
-    });
+    const newTrData = await newTeacher.data.teacher;
+    console.log(newTrData);
+    dispatch(addTeacher(newTrData));
   };
   const handleEditSave = async (_id) => {
     if (formData.classNo && formData.div && formData.subject) {
@@ -82,12 +82,16 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
+    let subgrp = subs2SubGroup(subs);
+    if (subgrp == null) {
+      subgrp = [["null", ""]];
+    }
     await axios.patch(
       "https://class-tt-backend.onrender.com/api/teacher/" + _id,
       {
         name: formData.teacherName,
         class: "",
-        subjects: subs2SubGroup(subs),
+        subjects: subgrp
       }
     );
     const newTeachers = await (

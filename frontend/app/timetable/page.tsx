@@ -13,6 +13,8 @@ import SubstituteButton from "../substitute";
 import TimeSystem from "../components/TimeSystem";
 import Tabs from "@/tabs";
 import { classes } from "@/subjects";
+import { useDispatch, useSelector } from "react-redux";
+import { setClass } from "@/context/context";
 
 export default function AdminPage() {
   return (
@@ -30,6 +32,8 @@ function AdminPagee() {
     "schedule"
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const currentClass = useSelector((state) => state.class.class);
+  const dispatch = useDispatch();
 
   const handleSave = () => {
     if (!selectedCell) return;
@@ -70,26 +74,20 @@ function AdminPagee() {
   // Save to localStorage whenever classTimetables changes
 
   useEffect(() => {
-    if (!localStorage.getItem("currentClass")) {
-      localStorage.setItem("currentClass", "1A");
+    if (!currentClass) {
+      dispatch(setClass("1A"));
     }
-    const lastClass = localStorage.getItem("currentClass");
-    history.pushState(null, "", "?class=" + lastClass);
-    const savedTimetables = localStorage.getItem("classTimetables");
-    if (savedTimetables) {
-      setClassTimetables(JSON.parse(savedTimetables));
-    }
+    history.pushState(null, "", "?class=" + currentClass);
   }, []);
-  useEffect(() => {
-    console.log(classTimetables)
-    if (JSON.stringify(classTimetables) != "{}") {
-      localStorage.setItem("classTimetables", JSON.stringify(classTimetables));
-    }
-  }, [classTimetables]);
+  // useEffect(() => {
+  //   console.log(classTimetables)
+  //   if (JSON.stringify(classTimetables) != "{}") {
+  //     localStorage.setItem("classTimetables", JSON.stringify(classTimetables));
+  //   }
+  // }, [classTimetables]);
 
   const handleClassChange = (newClass: string) => {
-    setSelectedClass(newClass);
-    localStorage.setItem("currentClass", newClass);
+    dispatch(setClass(newClass));
     history.pushState(null, "", "?class=" + newClass);
   };
   const params = useSearchParams();
@@ -116,7 +114,7 @@ function AdminPagee() {
           <TimeSystem />
           <div className="flex items-center gap-4">
             <SubstituteButton
-              currentClass={localStorage.getItem("currentClass")}
+              currentClass={currentClass}
             />
             <div className="flex items-center gap-2">
               <label
@@ -142,7 +140,7 @@ function AdminPagee() {
         <CurrentPeriodBanner classTimetables={classTimetables} />
         <WeeklyTimetable
           isReadOnly={false}
-          selectedClass={params.get("class") || "1A"}
+          selectedClass={currentClass}
           classTimetables={classTimetables}
           setClassTimetables={setClassTimetables}
         />

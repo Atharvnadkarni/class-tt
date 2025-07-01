@@ -21,7 +21,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
       className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors relative"
     >
       <div className="flex absolute top-2 right-2 gap-2">
-        <Pencil
+        {/* <Pencil
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
           onClick={() =>
@@ -30,7 +30,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
               teacher,
             })
           }
-        />
+        /> */}
         <Trash2
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
@@ -55,7 +55,9 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
                     subjectToDisplayName[subject.subject] || subject.subject
                   } ${subject.classes
                     .map((classe) => classe.join(""))
-                    .join(", ").replace(/0/gi, "")}`
+                    .join(", ")
+                    .replace(/\b0\b/gi, "")
+                    .replace(/null/gi, "")}`
               )
               .reduce((previous, current) => {
                 return [previous, <br key={previous} />, current].flat();

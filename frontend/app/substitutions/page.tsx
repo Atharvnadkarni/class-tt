@@ -187,12 +187,12 @@ const SubstitutionPage = () => {
               .map((sub) => (
                 <li className="flex items-center gap-2">
                   <div className="flex">
-                    <Pencil
+                    {/* <Pencil
                       onClick={() => {
                         setMode({ mode: "edit", sub });
                       }}
                       className="w-4 h-4 cursor-pointer"
-                    />
+                    /> */}
                     <Trash2
                       onClick={() => setDeleteModalOpen(true)}
                       className="w-4 h-4 cursor-pointer"
