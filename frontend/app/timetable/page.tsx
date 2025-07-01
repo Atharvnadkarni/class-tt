@@ -15,6 +15,7 @@ import Tabs from "@/tabs";
 import { classes } from "@/subjects";
 import { useDispatch, useSelector } from "react-redux";
 import { setClass } from "@/context/context";
+import AddEditSubstitution from "../components/modals/AddEditSubstitution";
 
 export default function AdminPage() {
   return (
@@ -24,6 +25,10 @@ export default function AdminPage() {
   );
 }
 function AdminPagee() {
+  const [mode, setMode] = useState({
+    mode: null,
+    teacher: null,
+  });
   const [selectedClass, setSelectedClass] = useState("1A");
   const [classTimetables, setClassTimetables] = useState<{
     [key: string]: any;
@@ -33,6 +38,8 @@ function AdminPagee() {
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
   const currentClass = useSelector((state) => state.class.class);
+  const teachers = useSelector((state) => state.teachers.teachers);
+  console.log(teachers)
   const dispatch = useDispatch();
 
   const handleSave = () => {
@@ -113,9 +120,18 @@ function AdminPagee() {
         <div className="flex items-center justify-between mb-4">
           <TimeSystem />
           <div className="flex items-center gap-4">
-            <SubstituteButton
+            {/* <SubstituteButton
               currentClass={currentClass}
-            />
+            /> */}
+            <div>
+              <button
+                className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => setMode({ mode: "add", sub: null })}
+              >
+                <ArrowRightLeft className="h-4 w-4" />
+                Substitute
+              </button>
+            </div>
             <div className="flex items-center gap-2">
               <label
                 htmlFor="classSelect"
@@ -137,6 +153,7 @@ function AdminPagee() {
           </div>
         </div>
         {}
+
         <CurrentPeriodBanner classTimetables={classTimetables} />
         <WeeklyTimetable
           isReadOnly={false}
@@ -149,6 +166,13 @@ function AdminPagee() {
             {activeTab === "teachers" && (
               <AdminTeacherDetails classTimetables={classTimetables} />
             )} */}
+        <AddEditSubstitution
+          {...{
+            mode,
+            setMode,
+            teachers,
+          }}
+        />
       </main>
     </div>
   );

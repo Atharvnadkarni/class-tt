@@ -96,7 +96,7 @@ export default function TimetableHeader({ loggedIn }) {
                     <p className="text-sm font-medium text-gray-800">
                       Michelle Mascarenhas
                     </p>
-                    <p className="text-xs text-gray-500">Teacher ID: 24</p>
+                    {/* <p className="text-xs text-gray-500">Teacher ID: admin</p> */}
                   </div>
 
                   <div className=" border-gray-100 mt-1 pt-1">
