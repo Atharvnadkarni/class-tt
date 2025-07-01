@@ -1,16 +1,19 @@
+import { deleteTeacher } from "@/context/context";
 import { subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Pencil, Trash2, User } from "lucide-react";
+import { useDispatch } from "react-redux";
+import DeleteModal from "./modals/DeleteModal";
+import { useState } from "react";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
-  const deleteTeacher = async (_id: string) => {
+  const dispatch = useDispatch();
+  const [isDeleteWarningOpen, setIsDeleteWarningOpen] = useState(false);
+  const _deleteTeacher = async (_id: string) => {
+    dispatch(deleteTeacher(_id));
     await axios.delete(
       `https://class-tt-backend.onrender.com/api/teacher/${_id}`
     );
-    const newTeachers = await (
-      await axios.get(`https://class-tt-backend.onrender.com/api/teacher/`)
-    ).data.teacher;
-    setAllTeachers(newTeachers);
   };
   return (
     <div
@@ -32,7 +35,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
           onClick={() => {
-            deleteTeacher(teacher._id);
+            setIsDeleteWarningOpen(true);
           }}
         />
       </div>
@@ -52,7 +55,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
                     subjectToDisplayName[subject.subject] || subject.subject
                   } ${subject.classes
                     .map((classe) => classe.join(""))
-                    .join(", ")}`
+                    .join(", ").replace(/0/gi, "")}`
               )
               .reduce((previous, current) => {
                 return [previous, <br key={previous} />, current].flat();
@@ -60,6 +63,15 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
           </p>
         </div>
       </div>
+
+      {isDeleteWarningOpen && (
+        <DeleteModal
+          setIsModalOpen={setIsDeleteWarningOpen}
+          deleteAction={() => {
+            _deleteTeacher(teacher._id);
+          }}
+        />
+      )}
     </div>
   );
 };

@@ -5,6 +5,8 @@ import { X, Save, Plus, Egg, EggFried, CircleAlert } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { subjects, subjectToDisplayName } from "./subjects";
+import { useDispatch, useSelector } from "react-redux";
+import { setTimeTables } from "./context/context";
 
 interface TimetableEntry {
   subject: string[];
@@ -27,12 +29,12 @@ interface WeeklyTimetableProps {
 export default function WeeklyTimetable() {
   return (
     <Suspense>
-      <WeeklyTimetablee />
+      <_WeeklyTimetable />
     </Suspense>
   );
 }
 
-function WeeklyTimetablee({
+function _WeeklyTimetable({
   isReadOnly = false,
   selectedClass = "1A",
   classTimetables = {},
@@ -75,9 +77,7 @@ function WeeklyTimetablee({
   }
 
   // Get current class timetable data or teacher's schedule
-  const timetableData = teacherMode
-    ? getTeacherSchedule()
-    : classTimetables[selectedClass] || {};
+
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
@@ -176,6 +176,7 @@ function WeeklyTimetablee({
     Play: null,
     BG: null,
   };
+
   // const subjectToTeacher = {
   //   Math: "Sushma",
   //   "Mental Math": "Sushma",
@@ -261,6 +262,12 @@ function WeeklyTimetablee({
   //   }
   // };
 
+  const dispatch = useDispatch();
+  const timetable = useSelector((state) => state.timetable);
+  const timetableData = teacherMode
+    ? getTeacherSchedule()
+    : timetable[selectedClass] || {};
+
   const handleCellClick = (
     day: string,
     period: { name: string; time: string }
@@ -332,24 +339,36 @@ function WeeklyTimetablee({
 
   const handleSave = () => {
     if (!selectedCell) return;
-    console.log(formData)
+    console.log(formData);
 
     const cellKey = `${selectedCell.day}-${selectedCell.period.name}`;
     if (formData.subject.join("/").trim()) {
-      console.log("bloc 1")
-      setClassTimetables((prev) => ({
-        ...prev,
+      console.log({
+        ...classTimetables,
         [selectedClass]: {
-          ...prev[selectedClass],
+          ...classTimetables[selectedClass],
           [cellKey]: {
             subject: formData.subject,
             class: formData.teacher,
             batchwise: formData.batchwise,
           },
         },
-      }));
+      });
+      dispatch(
+        setTimeTables({
+          ...timetable,
+          [selectedClass]: {
+            ...timetable[selectedClass],
+            [cellKey]: {
+              subject: formData.subject,
+              class: formData.teacher,
+              batchwise: formData.batchwise,
+            },
+          },
+        })
+      );
     } else {
-      console.log("bloc 2")
+      console.log("bloc 2");
       // Remove entry if subject is empty
       setClassTimetables((prev) => {
         const newClassTimetables = { ...prev };
@@ -360,7 +379,21 @@ function WeeklyTimetablee({
         }
         return newClassTimetables;
       });
+      dispatch(
+        setTimeTables(
+          ((timetable) => {
+            const newClassTimetables = { ...timetable };
+            if (newClassTimetables[selectedClass]) {
+              const newData = { ...newClassTimetables[selectedClass] };
+              newData[cellKey] = null;
+              newClassTimetables[selectedClass] = newData;
+            }
+            return newClassTimetables;
+          })(timetable)
+        )
+      );
     }
+    console.log(timetable);
 
     setIsModalOpen(false);
     setSelectedCell(null);
@@ -376,6 +409,13 @@ function WeeklyTimetablee({
 
   const [teachers, setTeachers] = useState([]);
 
+  // useEffect(() => {
+  //   console.log("ue", classTimetables);
+  //   localStorage.setItem(
+  //     "classTimetables",
+  //     JSON.stringify(classTimetables) ?? "{}"
+  //   );
+  // }, [classTimetables]);
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
@@ -384,6 +424,7 @@ function WeeklyTimetablee({
       setTeachers(teachers);
     };
     fetchTeachers();
+    console.log(teachers);
   }, []);
   return (
     <>
@@ -553,20 +594,17 @@ function WeeklyTimetablee({
                         let isBatch2Clash = false;
                         let isClash = false;
 
-                        for (const classe in classTimetables) {
-                          if (
-                            classTimetables[classe].hasOwnProperty(classKey)
-                          ) {
+                        for (const classe in timetable) {
+                          if (timetable[classe].hasOwnProperty(classKey)) {
                             if (
-                              classTimetables[classe][classKey].subject[0]
-                                .subject
+                              timetable[classe][classKey].subject[0].subject
                             ) {
                               if (!e.target.value) {
                                 console.log(
                                   e.target.value,
-                                  classTimetables[classe][classKey].subject[0]
+                                  timetable[classe][classKey].subject[0]
                                     .teacher,
-                                  classTimetables[classe][classKey].subject[1]
+                                  timetable[classe][classKey].subject[1]
                                     .teacher,
                                   classe,
                                   "is clash unset"
@@ -576,42 +614,42 @@ function WeeklyTimetablee({
                                   subject: null,
                                 });
                               } else if (
-                                (classTimetables[classe][classKey].subject[0]
+                                (timetable[classe][classKey].subject[0]
                                   .teacher == e.target.value ||
-                                  classTimetables[classe][classKey].subject[1]
+                                  timetable[classe][classKey].subject[1]
                                     .teacher == e.target.value) &&
                                 classe != selectedClass
                               ) {
                                 console.log(
                                   e.target.value,
-                                  classTimetables[classe][classKey].subject[0]
+                                  timetable[classe][classKey].subject[0]
                                     .teacher,
-                                  classTimetables[classe][classKey].subject[1]
+                                  timetable[classe][classKey].subject[1]
                                     .teacher,
                                   classe,
-                                  (classTimetables[classe][classKey].subject[0]
+                                  (timetable[classe][classKey].subject[0]
                                     .teacher == e.target.value ||
-                                    classTimetables[classe][classKey].subject[1]
+                                    timetable[classe][classKey].subject[1]
                                       .teacher == e.target.value) &&
                                     classe != selectedClass,
                                   "is clash set"
                                 );
                                 setIsClash({
                                   class: classe,
-                                  subject: classTimetables[classe][classKey]
+                                  subject: timetable[classe][classKey]
                                     .subject[1].subject
-                                    ? classTimetables[classe][classKey].subject
+                                    ? timetable[classe][classKey].subject
                                         .map((sub) => sub.subject)
                                         .join("/")
-                                    : classTimetables[classe][classKey]
-                                        .subject[0].subject,
+                                    : timetable[classe][classKey].subject[0]
+                                        .subject,
                                 });
                               } else if (classe != selectedClass) {
                                 console.log(
                                   e.target.value,
-                                  classTimetables[classe][classKey].subject[0]
+                                  timetable[classe][classKey].subject[0]
                                     .teacher,
-                                  classTimetables[classe][classKey].subject[1]
+                                  timetable[classe][classKey].subject[1]
                                     .teacher,
                                   classe,
                                   "is clash unset"
