@@ -7,7 +7,7 @@ const teacherSchema = new mongoose.Schema({
     {
       _id: false,
       subject: String,
-      classes: Number,
+      classes: mongoose.Schema.Types.Mixed,
     },
   ],
 });
