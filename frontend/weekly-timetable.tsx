@@ -24,10 +24,10 @@ interface WeeklyTimetableProps {
   teacherMode?: boolean;
 }
 
-export default function WeeklyTimetable() {
+export default function WeeklyTimetable(props) {
   return (
     <Suspense>
-      <WeeklyTimetablee />
+      <WeeklyTimetablee {...props} />
     </Suspense>
   );
 }
