@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Book, User, Settings, LogOut, ChevronDown } from "lucide-react";
+import Link from "next/link";
 
 export default function TimetableHeader({ loggedIn }) {
   const [currentTime] = useState(new Date(2024, 0, 1, 9, 45, 0)); // Demo time: 9:45 AM
@@ -63,12 +64,23 @@ export default function TimetableHeader({ loggedIn }) {
             <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
               <Book className="h-6 w-6 text-black" />
             </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
-              Schedulr{" "}
-              <span className="text-md sm:text-lg font-bold tracking-tight text-black">
-                Class Time Table
-              </span>
-            </h1>
+            {!loggedIn ? (
+              <Link href="/login">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
+                  Schedulr{" "}
+                  <span className="text-md sm:text-lg font-bold tracking-tight text-black">
+                    Class Time Table
+                  </span>
+                </h1>
+              </Link>
+            ) : (
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
+                Schedulr{" "}
+                <span className="text-md sm:text-lg font-bold tracking-tight text-black">
+                  Class Time Table
+                </span>
+              </h1>
+            )}
           </div>
 
           {/* Teacher Greeting with Menu */}
