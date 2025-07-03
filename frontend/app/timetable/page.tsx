@@ -14,10 +14,10 @@ import TimeSystem from "../components/TimeSystem";
 import Tabs from "@/tabs";
 import { classes } from "@/subjects";
 
-export default function AdminPage() {
+export default function AdminPage(props) {
   return (
     <Suspense>
-      <AdminPagee />
+      <AdminPagee {...props} />
     </Suspense>
   );
 }
