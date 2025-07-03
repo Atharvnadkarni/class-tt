@@ -19,7 +19,6 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       teacher: "",
     });
   };
-  console.log(mode);
   function formatDate(date) {
     var d = new Date(date),
       month = "" + (d.getMonth() + 1),
@@ -57,7 +56,6 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
     const newSubstitutions = await (
       await axios.get("https://class-tt-backend.onrender.com/api/substitution")
     ).data.substitutions;
-    console.log(newSubstitutions);
     setMode(null);
     location.reload();
   };

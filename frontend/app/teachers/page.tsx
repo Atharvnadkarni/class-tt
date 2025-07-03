@@ -46,7 +46,6 @@ export default function TeacherPage() {
         await axios.get("https://class-tt-backend.onrender.com/api/teacher")
       ).data.teacher;
       setLoading(false);
-      console.log(setTeachers(teachers));
       dispatch(setTeachers(teachers));
     };
     if (teachers.length == 0) fetchTeachers();

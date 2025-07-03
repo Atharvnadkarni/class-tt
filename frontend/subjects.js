@@ -35,6 +35,8 @@ module.exports = {
     "LS",
     "H&W",
     "STEAM",
+    "Play",
+    "EVS"
   ],trSubjects: [
     "Class Teacher",
     "Math/MM",

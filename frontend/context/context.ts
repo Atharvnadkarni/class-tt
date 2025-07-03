@@ -27,7 +27,6 @@ export const timeTableSlice = createSlice({
   },
   reducers: {
     setTimeTables: (state, { payload }) => {
-      console.log(payload);
       return payload;
     },
   },

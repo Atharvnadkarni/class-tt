@@ -4,6 +4,7 @@ import "./globals.css";
 import { Provider } from "react-redux";
 import store from "../context/context";
 import Providers from "./Providers";
+import Link from "next/link";
 
 export const metadata: Metadata = {
   title: "Class Timetable",
@@ -20,6 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <Providers>{children}</Providers>
+        
       </body>
     </html>
   );

@@ -25,7 +25,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const handleAddSave = async (e) => {
     setMode(null);
     setSubs([]);
-    console.log(formData.classNo && formData.div && formData.subject);
     if (formData.classNo && formData.div && formData.subject) {
       const sub = JSON.parse(JSON.stringify(formData));
       delete sub.teacherName;
@@ -55,7 +54,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }
     );
     const newTrData = await newTeacher.data.teacher;
-    console.log(newTrData);
     dispatch(addTeacher(newTrData));
   };
   const handleEditSave = async (_id) => {
@@ -66,12 +64,10 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     }
     const subs2SubGroup = (subs) => {
       const grouped = subs.reduce((acc, curr) => {
-        console.log(curr);
         const key = curr.subject;
         const classEntry = curr.classNo
           ? [curr.classNo.toString(), ""]
           : curr.classes;
-        console.log(classEntry);
         const existing = acc.find((item) => item.subject === key);
         if (existing) {
           existing.classes.push(classEntry);
@@ -91,7 +87,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       {
         name: formData.teacherName,
         class: "",
-        subjects: subgrp
+        subjects: subgrp,
       }
     );
     const newTeachers = await (
@@ -105,7 +101,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     const subs = mode?.teacher?.subjects;
     if (subs) {
       for (let sub of subs) {
-        console.log(sub);
         if (sub) {
           sub = Object.assign({}, sub, {
             classNo: sub?.classes[0],

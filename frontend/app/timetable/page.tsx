@@ -39,7 +39,7 @@ function AdminPagee() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const currentClass = useSelector((state) => state.class.class);
   const teachers = useSelector((state) => state.teachers.teachers);
-  console.log(teachers)
+
   const dispatch = useDispatch();
 
   const handleSave = () => {
@@ -87,7 +87,7 @@ function AdminPagee() {
     history.pushState(null, "", "?class=" + currentClass);
   }, []);
   // useEffect(() => {
-  //   console.log(classTimetables)
+  //
   //   if (JSON.stringify(classTimetables) != "{}") {
   //     localStorage.setItem("classTimetables", JSON.stringify(classTimetables));
   //   }

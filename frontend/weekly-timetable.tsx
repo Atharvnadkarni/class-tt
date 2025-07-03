@@ -339,8 +339,6 @@ function _WeeklyTimetable({
 
   const handleSave = () => {
     if (!selectedCell) return;
-    console.log(formData);
-
     const cellKey = `${selectedCell.day}-${selectedCell.period.name}`;
     if (formData.subject.join("/").trim()) {
       console.log({
@@ -368,7 +366,6 @@ function _WeeklyTimetable({
         })
       );
     } else {
-      console.log("bloc 2");
       // Remove entry if subject is empty
       setClassTimetables((prev) => {
         const newClassTimetables = { ...prev };
@@ -393,8 +390,6 @@ function _WeeklyTimetable({
         )
       );
     }
-    console.log(timetable);
-
     setIsModalOpen(false);
     setSelectedCell(null);
     setFormData({ subject: null, class: null });
@@ -410,7 +405,7 @@ function _WeeklyTimetable({
   const [teachers, setTeachers] = useState([]);
 
   // useEffect(() => {
-  //   console.log("ue", classTimetables);
+  //   ;
   //   localStorage.setItem(
   //     "classTimetables",
   //     JSON.stringify(classTimetables) ?? "{}"
@@ -424,7 +419,6 @@ function _WeeklyTimetable({
       setTeachers(teachers);
     };
     fetchTeachers();
-    console.log(teachers);
   }, []);
   return (
     <>
