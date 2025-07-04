@@ -66,12 +66,17 @@ const deleteTeacher = async (req, res) => {
 };
 
 const loginTeacher = async (req, res) => {
-  return res.json({mssg: "login tr"})
+  return res.json({ mssg: "login tr" });
 };
 
 const signupTeacher = async (req, res) => {
-    return res.json({mssg: "signup tr"})
-
+  const { name, subjects, username, password } = req.body;
+  try {
+    const teacher = await Teacher.signup(name, subjects, username, password);
+    res.status(201).json({ username, teacher });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 module.exports = {
@@ -81,5 +86,5 @@ module.exports = {
   updateTeacher,
   deleteTeacher,
   loginTeacher,
-  signupTeacher
+  signupTeacher,
 };
