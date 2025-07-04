@@ -376,7 +376,7 @@ function WeeklyTimetablee({
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("https://class-tt-backend.onrender.com/api/teacher")
+        await axios.get("http://localhost:4000/api/teacher")
       ).data.teacher;
       setTeachers(teachers);
     };

@@ -40,13 +40,13 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-    await axios.post("https://class-tt-backend.onrender.com/api/teacher", {
+    await axios.post("http://localhost:4000/api/teacher", {
       name: formData.teacherName,
       class: "",
       subjects: subs2SubGroup(subs),
     });
     const newTeachers = await (
-      await axios.get("https://class-tt-backend.onrender.com/api/teacher")
+      await axios.get("http://localhost:4000/api/teacher")
     ).data.teacher;
     setMode(null);
     setAllTeachers(newTeachers);
@@ -72,16 +72,13 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-    await axios.patch(
-      "https://class-tt-backend.onrender.com/api/teacher/" + _id,
-      {
-        name: formData.teacherName,
-        class: "",
-        subjects: subs2SubGroup(subs),
-      }
-    );
+    await axios.patch("http://localhost:4000/api/teacher/" + _id, {
+      name: formData.teacherName,
+      class: "",
+      subjects: subs2SubGroup(subs),
+    });
     const newTeachers = await (
-      await axios.get("https://class-tt-backend.onrender.com/api/teacher")
+      await axios.get("http://localhost:4000/api/teacher")
     ).data.teacher;
     setMode(null);
     setAllTeachers(newTeachers);

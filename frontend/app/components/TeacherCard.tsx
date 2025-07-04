@@ -4,11 +4,9 @@ import { Pencil, Trash2, User } from "lucide-react";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
   const deleteTeacher = async (_id: string) => {
-    await axios.delete(
-      `https://class-tt-backend.onrender.com/api/teacher/${_id}`
-    );
+    await axios.delete(`http://localhost:4000/api/teacher/${_id}`);
     const newTeachers = await (
-      await axios.get(`https://class-tt-backend.onrender.com/api/teacher/`)
+      await axios.get(`http://localhost:4000/api/teacher/`)
     ).data.teacher;
     setAllTeachers(newTeachers);
   };

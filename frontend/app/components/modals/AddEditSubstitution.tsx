@@ -37,13 +37,13 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
     }
   }, [mode?.mode]);
   const handleAddSave = async (e) => {
-    await axios.post("https://class-tt-backend.onrender.com/api/substitution", {
+    await axios.post("http://localhost:4000/api/substitution", {
       ...formData,
 
       date: formData.date ?? new Date(),
     });
     const newSubstitutions = await (
-      await axios.get("https://class-tt-backend.onrender.com/api/substitution")
+      await axios.get("http://localhost:4000/api/substitution")
     ).data.substitutions;
 
     setMode({ mode: null, sub: null });
@@ -51,11 +51,11 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
   };
   const handleEditSave = async (_id) => {
     await axios.patch(
-      "https://class-tt-backend.onrender.com/api/substitution/" + _id,
+      "http://localhost:4000/api/substitution/" + _id,
       formData
     );
     const newSubstitutions = await (
-      await axios.get("https://class-tt-backend.onrender.com/api/substitution")
+      await axios.get("http://localhost:4000/api/substitution")
     ).data.substitutions;
     console.log(newSubstitutions);
     setMode(null);
