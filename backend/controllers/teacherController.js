@@ -65,10 +65,21 @@ const deleteTeacher = async (req, res) => {
   }
 };
 
+const loginTeacher = async (req, res) => {
+  return res.json({mssg: "login tr"})
+};
+
+const signupTeacher = async (req, res) => {
+    return res.json({mssg: "signup tr"})
+
+};
+
 module.exports = {
   getTeachers,
   getTeacher,
   createTeacher,
   updateTeacher,
   deleteTeacher,
+  loginTeacher,
+  signupTeacher
 };
