@@ -2,7 +2,6 @@ const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
 
 const teacherSchema = new mongoose.Schema({
-  _id: false,
   name: String,
   subjects: [
     {
