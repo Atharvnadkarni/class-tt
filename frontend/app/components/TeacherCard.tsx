@@ -1,19 +1,16 @@
-import { deleteTeacher } from "@/context/context";
 import { subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Pencil, Trash2, User } from "lucide-react";
-import { useDispatch } from "react-redux";
-import DeleteModal from "./modals/DeleteModal";
-import { useState } from "react";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
-  const dispatch = useDispatch();
-  const [isDeleteWarningOpen, setIsDeleteWarningOpen] = useState(false);
-  const _deleteTeacher = async (_id: string) => {
-    dispatch(deleteTeacher(_id));
+  const deleteTeacher = async (_id: string) => {
     await axios.delete(
       `https://class-tt-backend.onrender.com/api/teacher/${_id}`
     );
+    const newTeachers = await (
+      await axios.get(`https://class-tt-backend.onrender.com/api/teacher/`)
+    ).data.teacher;
+    setAllTeachers(newTeachers);
   };
   return (
     <div
@@ -21,7 +18,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
       className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors relative"
     >
       <div className="flex absolute top-2 right-2 gap-2">
-        {/* <Pencil
+        <Pencil
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
           onClick={() =>
@@ -30,12 +27,12 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
               teacher,
             })
           }
-        /> */}
+        />
         <Trash2
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
           onClick={() => {
-            setIsDeleteWarningOpen(true);
+            deleteTeacher(teacher._id);
           }}
         />
       </div>
@@ -55,9 +52,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
                     subjectToDisplayName[subject.subject] || subject.subject
                   } ${subject.classes
                     .map((classe) => classe.join(""))
-                    .join(", ")
-                    .replace(/\b0\b/gi, "")
-                    .replace(/null/gi, "")}`
+                    .join(", ")}`
               )
               .reduce((previous, current) => {
                 return [previous, <br key={previous} />, current].flat();
@@ -65,15 +60,6 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
           </p>
         </div>
       </div>
-
-      {isDeleteWarningOpen && (
-        <DeleteModal
-          setIsModalOpen={setIsDeleteWarningOpen}
-          deleteAction={() => {
-            _deleteTeacher(teacher._id);
-          }}
-        />
-      )}
     </div>
   );
 };

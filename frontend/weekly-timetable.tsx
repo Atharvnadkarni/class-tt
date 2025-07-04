@@ -5,8 +5,6 @@ import { X, Save, Plus, Egg, EggFried, CircleAlert } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { subjects, subjectToDisplayName } from "./subjects";
-import { useDispatch, useSelector } from "react-redux";
-import { setTimeTables } from "./context/context";
 
 interface TimetableEntry {
   subject: string[];
@@ -26,15 +24,15 @@ interface WeeklyTimetableProps {
   teacherMode?: boolean;
 }
 
-export default function WeeklyTimetable(props) {
+export default function WeeklyTimetable() {
   return (
     <Suspense>
-      <_WeeklyTimetable {...props} />
+      <WeeklyTimetablee />
     </Suspense>
   );
 }
 
-function _WeeklyTimetable({
+function WeeklyTimetablee({
   isReadOnly = false,
   selectedClass = "1A",
   classTimetables = {},
@@ -77,7 +75,9 @@ function _WeeklyTimetable({
   }
 
   // Get current class timetable data or teacher's schedule
-
+  const timetableData = teacherMode
+    ? getTeacherSchedule()
+    : classTimetables[selectedClass] || {};
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
@@ -176,7 +176,6 @@ function _WeeklyTimetable({
     Play: null,
     BG: null,
   };
-
   // const subjectToTeacher = {
   //   Math: "Sushma",
   //   "Mental Math": "Sushma",
@@ -262,12 +261,6 @@ function _WeeklyTimetable({
   //   }
   // };
 
-  const dispatch = useDispatch();
-  const timetable = useSelector((state) => state.timetable);
-  const timetableData = teacherMode
-    ? getTeacherSchedule()
-    : timetable[selectedClass] || {};
-
   const handleCellClick = (
     day: string,
     period: { name: string; time: string }
@@ -339,32 +332,20 @@ function _WeeklyTimetable({
 
   const handleSave = () => {
     if (!selectedCell) return;
+
     const cellKey = `${selectedCell.day}-${selectedCell.period.name}`;
     if (formData.subject.join("/").trim()) {
-      console.log({
-        ...classTimetables,
+      setClassTimetables((prev) => ({
+        ...prev,
         [selectedClass]: {
-          ...classTimetables[selectedClass],
+          ...prev[selectedClass],
           [cellKey]: {
             subject: formData.subject,
             class: formData.teacher,
             batchwise: formData.batchwise,
           },
         },
-      });
-      dispatch(
-        setTimeTables({
-          ...timetable,
-          [selectedClass]: {
-            ...timetable[selectedClass],
-            [cellKey]: {
-              subject: formData.subject,
-              class: formData.teacher,
-              batchwise: formData.batchwise,
-            },
-          },
-        })
-      );
+      }));
     } else {
       // Remove entry if subject is empty
       setClassTimetables((prev) => {
@@ -376,20 +357,8 @@ function _WeeklyTimetable({
         }
         return newClassTimetables;
       });
-      dispatch(
-        setTimeTables(
-          ((timetable) => {
-            const newClassTimetables = { ...timetable };
-            if (newClassTimetables[selectedClass]) {
-              const newData = { ...newClassTimetables[selectedClass] };
-              newData[cellKey] = null;
-              newClassTimetables[selectedClass] = newData;
-            }
-            return newClassTimetables;
-          })(timetable)
-        )
-      );
     }
+
     setIsModalOpen(false);
     setSelectedCell(null);
     setFormData({ subject: null, class: null });
@@ -404,13 +373,6 @@ function _WeeklyTimetable({
 
   const [teachers, setTeachers] = useState([]);
 
-  // useEffect(() => {
-  //   ;
-  //   localStorage.setItem(
-  //     "classTimetables",
-  //     JSON.stringify(classTimetables) ?? "{}"
-  //   );
-  // }, [classTimetables]);
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
@@ -548,15 +510,15 @@ function _WeeklyTimetable({
                       value={
                         formData.batchwise ? "" : formData.subject[0].subject
                       }
-                      onChange={(e) => {
+                      onChange={(e) =>
                         setFormData((prev) => ({
                           ...prev,
                           subject: [
                             { ...prev.subject[0], subject: e.target.value },
                             { subject: "", teacher: "" },
                           ],
-                        }));
-                      }}
+                        }))
+                      }
                       disabled={formData.batchwise}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
@@ -588,17 +550,20 @@ function _WeeklyTimetable({
                         let isBatch2Clash = false;
                         let isClash = false;
 
-                        for (const classe in timetable) {
-                          if (timetable[classe].hasOwnProperty(classKey)) {
+                        for (const classe in classTimetables) {
+                          if (
+                            classTimetables[classe].hasOwnProperty(classKey)
+                          ) {
                             if (
-                              timetable[classe][classKey].subject[0].subject
+                              classTimetables[classe][classKey].subject[0]
+                                .subject
                             ) {
                               if (!e.target.value) {
                                 console.log(
                                   e.target.value,
-                                  timetable[classe][classKey].subject[0]
+                                  classTimetables[classe][classKey].subject[0]
                                     .teacher,
-                                  timetable[classe][classKey].subject[1]
+                                  classTimetables[classe][classKey].subject[1]
                                     .teacher,
                                   classe,
                                   "is clash unset"
@@ -608,42 +573,42 @@ function _WeeklyTimetable({
                                   subject: null,
                                 });
                               } else if (
-                                (timetable[classe][classKey].subject[0]
+                                (classTimetables[classe][classKey].subject[0]
                                   .teacher == e.target.value ||
-                                  timetable[classe][classKey].subject[1]
+                                  classTimetables[classe][classKey].subject[1]
                                     .teacher == e.target.value) &&
                                 classe != selectedClass
                               ) {
                                 console.log(
                                   e.target.value,
-                                  timetable[classe][classKey].subject[0]
+                                  classTimetables[classe][classKey].subject[0]
                                     .teacher,
-                                  timetable[classe][classKey].subject[1]
+                                  classTimetables[classe][classKey].subject[1]
                                     .teacher,
                                   classe,
-                                  (timetable[classe][classKey].subject[0]
+                                  (classTimetables[classe][classKey].subject[0]
                                     .teacher == e.target.value ||
-                                    timetable[classe][classKey].subject[1]
+                                    classTimetables[classe][classKey].subject[1]
                                       .teacher == e.target.value) &&
                                     classe != selectedClass,
                                   "is clash set"
                                 );
                                 setIsClash({
                                   class: classe,
-                                  subject: timetable[classe][classKey]
+                                  subject: classTimetables[classe][classKey]
                                     .subject[1].subject
-                                    ? timetable[classe][classKey].subject
+                                    ? classTimetables[classe][classKey].subject
                                         .map((sub) => sub.subject)
                                         .join("/")
-                                    : timetable[classe][classKey].subject[0]
-                                        .subject,
+                                    : classTimetables[classe][classKey]
+                                        .subject[0].subject,
                                 });
                               } else if (classe != selectedClass) {
                                 console.log(
                                   e.target.value,
-                                  timetable[classe][classKey].subject[0]
+                                  classTimetables[classe][classKey].subject[0]
                                     .teacher,
-                                  timetable[classe][classKey].subject[1]
+                                  classTimetables[classe][classKey].subject[1]
                                     .teacher,
                                   classe,
                                   "is clash unset"

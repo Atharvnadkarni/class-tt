@@ -1,17 +1,16 @@
-import { addTeacher } from "@/context/context";
-import { subjects, subjectToDisplayName, trSubjects } from "@/subjects";
+import { subjects, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
 
 const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [formData, setFormData] = useState({
     subject: "",
     div: "",
-    classNo: 0,
-    teacherName: mode?.teacher?.name || "",
+    classNo: null,
+    teacherName: "",
   });
+  console.log(13, mode?.teacher?.subjects);
   const [subs, setSubs] = useState(
     mode?.mode == "edit" && (mode?.teacher?.subjects ?? [])
   );
@@ -20,11 +19,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     setFormData({ subject: "", div: "", classNo: null, teacherName: null });
     setSubs([]);
   };
-  const teachers = useSelector((state) => state.teachers.teachers);
-  const dispatch = useDispatch();
   const handleAddSave = async (e) => {
-    setMode(null);
-    setSubs([]);
+    console.log(formData.classNo && formData.div && formData.subject);
     if (formData.classNo && formData.div && formData.subject) {
       const sub = JSON.parse(JSON.stringify(formData));
       delete sub.teacherName;
@@ -44,17 +40,17 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-
-    const newTeacher = await axios.post(
-      "https://class-tt-backend.onrender.com/api/teacher",
-      {
-        name: formData.teacherName,
-        class: "",
-        subjects: subs2SubGroup(subs),
-      }
-    );
-    const newTrData = await newTeacher.data.teacher;
-    dispatch(addTeacher(newTrData));
+    await axios.post("https://class-tt-backend.onrender.com/api/teacher", {
+      name: formData.teacherName,
+      class: "",
+      subjects: subs2SubGroup(subs),
+    });
+    const newTeachers = await (
+      await axios.get("https://class-tt-backend.onrender.com/api/teacher")
+    ).data.teacher;
+    setMode(null);
+    setAllTeachers(newTeachers);
+    setSubs([]);
   };
   const handleEditSave = async (_id) => {
     if (formData.classNo && formData.div && formData.subject) {
@@ -65,9 +61,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     const subs2SubGroup = (subs) => {
       const grouped = subs.reduce((acc, curr) => {
         const key = curr.subject;
-        const classEntry = curr.classNo
-          ? [curr.classNo.toString(), ""]
-          : curr.classes;
+        const classEntry = [String(curr.classNo), curr.div];
         const existing = acc.find((item) => item.subject === key);
         if (existing) {
           existing.classes.push(classEntry);
@@ -78,16 +72,12 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-    let subgrp = subs2SubGroup(subs);
-    if (subgrp == null) {
-      subgrp = [["null", ""]];
-    }
     await axios.patch(
       "https://class-tt-backend.onrender.com/api/teacher/" + _id,
       {
         name: formData.teacherName,
         class: "",
-        subjects: subgrp,
+        subjects: subs2SubGroup(subs),
       }
     );
     const newTeachers = await (
@@ -100,12 +90,10 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   useEffect(() => {
     const subs = mode?.teacher?.subjects;
     if (subs) {
-      for (let sub of subs) {
+      for (const sub of subs) {
         if (sub) {
-          sub = Object.assign({}, sub, {
-            classNo: sub?.classes[0],
-            div: sub?.classes[1],
-          });
+          sub.classNo = sub?.classes[0];
+          sub.div = sub?.classes[1];
         }
       }
     }
@@ -184,7 +172,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   >
                     <option value="">Subject</option>
 
-                    {trSubjects.map((subject) => (
+                    {subjects.map((subject) => (
                       <option value={subject}>
                         {subjectToDisplayName[subject.subject] &&
                         subjectToDisplayName[subject.subject].length <= 10
@@ -222,7 +210,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                     placeholder="Class"
                     className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  {/* <select
+                  <select
                     className="w px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={formData.div}
                     onChange={(e) => {
@@ -252,7 +240,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                     <option value="AC">AC</option>
                     <option value="BC">BC</option>
                     <option value="ABC">ABC</option>
-                  </select> */}
+                  </select>
                   <button
                     onClick={(e) => {
                       const sub = JSON.parse(JSON.stringify(formData));
@@ -275,10 +263,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
               <ul>
                 {subs.map((sub) => (
                   <li>
-                    {sub.subject}{" "}
-                    {sub.classNo ||
-                      sub?.classes?.map((classe) => classe[0]).join(", ")}
-                    {/* {sub.div} */}
+                    {sub.subject} {sub.classNo}
+                    {sub.div}
                   </li>
                 ))}
               </ul>

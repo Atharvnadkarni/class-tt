@@ -64,9 +64,9 @@ export default function TimetableHeader({ loggedIn }) {
               <Book className="h-6 w-6 text-black" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
-              Schedulr{" "}
-              <span className="text-lg sm:text-xl font-bold tracking-tight text-black">
-                Vidya Vikas Academy
+              Vidya Vikas Academy{" "}
+              <span className="text-xl sm:text-2xl font-bold tracking-tight text-black">
+                Class Time Table
               </span>
             </h1>
           </div>
@@ -96,7 +96,7 @@ export default function TimetableHeader({ loggedIn }) {
                     <p className="text-sm font-medium text-gray-800">
                       Michelle Mascarenhas
                     </p>
-                    {/* <p className="text-xs text-gray-500">Teacher ID: admin</p> */}
+                    <p className="text-xs text-gray-500">Teacher ID: 24</p>
                   </div>
 
                   <div className=" border-gray-100 mt-1 pt-1">

@@ -7,8 +7,6 @@ import axios from "axios";
 import { Plus } from "lucide-react";
 import AddEditTeacher from "../components/modals/AddEditTeacher";
 import TeacherCard from "../components/TeacherCard";
-import { useSelector, useDispatch } from "react-redux";
-import { setTeachers } from "../../context/context";
 
 interface Teacher {
   name: String;
@@ -26,30 +24,23 @@ export default function TeacherPage() {
   const [activeTab, setActiveTab] = useState<"schedule" | "teachers">(
     "teachers"
   );
-  const dispatch = useDispatch();
-  const teachers = useSelector((state) => state.teachers.teachers);
   const [mode, setMode] = useState<{
     mode: null | "add" | "edit";
     teacher: null;
   }>({ mode: null, teacher: null });
 
   const [subs, setSubs] = useState([]);
-  const [loading, setLoading] = useState(false);
 
-  // const [allTeachers, setAllTeachers] = useState([]);
+  const [allTeachers, setAllTeachers] = useState([]);
 
   useEffect(() => {
-    if (teachers.length == 0) setLoading(true);
     const fetchTeachers = async () => {
-      setLoading(true);
       const teachers = await (
         await axios.get("https://class-tt-backend.onrender.com/api/teacher")
       ).data.teacher;
-      setLoading(false);
-      dispatch(setTeachers(teachers));
+      setAllTeachers(teachers);
     };
-    if (teachers.length == 0) fetchTeachers();
-    else setLoading(false);
+    fetchTeachers();
   }, []);
 
   return (
@@ -94,16 +85,9 @@ export default function TeacherPage() {
 
             {/* Modal */}
             <AddEditTeacher
-              {...{
-                mode,
-                setMode,
-                allTeachers: teachers,
-                setAllTeachers: (trs) => dispatch(setTeachers(trs)),
-                subs,
-                setSubs,
-              }}
+              {...{ mode, setMode, allTeachers, setAllTeachers, subs, setSubs }}
             />
-            {loading && (
+            {allTeachers.length === 0 && (
               <div className="flex justify-center items-center py-10">
                 <span className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mr-3"></span>
                 <span className="text-gray-600 text-sm">
@@ -111,18 +95,11 @@ export default function TeacherPage() {
                 </span>
               </div>
             )}
-            {teachers.length === 0 && !loading && (
-              <div className="flex justify-center items-center py-10">
-                <span className="text-gray-600 text-sm">No teachers found</span>
-              </div>
-            )}
             <div className="grid grid-cols-4 gap-2">
               {/* {} */}
-              {JSON.stringify(teachers) != "[]" &&
-                teachers.map((teacher) => (
-                  <TeacherCard
-                    {...{ teacher, setMode, setAllTeachers: setTeachers }}
-                  />
+              {JSON.stringify(allTeachers) != "[]" &&
+                allTeachers.map((teacher) => (
+                  <TeacherCard {...{ teacher, setMode, setAllTeachers }} />
                 ))}
             </div>
           </div>

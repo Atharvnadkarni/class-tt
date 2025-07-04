@@ -3,10 +3,9 @@
 import type React from "react";
 
 import { useState } from "react";
-import { Book, CircleUser, LogIn } from "lucide-react";
+import { Book, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
 import TimetableHeader from "./app/components/Header";
-import Link from "next/link";
 
 export default function LoginScreen() {
   const [teacherNumber, setTeacherNumber] = useState("");
@@ -19,7 +18,7 @@ export default function LoginScreen() {
     setError("");
 
     if (!teacherNumber.trim()) {
-      setError("Please enter your username");
+      setError("Please enter your teacher number");
       return;
     }
 
@@ -56,8 +55,8 @@ export default function LoginScreen() {
       </header> */}
       <TimetableHeader loggedIn={false} />
       {/* Login Form */}
-      <div className="flex-1 flex flex-col items-center justify-center p-4">
-        <div className="bg-[#F0AF917F] rounded-lg shadow-lg p-8 w-full max-w-md">
+      <div className="flex-1 flex items-center justify-center p-4">
+        <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
           <div className="text-center mb-8">
             <h2 className="text-2xl font-bold text-gray-800">Teacher Login</h2>
             <p className="text-gray-600 mt-2">
@@ -88,7 +87,7 @@ export default function LoginScreen() {
             <button
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 bg-secondary hover:bg-primary-700 text-primary font-medium py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
+              className="w-full flex items-center justify-center gap-2 bg-primary hover:bg-primary-700 text-black font-medium py-3 px-4 rounded-lg transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50"
             >
               {isLoading ? (
                 <>
@@ -98,7 +97,7 @@ export default function LoginScreen() {
               ) : (
                 <>
                   <LogIn className="h-5 w-5" />
-                  <span>Log in</span>
+                  <span>Login</span>
                 </>
               )}
             </button>
@@ -113,27 +112,13 @@ export default function LoginScreen() {
             </p>
           </div> */}
         </div>
-        <div className="mt-8">
-          <div>
-            <button
-              className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-              onClick={() => router.push("/about-the-dev")}
-            >
-              <CircleUser className="w-4 h-4" />
-              About the developer
-            </button>
-          </div>
-        </div>
       </div>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 py-4 fixed bottom-0 w-full">
+      <footer className="bg-white border-t border-gray-200 py-4">
         <div className="container mx-auto px-4">
           <p className="text-center text-sm text-gray-600">
-            © 2025 Atharv Nadkarni. All rights reserved.{" "}
-            <Link style={{color: "red", textDecoration: "underline"}} href="/t-and-c">
-              <span className="bg-red">Terms & Conditions</span>
-            </Link>
+            © 2025 Atharv Nadkarni. All rights reserved.
           </p>
         </div>
       </footer>
