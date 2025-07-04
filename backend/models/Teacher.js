@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const teacherSchema = new mongoose.Schema({
+    _id: false,
     name: String,
     class: String,
     username: {type: String, unique: true},
