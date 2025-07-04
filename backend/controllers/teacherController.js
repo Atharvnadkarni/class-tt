@@ -1,4 +1,9 @@
 const Teacher = require("../models/Teacher");
+const jwt = require("jsonwebtoken");
+
+const createToken = (_id) => {
+  jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+};
 
 const getTeachers = async (req, res) => {
   try {
