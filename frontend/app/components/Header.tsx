@@ -69,7 +69,7 @@ export default function TimetableHeader({ loggedIn }) {
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
                   Schedulr{" "}
                   <span className="text-md sm:text-lg font-bold tracking-tight text-black">
-                    Class Time Table
+                    Vidya Vikas Academy
                   </span>
                 </h1>
               </Link>
