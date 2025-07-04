@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcrypt");
+const validator = require("validator")
 
 const teacherSchema = new mongoose.Schema({
   name: String,
@@ -20,6 +21,15 @@ teacherSchema.statics.signup = async function (
   username,
   password
 ) {
+  // validate
+  if (!username || !password) {
+    throw Error("All fields must be filled")
+  }
+
+  if (!validator.isStrongPassword(password)) {
+    throw Error("Password is weak")
+  }
+  
   // check if username exists
   const exists = await this.findOne({ username });
   if (exists) {
