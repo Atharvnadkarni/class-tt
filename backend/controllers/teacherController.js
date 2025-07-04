@@ -2,7 +2,7 @@ const Teacher = require("../models/Teacher");
 const jwt = require("jsonwebtoken");
 
 const createToken = (_id) => {
-  jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
 };
 
 const getTeachers = async (req, res) => {
@@ -78,7 +78,10 @@ const signupTeacher = async (req, res) => {
   const { name, subjects, username, password } = req.body;
   try {
     const teacher = await Teacher.signup(name, subjects, username, password);
-    res.status(201).json({ username, teacher });
+
+    // create token
+    const token = createToken(teacher._id);
+    res.status(201).json({ username, token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
