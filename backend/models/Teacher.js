@@ -15,7 +15,12 @@ const teacherSchema = new mongoose.Schema({
   password: { type: String, required: true },
 });
 
-teacherSchema.statics.signup = async (name, subjects, username, password) => {
+teacherSchema.statics.signup = async function (
+  name,
+  subjects,
+  username,
+  password
+) {
   // check if username exists
   const exists = await this.findOne({ username });
   if (exists) {
