@@ -71,7 +71,16 @@ const deleteTeacher = async (req, res) => {
 };
 
 const loginTeacher = async (req, res) => {
-  return res.json({ mssg: "login tr" });
+  const { username, password } = req.body;
+  try {
+    const teacher = await Teacher.login(username, password);
+
+    // create token
+    const token = createToken(teacher._id);
+    res.status(200).json({ username, token });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 };
 
 const signupTeacher = async (req, res) => {
