@@ -5,7 +5,7 @@ import type React from "react";
 import { useState } from "react";
 import { Book, CircleUser, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
-import TimetableHeader from "./app/components/Header";
+import TimetableHeader from "./Header";
 import Link from "next/link";
 
 export default function LoginScreen() {
