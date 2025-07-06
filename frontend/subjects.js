@@ -1,5 +1,5 @@
 module.exports = {
-  subjects: [
+  subjectList: [
     "Class Teacher",
     "Math",
     "Mental Math",
