@@ -17,6 +17,7 @@ export default function LoginScreen() {
   const { logIn, isLoading, error } = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
     logIn(username, password);
   };
 
