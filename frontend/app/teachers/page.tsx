@@ -21,9 +21,7 @@ interface Teacher {
 }
 
 export default function TeacherPage() {
-  const [activeTab, setActiveTab] = useState<"schedule" | "teachers">(
-    "teachers"
-  );
+  const [isLoading, setIsLoading] = useState(false)
   const [mode, setMode] = useState<{
     mode: null | "add" | "edit";
     teacher: null;
@@ -35,10 +33,12 @@ export default function TeacherPage() {
 
   useEffect(() => {
     const fetchTeachers = async () => {
+      setIsLoading(true)
       const teachers = await (
         await axios.get("http://localhost:4000/api/teacher")
       ).data.teacher;
       setAllTeachers(teachers);
+      setIsLoading(false)
     };
     fetchTeachers();
   }, []);
@@ -87,11 +87,18 @@ export default function TeacherPage() {
             <AddEditTeacher
               {...{ mode, setMode, allTeachers, setAllTeachers, subs, setSubs }}
             />
-            {allTeachers.length === 0 && (
+            {isLoading && (
               <div className="flex justify-center items-center py-10">
                 <span className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mr-3"></span>
                 <span className="text-gray-600 text-sm">
                   Loading teachers...
+                </span>
+              </div>
+            )}
+            {!isLoading && allTeachers.length == 0 && (
+              <div className="flex justify-center items-center py-10">
+                <span className="text-gray-600 text-sm">
+                  No teachers found
                 </span>
               </div>
             )}
