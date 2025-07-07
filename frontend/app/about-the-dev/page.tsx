@@ -2,6 +2,7 @@ import Tabs from "@/tabs";
 import TimetableHeader from "../components/Header";
 import devPic from "./atharvpic.jpeg";
 import Link from "next/link";
+import { ArrowLeft, StepBack } from "lucide-react";
 
 const AboutTheDev = () => {
   return (
@@ -10,6 +11,11 @@ const AboutTheDev = () => {
       <main className="px-4 py-8">
         {/* <Tabs activeTab={null} /> */}
         <div className="space-y-6">
+            <div className="mb-4">
+            <Link href="/login" className="text-blue-600 hover:underline font-medium flex gap-2">
+              <ArrowLeft /> Back to Login Page
+            </Link>
+            </div>
           <div className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <img
               src="/atharvpic.jpeg"
