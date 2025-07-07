@@ -12,22 +12,26 @@ export const useLogin = () => {
     setIsLoading(true);
     setError(null);
 
-    const response = await axios.post("http://localhost:4000/api/teacher/login", {
-      username,
-      password,
-    });
+    try {
+      const response = await axios.post(
+        "http://localhost:4000/api/teacher/login",
+        {
+          username,
+          password,
+        }
+      );
 
-    const data = response.data;
+      const data = response.data;
 
-    if (response.status != 200) {
+      if (response.status > 200 && response.status < 300) {
+        setIsLoading(true);
+        localStorage.setItem("user", data.token);
+        dispatch(login(data));
+        setIsLoading(false);
+      }
+    } catch (err) {
       setIsLoading(false);
-      setError(data.error);
-    }
-    if (response.status > 200 && response.status < 300) {
-      setIsLoading(true);
-      localStorage.setItem("user", data.token);
-      dispatch(login(data));
-      setIsLoading(false);
+      setError(err.response.data.error);
     }
   };
   return { logIn, isLoading, error };
