@@ -7,9 +7,12 @@ import { Book, CircleUser, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
 import TimetableHeader from "./Header";
 import Link from "next/link";
+import axios from "axios";
+import {useSelector, useDispatch} from "react-redux"
 
 export default function LoginScreen() {
-  const [teacherNumber, setTeacherNumber] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
@@ -18,7 +21,7 @@ export default function LoginScreen() {
     e.preventDefault();
     setError("");
 
-    if (!teacherNumber.trim()) {
+    if (!username.trim()) {
       setError("Please enter your username");
       return;
     }
@@ -27,11 +30,18 @@ export default function LoginScreen() {
     setIsLoading(true);
 
     try {
-      // Simulate API call with timeout
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const res = await axios.post("http://localhost:4000/api/login", {
+        username,
+        password,
+      }).catch(err => console.error(err))
+
+      // dispatch(loginSuccess(res.data));
+
+      // Redirect to timetable page
+      router.push("/timetable");
 
       // Check for admin login
-      if (teacherNumber.toLowerCase() === "admin") {
+      if (username.toLowerCase() === "admin") {
         router.push("/timetable");
       }
     } catch (err) {
@@ -43,17 +53,6 @@ export default function LoginScreen() {
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
-      {/* Header */}
-      {/* <header className="bg-gradient-to-r from-blue-600 to-blue-700  shadow-lg">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-              <Book className="h-6 w-6 " />
-            </div>
-            <h1 className="text-2xl sm:text-3xl font-bold tracking-tight">Weekly Timetable</h1>
-          </div>
-        </div>
-      </header> */}
       <TimetableHeader loggedIn={false} />
       {/* Login Form */}
       <div className="flex-1 flex flex-col items-center justify-center p-4">
@@ -68,18 +67,36 @@ export default function LoginScreen() {
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
               <label
-                htmlFor="teacherNumber"
+                htmlFor="username"
                 className="block text-sm font-medium text-gray-700 mb-1"
               >
                 Username
               </label>
               <input
-                id="teacherNumber"
+                id="username"
                 type="text"
-                value={teacherNumber}
-                onChange={(e) => setTeacherNumber(e.target.value)}
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter your username"
+                autoComplete="off"
+              />
+              {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-1"
+              >
+                Password
+              </label>
+              <input
+                id="password"
+                type="password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                placeholder="Enter your password"
                 autoComplete="off"
               />
               {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
