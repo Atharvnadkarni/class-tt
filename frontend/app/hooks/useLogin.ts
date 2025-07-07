@@ -12,7 +12,7 @@ export const useLogin = () => {
     setIsLoading(true);
     setError(null);
 
-    const response = await axios.post("http://localhost:4000/api/login", {
+    const response = await axios.post("http://localhost:4000/api/teacher/login", {
       username,
       password,
     });
