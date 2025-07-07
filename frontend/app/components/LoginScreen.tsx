@@ -8,47 +8,16 @@ import { useRouter } from "next/navigation";
 import TimetableHeader from "./Header";
 import Link from "next/link";
 import axios from "axios";
-import {useSelector, useDispatch} from "react-redux"
+import { useSelector, useDispatch } from "react-redux";
+import { useLogin } from "../hooks/useLogin";
 
 export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
+  const { logIn, isLoading, error } = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setError("");
-
-    if (!username.trim()) {
-      setError("Please enter your username");
-      return;
-    }
-
-    // Simulate login process
-    setIsLoading(true);
-
-    try {
-      const res = await axios.post("http://localhost:4000/api/login", {
-        username,
-        password,
-      }).catch(err => console.error(err))
-
-      // dispatch(loginSuccess(res.data));
-
-      // Redirect to timetable page
-      router.push("/timetable");
-
-      // Check for admin login
-      if (username.toLowerCase() === "admin") {
-        router.push("/timetable");
-      }
-    } catch (err) {
-      setError("Login failed. Please try again.");
-    } finally {
-      setIsLoading(false);
-    }
+    logIn(username, password);
   };
 
   return (
