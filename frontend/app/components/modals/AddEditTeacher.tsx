@@ -1,4 +1,4 @@
-import { subjects, subjectToDisplayName } from "@/subjects";
+import { subjectList, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -44,7 +44,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       name: formData.teacherName,
       class: "",
       subjects: subs2SubGroup(subs),
-    });
+    }).catch(err => console.error(err.message))
     const newTeachers = await (
       await axios.get("http://localhost:4000/api/teacher")
     ).data.teacher;
@@ -169,7 +169,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   >
                     <option value="">Subject</option>
 
-                    {subjects.map((subject) => (
+                    {subjectList.map((subject) => (
                       <option value={subject}>
                         {subjectToDisplayName[subject.subject] &&
                         subjectToDisplayName[subject.subject].length <= 10
