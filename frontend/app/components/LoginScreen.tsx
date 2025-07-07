@@ -17,7 +17,7 @@ export default function LoginScreen() {
   const { logIn, isLoading, error } = useLogin();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     logIn(username, password);
   };
 
@@ -51,7 +51,6 @@ export default function LoginScreen() {
                 placeholder="Enter your username"
                 autoComplete="off"
               />
-              {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
             </div>
             <div>
               <label
@@ -69,7 +68,6 @@ export default function LoginScreen() {
                 placeholder="Enter your password"
                 autoComplete="off"
               />
-              {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
             </div>
 
             <button
@@ -89,6 +87,7 @@ export default function LoginScreen() {
                 </>
               )}
             </button>
+            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
           </form>
 
           {/* <div className="mt-8 pt-6 border-t border-gray-200">
