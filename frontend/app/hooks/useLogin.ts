@@ -23,7 +23,7 @@ export const useLogin = () => {
 
       const data = response.data;
 
-      localStorage.setItem("user", data.token);
+      localStorage.setItem("user", JSON.stringify(data));
       dispatch(login(data));
       setIsLoading(false);
     } catch (err) {
