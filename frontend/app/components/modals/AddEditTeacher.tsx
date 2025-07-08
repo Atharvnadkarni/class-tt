@@ -2,7 +2,7 @@ import { subjectList, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
-import bcrypt from "bcrypt"
+import bcrypt from "bcryptjs"
 
 const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [formData, setFormData] = useState({
