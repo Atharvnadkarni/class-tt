@@ -2,14 +2,17 @@ import { subjectList, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import bcrypt from "bcrypt"
 
 const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [formData, setFormData] = useState({
     subject: "",
     div: "",
     classNo: null,
-    teacherName: "",
   });
+  const [teacherName, setTeacherName] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   console.log(13, mode?.teacher?.subjects);
   const [subs, setSubs] = useState(
     mode?.mode == "edit" && (mode?.teacher?.subjects ?? [])
@@ -40,11 +43,17 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-    await axios.post("http://localhost:4000/api/teacher", {
-      name: formData.teacherName,
-      class: "",
-      subjects: subs2SubGroup(subs),
-    }).catch(err => console.error(err.message))
+    const salt = await bcrypt.genSalt(10)
+    const hashedPassword = await bcrypt.hash(password, salt)
+    await axios
+      .post("http://localhost:4000/api/teacher", {
+        name: teacherName,
+        class: "",
+        subjects: subs2SubGroup(subs),
+        username,
+        password: hashedPassword,
+      })
+      .catch((err) => console.error(err.message));
     const newTeachers = await (
       await axios.get("http://localhost:4000/api/teacher")
     ).data.teacher;
@@ -73,9 +82,11 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       return grouped;
     };
     await axios.patch("http://localhost:4000/api/teacher/" + _id, {
-      name: formData.teacherName,
+      name: teacherName,
       class: "",
       subjects: subs2SubGroup(subs),
+      username,
+      password,
     });
     const newTeachers = await (
       await axios.get("http://localhost:4000/api/teacher")
@@ -127,12 +138,53 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
               <input
                 type="text"
                 id="teacherName"
-                value={formData.teacherName || ""}
+                value={teacherName || ""}
                 onChange={(e) => {
-                  setFormData((prev) => ({
-                    ...prev,
-                    teacherName: e.target.value,
-                  }));
+                  setTeacherName(e.target.value);
+                  setUsername(e.target.value.toLowerCase().split(" ")[0]);
+                  setPassword(
+                    e.target.value.toLowerCase().split(" ").map(part => part.slice(0,4)).toReversed().join('') +
+                      // .split("")
+                      // .map((char) => char.charCodeAt(0) - 96)
+                      // .join("")
+                      "123"
+                  );
+                }}
+                placeholder="Enter teacher name"
+                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="username"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Username
+              </label>
+              <input
+                type="text"
+                id="username"
+                value={username || ""}
+                onChange={(e) => {
+                  setUsername(e.target.value);
+                }}
+                placeholder="Enter teacher name"
+                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Password
+              </label>
+              <input
+                type="text"
+                id="password"
+                value={password || ""}
+                onChange={(e) => {
+                  setPassword(e.target.value);
                 }}
                 placeholder="Enter teacher name"
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -241,9 +293,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   <button
                     onClick={(e) => {
                       const sub = JSON.parse(JSON.stringify(formData));
-                      delete sub.teacherName;
                       setFormData((prev) => ({
-                        teacherName: prev.teacherName,
                         subject: "",
                         div: "",
                         classNo: null,
