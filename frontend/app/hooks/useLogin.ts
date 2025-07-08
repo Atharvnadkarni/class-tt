@@ -23,12 +23,9 @@ export const useLogin = () => {
 
       const data = response.data;
 
-      if (response.status > 200 && response.status < 300) {
-        setIsLoading(true);
-        localStorage.setItem("user", data.token);
-        dispatch(login(data));
-        setIsLoading(false);
-      }
+      localStorage.setItem("user", data.token);
+      dispatch(login(data));
+      setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
       setError(err.response.data.error);
