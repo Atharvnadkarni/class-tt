@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { Book, User, Settings, LogOut, ChevronDown } from "lucide-react";
 import Link from "next/link";
+import { useSelector } from "react-redux";
 
-export default function TimetableHeader({ loggedIn }) {
+export default function TimetableHeader() {
   const [currentTime] = useState(new Date(2024, 0, 1, 9, 45, 0)); // Demo time: 9:45 AM
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
@@ -54,6 +55,7 @@ export default function TimetableHeader({ loggedIn }) {
   const today = new Date();
   const dayName = getDayName(today);
   const showTodayIndicator = isSchoolDay(today);
+  const user = useSelector(state => state.user);
 
   return (
     <header className="bg-[#F0AF91]  shadow-lg relative">
@@ -64,7 +66,7 @@ export default function TimetableHeader({ loggedIn }) {
             <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
               <Book className="h-6 w-6 text-black" />
             </div>
-            {!loggedIn ? (
+            {!user ? (
               <Link href="/login">
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
                   Schedulr{" "}
@@ -84,7 +86,7 @@ export default function TimetableHeader({ loggedIn }) {
           </div>
 
           {/* Teacher Greeting with Menu */}
-          {loggedIn && (
+          {user && (
             <div
               className="absolute top-1/2 right-4 transform -translate-y-1/2"
               ref={menuRef}
