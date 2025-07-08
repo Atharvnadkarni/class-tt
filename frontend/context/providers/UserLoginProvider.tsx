@@ -1,8 +1,15 @@
-import { Provider } from "react-redux";
+import { Provider, useSelector } from "react-redux";
 import { store } from "../context";
+import { useEffect } from "react";
+import { login } from "../userSlice";
 
 const UserLoginProvider = ({ children }) => {
-  console.log("auth context state:",store.getState());
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (user) {
+      store.dispatch(login(user));
+    }
+  }, []);
   return <Provider store={store}>{children}</Provider>;
 };
 export default UserLoginProvider;
