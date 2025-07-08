@@ -3,12 +3,14 @@
 import { useState, useRef, useEffect } from "react";
 import { Book, User, Settings, LogOut, ChevronDown } from "lucide-react";
 import Link from "next/link";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "@/context/userSlice";
 
 export default function TimetableHeader() {
   const [currentTime] = useState(new Date(2024, 0, 1, 9, 45, 0)); // Demo time: 9:45 AM
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const dispatch = useDispatch()
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("en-US", {
@@ -48,8 +50,7 @@ export default function TimetableHeader() {
   };
 
   const handleLogout = () => {
-    // In a real app, you would handle logout logic here
-    window.location.href = "/login";
+    dispatch(logout())
   };
 
   const today = new Date();
