@@ -107,7 +107,7 @@ export default function TimetableHeader() {
               {/* Dropdown Menu */}
               {isMenuOpen && (
                 <div className="absolute top-full right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
-                  <div className="px-4 py-2 border-b border-gray-100">
+                  <div className="px-4 py-2 border-gray-100">
                     <p className="text-sm font-medium text-gray-800">
                       {user.username}
                     </p>
