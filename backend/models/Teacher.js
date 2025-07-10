@@ -22,8 +22,7 @@ teacherSchema.statics.login = async function (username, password) {
   }
 
   // check if username exists
-  const user = await this.find({});
-  console.log(user)
+  const user = await this.findOne({username});
   if (!user) {
     throw Error("Invalid username");
   }
