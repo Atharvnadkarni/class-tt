@@ -1,8 +1,9 @@
 import { subjectList, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
-import { useEffect, useState } from "react";
-import bcrypt from "bcryptjs"
+import { useEffect, useState, useTransition } from "react";
+import bcrypt from "bcryptjs";
+import { useSelector } from "react-redux";
 
 const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [formData, setFormData] = useState({
@@ -13,6 +14,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [teacherName, setTeacherName] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const user = useSelector((state) => state.user);
   console.log(13, mode?.teacher?.subjects);
   const [subs, setSubs] = useState(
     mode?.mode == "edit" && (mode?.teacher?.subjects ?? [])
@@ -23,6 +26,10 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     setSubs([]);
   };
   const handleAddSave = async (e) => {
+    if (!user) {
+      setError("Must be logged in");
+      return;
+    }
     console.log(formData.classNo && formData.div && formData.subject);
     if (formData.classNo && formData.div && formData.subject) {
       const sub = JSON.parse(JSON.stringify(formData));
@@ -43,25 +50,35 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-    const salt = await bcrypt.genSalt(10)
-    const hashedPassword = await bcrypt.hash(password, salt)
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
     await axios
-      .post("http://localhost:4000/api/teacher", {
-        name: teacherName,
-        class: "",
-        subjects: subs2SubGroup(subs),
-        username,
-        password: hashedPassword,
-      })
+      .post(
+        "http://localhost:4000/api/teacher",
+        {
+          name: teacherName,
+          class: "",
+          subjects: subs2SubGroup(subs),
+          username,
+          password: hashedPassword,
+        },
+        { headers: { Authorization: `Bearer ${user.token}` } }
+      )
       .catch((err) => console.error(err.message));
     const newTeachers = await (
-      await axios.get("http://localhost:4000/api/teacher")
+      await axios.get("http://localhost:4000/api/teacher", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
     ).data.teacher;
     setMode(null);
     setAllTeachers(newTeachers);
     setSubs([]);
   };
   const handleEditSave = async (_id) => {
+    if (!user) {
+      setError("Must be logged in");
+      return;
+    }
     if (formData.classNo && formData.div && formData.subject) {
       const sub = JSON.parse(JSON.stringify(formData));
       delete sub.teacherName;
@@ -81,15 +98,21 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }, []);
       return grouped;
     };
-    await axios.patch("http://localhost:4000/api/teacher/" + _id, {
-      name: teacherName,
-      class: "",
-      subjects: subs2SubGroup(subs),
-      username,
-      password,
-    });
+    await axios.patch(
+      "http://localhost:4000/api/teacher/" + _id,
+      {
+        name: teacherName,
+        class: "",
+        subjects: subs2SubGroup(subs),
+        username,
+        password,
+      },
+      { headers: { Authorization: `Bearer ${user.token}` } }
+    );
     const newTeachers = await (
-      await axios.get("http://localhost:4000/api/teacher")
+      await axios.get("http://localhost:4000/api/teacher", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
     ).data.teacher;
     setMode(null);
     setAllTeachers(newTeachers);
@@ -143,7 +166,12 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   setTeacherName(e.target.value);
                   setUsername(e.target.value.toLowerCase().split(" ")[0]);
                   setPassword(
-                    e.target.value.toLowerCase().split(" ").map(part => part.slice(0,4)).toReversed().join('') +
+                    e.target.value
+                      .toLowerCase()
+                      .split(" ")
+                      .map((part) => part.slice(0, 4))
+                      .toReversed()
+                      .join("") +
                       // .split("")
                       // .map((char) => char.charCodeAt(0) - 96)
                       // .join("")
@@ -317,6 +345,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
               </ul>
               {/* Subject Input */}
             </div>
+            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
           </div>
 
           {/* Modal Footer */}

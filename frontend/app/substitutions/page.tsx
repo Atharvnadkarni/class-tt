@@ -15,6 +15,7 @@ import {
 import AddEditSubstitution from "../components/modals/AddEditSubstitution";
 import { classes } from "@/subjects";
 import DeleteModal from "../components/modals/DeleteModal";
+import { useSelector } from "react-redux";
 
 interface Sub {
   class: string;
@@ -36,6 +37,7 @@ const SubstitutionPage = () => {
     class: null,
     date: null,
   });
+  const user = useSelector((state) => state.user);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   function formatDate(date) {
     var d = new Date(date),
@@ -51,13 +53,17 @@ const SubstitutionPage = () => {
   useEffect(() => {
     const fetchSubs = async () => {
       const subs = await (
-        await axios.get("http://localhost:4000/api/substitution")
+        await axios.get("http://localhost:4000/api/substitution", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
       ).data.substitutions;
       setSubs(subs);
     };
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher")
+        await axios.get("http://localhost:4000/api/teacher", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
       ).data.teacher;
       setTeachers(teachers);
     };

@@ -1,9 +1,12 @@
 import { subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Pencil, Trash2, User } from "lucide-react";
+import { useSelector } from "react-redux";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
+  const user = useSelector(state => state.user)
   const deleteTeacher = async (_id: string) => {
+    if (!user) return
     await axios.delete(`http://localhost:4000/api/teacher/${_id}`);
     const newTeachers = await (
       await axios.get(`http://localhost:4000/api/teacher/`)

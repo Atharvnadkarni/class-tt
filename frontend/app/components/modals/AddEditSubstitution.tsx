@@ -2,8 +2,12 @@ import { classes, subjects, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const AddEditSubstitution = ({ mode, setMode, teachers }) => {
+  const user = useSelector((state) => state.user);
+  const [error, setError] = useState(null);
+
   const [formData, setFormData] = useState({
     class: "",
     period: "",
@@ -37,11 +41,19 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
     }
   }, [mode?.mode]);
   const handleAddSave = async (e) => {
-    await axios.post("http://localhost:4000/api/substitution", {
-      ...formData,
+    if (!user) {
+      setError("Must be logged in");
+      return;
+    }
+    await axios.post(
+      "http://localhost:4000/api/substitution",
+      {
+        ...formData,
 
-      date: formData.date ?? new Date(),
-    });
+        date: formData.date ?? new Date(),
+      },
+      { headers: { Authorization: `Bearer ${user.token}` } }
+    );
     const newSubstitutions = await (
       await axios.get("http://localhost:4000/api/substitution")
     ).data.substitutions;
@@ -50,12 +62,19 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
     location.reload();
   };
   const handleEditSave = async (_id) => {
+    if (!user) {
+      setError("Must be logged in");
+      return;
+    }
     await axios.patch(
       "http://localhost:4000/api/substitution/" + _id,
-      formData
+      formData,
+      { headers: { Authorization: `Bearer ${user.token}` } }
     );
     const newSubstitutions = await (
-      await axios.get("http://localhost:4000/api/substitution")
+      await axios.get("http://localhost:4000/api/substitution", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
     ).data.substitutions;
     console.log(newSubstitutions);
     setMode(null);
@@ -173,6 +192,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
                   <option value={teacher.name}>{teacher.name}</option>
                 ))}
               </select>
+              {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
             </div>
           </div>
 

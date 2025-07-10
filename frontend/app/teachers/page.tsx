@@ -7,6 +7,7 @@ import axios from "axios";
 import { Plus } from "lucide-react";
 import AddEditTeacher from "../components/modals/AddEditTeacher";
 import TeacherCard from "../components/TeacherCard";
+import { useSelector } from "react-redux";
 
 interface Teacher {
   name: String;
@@ -30,18 +31,21 @@ export default function TeacherPage() {
   const [subs, setSubs] = useState([]);
 
   const [allTeachers, setAllTeachers] = useState([]);
+  const user = useSelector(state => state.user)
 
   useEffect(() => {
     const fetchTeachers = async () => {
       setIsLoading(true)
       const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher")
+        await axios.get("http://localhost:4000/api/teacher", {
+          headers: {Authorization: `Bearer ${user.token}`}
+        })
       ).data.teacher;
       setAllTeachers(teachers);
       setIsLoading(false)
     };
     fetchTeachers();
-  }, []);
+  }, [user]);
 
   return (
     <div className="min-h-screen bg-gray-50">
