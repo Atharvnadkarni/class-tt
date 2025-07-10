@@ -13,6 +13,7 @@ import SubstituteButton from "../substitute";
 import TimeSystem from "../components/TimeSystem";
 import Tabs from "@/tabs";
 import { classes } from "@/subjects";
+import { useSelector } from "react-redux";
 
 export default function AdminPage(props) {
   return (
@@ -94,8 +95,11 @@ function AdminPagee() {
   const params = useSearchParams();
   const classe = params.get("class");
   const router = useRouter();
+  const user = useSelector((state) => state.user);
 
-  return (
+  return !user ? (
+    router.push("/login")
+  ) : (
     <div className="min-h-screen bg-gray-50">
       <TimetableHeader loggedIn={true} />
       {/* Admin Banner */}

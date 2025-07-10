@@ -8,6 +8,7 @@ import { Plus } from "lucide-react";
 import AddEditTeacher from "../components/modals/AddEditTeacher";
 import TeacherCard from "../components/TeacherCard";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface Teacher {
   name: String;
@@ -22,7 +23,7 @@ interface Teacher {
 }
 
 export default function TeacherPage() {
-  const [isLoading, setIsLoading] = useState(false)
+  const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<{
     mode: null | "add" | "edit";
     teacher: null;
@@ -31,23 +32,26 @@ export default function TeacherPage() {
   const [subs, setSubs] = useState([]);
 
   const [allTeachers, setAllTeachers] = useState([]);
-  const user = useSelector(state => state.user)
+  const user = useSelector((state) => state.user);
 
   useEffect(() => {
     const fetchTeachers = async () => {
-      setIsLoading(true)
+      setIsLoading(true);
       const teachers = await (
         await axios.get("http://localhost:4000/api/teacher", {
-          headers: {Authorization: `Bearer ${user.token}`}
+          headers: { Authorization: `Bearer ${user.token}` },
         })
       ).data.teacher;
       setAllTeachers(teachers);
-      setIsLoading(false)
+      setIsLoading(false);
     };
     fetchTeachers();
   }, [user]);
+  const router = useRouter();
 
-  return (
+  return !user ? (
+    router.push("/login")
+  ) : (
     <div className="min-h-screen bg-gray-50">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
@@ -101,9 +105,7 @@ export default function TeacherPage() {
             )}
             {!isLoading && allTeachers.length == 0 && (
               <div className="flex justify-center items-center py-10">
-                <span className="text-gray-600 text-sm">
-                  No teachers found
-                </span>
+                <span className="text-gray-600 text-sm">No teachers found</span>
               </div>
             )}
             <div className="grid grid-cols-4 gap-2">

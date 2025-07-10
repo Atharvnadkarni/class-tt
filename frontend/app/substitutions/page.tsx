@@ -16,6 +16,7 @@ import AddEditSubstitution from "../components/modals/AddEditSubstitution";
 import { classes } from "@/subjects";
 import DeleteModal from "../components/modals/DeleteModal";
 import { useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 interface Sub {
   class: string;
@@ -74,9 +75,12 @@ const SubstitutionPage = () => {
     mode: null | "add" | "edit";
     sub: null;
   }>({ mode: null, sub: null });
+  const router = useRouter();
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
-  return (
+  return !user ? (
+    router.push('/login')
+  ) : (
     <div className="max-w-full">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">

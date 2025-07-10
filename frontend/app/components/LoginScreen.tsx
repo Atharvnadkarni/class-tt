@@ -15,14 +15,17 @@ export default function LoginScreen() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { logIn, isLoading, error } = useLogin();
-  const router = useRouter()
+  const user = useSelector((state) => state.user);
+  const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     logIn(username, password);
   };
 
-  return (
+  return user ? (
+    router.push("/timetable")
+  ) : (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <TimetableHeader loggedIn={false} />
       {/* Login Form */}
