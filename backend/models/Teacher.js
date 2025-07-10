@@ -16,6 +16,7 @@ const teacherSchema = new mongoose.Schema({
 }, {_id: false});
 
 teacherSchema.statics.login = async function (username, password) {
+  console.log(username, password)
   // validate
   if (!username || !password) {
     throw Error("All fields must be filled");
