@@ -54,15 +54,18 @@ const SubstitutionPage = () => {
   useEffect(() => {
     const fetchSubs = async () => {
       const subs = await (
-        await axios.get("http://localhost:4000/api/substitution", {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
+        await axios.get(
+          "https://class-tt-backend.onrender.com/api/substitution",
+          {
+            headers: { Authorization: `Bearer ${user.token}` },
+          }
+        )
       ).data.substitutions;
       setSubs(subs);
     };
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher", {
+        await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
       ).data.teacher;
@@ -79,7 +82,7 @@ const SubstitutionPage = () => {
 
   const [dropdownOpen, setDropdownOpen] = useState(false);
   return !user ? (
-    router.push('/login')
+    router.push("/login")
   ) : (
     <div className="max-w-full">
       <TimetableHeader loggedIn={true} />
@@ -210,13 +213,13 @@ const SubstitutionPage = () => {
                         setIsModalOpen={setDeleteModalOpen}
                         deleteAction={async () => {
                           await axios.delete(
-                            "http://localhost:4000/api/substitution/" +
+                            "https://class-tt-backend.onrender.com/api/substitution/" +
                               sub._id +
                               "/"
                           );
                           const newSubs = await (
                             await axios.get(
-                              "http://localhost:4000/api/substitution"
+                              "https://class-tt-backend.onrender.com/api/substitution"
                             )
                           ).data.substitutions;
                           setDeleteModalOpen(false);

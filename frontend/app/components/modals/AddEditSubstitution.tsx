@@ -46,7 +46,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       return;
     }
     await axios.post(
-      "http://localhost:4000/api/substitution",
+      "https://class-tt-backend.onrender.com/api/substitution",
       {
         ...formData,
 
@@ -55,7 +55,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
     const newSubstitutions = await (
-      await axios.get("http://localhost:4000/api/substitution")
+      await axios.get("https://class-tt-backend.onrender.com/api/substitution")
     ).data.substitutions;
 
     setMode({ mode: null, sub: null });
@@ -67,14 +67,17 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       return;
     }
     await axios.patch(
-      "http://localhost:4000/api/substitution/" + _id,
+      "https://class-tt-backend.onrender.com/api/substitution/" + _id,
       formData,
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
     const newSubstitutions = await (
-      await axios.get("http://localhost:4000/api/substitution", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
+      await axios.get(
+        "https://class-tt-backend.onrender.com/api/substitution",
+        {
+          headers: { Authorization: `Bearer ${user.token}` },
+        }
+      )
     ).data.substitutions;
     console.log(newSubstitutions);
     setMode(null);
