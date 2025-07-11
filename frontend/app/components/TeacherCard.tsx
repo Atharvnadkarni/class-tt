@@ -8,10 +8,13 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
   const deleteTeacher = async (_id: string) => {
     if (!user) return;
     await axios.delete(
-      `https://class-tt-backend.onrender.com/api/teacher/${_id}`
+      `https://class-tt-backend.onrender.com/api/teacher/${_id}`,
+      { headers: { Authorization: `Bearer ${user.token}` } }
     );
     const newTeachers = await (
-      await axios.get(`https://class-tt-backend.onrender.com/api/teacher/`)
+      await axios.get(`https://class-tt-backend.onrender.com/api/teacher/`, {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
     ).data.teacher;
     setAllTeachers(newTeachers);
   };

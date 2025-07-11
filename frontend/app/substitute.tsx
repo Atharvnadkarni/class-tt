@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { X, Save } from "lucide-react";
 import axios from "axios";
 import AddEditSubstitution from "./components/modals/AddEditSubstitution";
+import { useSelector } from "react-redux";
 interface SelectedCell {
   day: string;
   period: {
@@ -29,12 +30,15 @@ const SubstituteButton = ({ currentClass }) => {
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("https://class-tt-backend.onrender.com/api/teacher")
+        await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
       ).data.teacher;
       setTeachers(teachers);
     };
     fetchTeachers();
   }, []);
+  const user = useSelector(state => state.user)
   const handleSave = async () => {
     const newSub = await (
       await axios.post(
@@ -44,7 +48,8 @@ const SubstituteButton = ({ currentClass }) => {
           period: formData.period,
           teacher: formData.teacher,
           date: formData.day,
-        }
+        },
+        { headers: { Authorization: `Bearer ${user.token}` } }
       )
     ).data;
 

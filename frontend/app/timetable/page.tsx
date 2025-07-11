@@ -14,6 +14,8 @@ import TimeSystem from "../components/TimeSystem";
 import Tabs from "@/tabs";
 import { classes } from "@/subjects";
 import { useSelector } from "react-redux";
+import AddEditSubstitution from "../components/modals/AddEditSubstitution";
+import axios from "axios";
 
 export default function AdminPage(props) {
   return (
@@ -96,6 +98,23 @@ function AdminPagee() {
   const classe = params.get("class");
   const router = useRouter();
   const user = useSelector((state) => state.user);
+  const [mode, setMode] = useState<{
+    mode: null | "add" | "edit";
+    sub: null;
+  }>({ mode: null, sub: null });
+  const [teachers, setTeachers] = useState();
+  useEffect(() => {
+    const fetchTeachers = async () => {
+      const teachers = await (
+        await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
+      ).data.teacher;
+      setTeachers(teachers);
+    };
+    fetchTeachers();
+  }, []);
+  console.log(teachers)
 
   return !user ? (
     router.push("/login")
@@ -118,9 +137,15 @@ function AdminPagee() {
         <div className="flex items-center justify-between mb-4">
           <TimeSystem />
           <div className="flex items-center gap-4">
-            <SubstituteButton
-              currentClass={localStorage.getItem("currentClass")}
-            />
+            <div>
+              <button
+                className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => setMode({ mode: "add", sub: null })}
+              >
+                <ArrowRightLeft className="h-4 w-4" />
+                Substitute
+              </button>
+            </div>
             <div className="flex items-center gap-2">
               <label
                 htmlFor="classSelect"
@@ -148,6 +173,13 @@ function AdminPagee() {
           selectedClass={params.get("class") || "1A"}
           classTimetables={classTimetables}
           setClassTimetables={setClassTimetables}
+        />
+        <AddEditSubstitution
+          {...{
+            mode,
+            setMode,
+            teachers,
+          }}
         />
         {/* <TeacherDetails /> */}
         {/* 

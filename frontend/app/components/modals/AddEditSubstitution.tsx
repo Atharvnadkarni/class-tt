@@ -54,9 +54,6 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       },
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
-    const newSubstitutions = await (
-      await axios.get("https://class-tt-backend.onrender.com/api/substitution")
-    ).data.substitutions;
 
     setMode({ mode: null, sub: null });
     location.reload();

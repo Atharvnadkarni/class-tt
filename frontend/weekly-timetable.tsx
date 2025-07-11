@@ -5,6 +5,7 @@ import { X, Save, Plus, Egg, EggFried, CircleAlert } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { subjects, subjectToDisplayName } from "./subjects";
+import { useSelector } from "react-redux";
 
 interface TimetableEntry {
   subject: string[];
@@ -372,11 +373,13 @@ function WeeklyTimetablee({
   };
 
   const [teachers, setTeachers] = useState([]);
-
+  const user = useSelector((state) => state.user);
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("https://class-tt-backend.onrender.com/api/teacher")
+        await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
       ).data.teacher;
       setTeachers(teachers);
     };

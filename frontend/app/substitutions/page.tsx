@@ -215,11 +215,11 @@ const SubstitutionPage = () => {
                           await axios.delete(
                             "https://class-tt-backend.onrender.com/api/substitution/" +
                               sub._id +
-                              "/"
+                              "/", {headers: {Authorization: `Bearer ${user.token}`}}
                           );
                           const newSubs = await (
                             await axios.get(
-                              "https://class-tt-backend.onrender.com/api/substitution"
+                              "https://class-tt-backend.onrender.com/api/substitution", {headers: {Authorization: `Bearer ${user.token}`}}
                             )
                           ).data.substitutions;
                           setDeleteModalOpen(false);
