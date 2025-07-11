@@ -8,12 +8,12 @@ const teacherSchema = new mongoose.Schema({
     {
       _id: false,
       subject: String,
-      classes: { type: mongoose.SchemaTypes.Mixed },
+      classes: [Number],
     },
   ],
   username: { type: String, unique: true, required: true },
   password: { type: String, required: true },
-}, {_id: false});
+});
 
 teacherSchema.statics.login = async function (username, password) {
   console.log(username, password)
@@ -28,6 +28,8 @@ teacherSchema.statics.login = async function (username, password) {
     throw Error("Invalid username");
   }
   const match = await bcrypt.compare(password, user.password)
+  const hash = await bcrypt.hash(password, 10)
+  console.log(hash, user.password)
   if (!match) {
     throw Error("Incorrect password")
   }

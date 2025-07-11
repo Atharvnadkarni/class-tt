@@ -114,7 +114,7 @@ function AdminPagee() {
     };
     fetchTeachers();
   }, []);
-  console.log(teachers)
+  console.log(teachers);
 
   return !user ? (
     router.push("/login")

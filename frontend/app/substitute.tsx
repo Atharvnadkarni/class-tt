@@ -38,7 +38,7 @@ const SubstituteButton = ({ currentClass }) => {
     };
     fetchTeachers();
   }, []);
-  const user = useSelector(state => state.user)
+  const user = useSelector((state) => state.user);
   const handleSave = async () => {
     const newSub = await (
       await axios.post(

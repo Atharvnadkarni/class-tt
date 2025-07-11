@@ -4,7 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import { X, Save, Plus, Egg, EggFried, CircleAlert } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
-import { subjects, subjectToDisplayName } from "./subjects";
+import { subjectList, subjects, subjectToDisplayName } from "./subjects";
 import { useSelector } from "react-redux";
 
 interface TimetableEntry {
@@ -526,7 +526,7 @@ function WeeklyTimetablee({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">No subject</option>
-                      {subjects.map((subject) => (
+                      {subjectList.map((subject) => (
                         <option value={subject}>
                           {subjectToDisplayName[subject] || subject}
                         </option>
@@ -663,7 +663,7 @@ function WeeklyTimetablee({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">No subject</option>
-                      {subjects.map((subject) => (
+                      {subjectList.map((subject) => (
                         <option value={subject}>
                           {subjectToDisplayName[subject] || subject}
                         </option>
@@ -728,7 +728,7 @@ function WeeklyTimetablee({
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
                       <option value="">No subject</option>
-                      {subjects.map((subject) => (
+                      {subjectList.map((subject) => (
                         <option value={subject}>
                           {subjectToDisplayName[subject] || subject}
                         </option>

@@ -1,5 +1,6 @@
 const Teacher = require("../models/Teacher");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
@@ -30,9 +31,11 @@ const getTeacher = async (req, res) => {
 
 const createTeacher = async (req, res) => {
   const { body } = req;
-
+  const hashedPassword = await bcrypt.hash(body.password, 10);
   try {
-    const newTeacher = await Teacher.create(body);
+    const newTeacher = await Teacher.create(
+      Object.assign({}, body, { password: hashedPassword })
+    );
     res
       .status(201)
       .json({ message: "Teacher created successfully", teacher: newTeacher });
@@ -43,9 +46,14 @@ const createTeacher = async (req, res) => {
 const updateTeacher = async (req, res) => {
   const { body } = req;
   const { id } = req.params;
+  const hashedPassword = await bcrypt.hash(body.password, 10);
 
   try {
-    const newTeacher = await Teacher.findByIdAndUpdate(id, body, { new: true });
+    const newTeacher = await Teacher.findByIdAndUpdate(
+      id,
+      Object.assign({}, body, { password: hashedPassword }),
+      { new: true }
+    );
     if (!newTeacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }

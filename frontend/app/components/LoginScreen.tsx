@@ -24,7 +24,7 @@ export default function LoginScreen() {
   };
 
   return user ? (
-    router.push("/timetable")
+    router.push(`/${localStorage.getItem("currentTab") ?? "timetable"}` || "/timetable")
   ) : (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <TimetableHeader loggedIn={false} />

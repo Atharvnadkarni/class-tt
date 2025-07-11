@@ -1,4 +1,4 @@
-import { subjectList, subjectToDisplayName } from "@/subjects";
+import { subjectList, subjectToDisplayName, trSubjectList } from "@/subjects";
 import axios from "axios";
 import { Plus, X } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
@@ -11,14 +11,24 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     div: "",
     classNo: null,
   });
-  const [teacherName, setTeacherName] = useState("");
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  console.log(
+    mode && mode.mode == "edit",
+    mode && mode.mode == "edit" ? mode.teacher.name : ""
+  );
+  const [teacherName, setTeacherName] = useState(
+    mode && mode.mode == "edit" ? mode.teacher.name : ""
+  );
+  const [username, setUsername] = useState(
+    mode && mode.mode == "edit" ? mode.teacher.username : ""
+  );
+  const [password, setPassword] = useState(
+    mode && mode.mode == "edit" ? "-------" : ""
+  );
   const [error, setError] = useState(null);
   const user = useSelector((state) => state.user);
   console.log(13, mode?.teacher?.subjects);
   const [subs, setSubs] = useState(
-    mode?.mode == "edit" && (mode?.teacher?.subjects ?? [])
+    mode?.mode == "edit" ? mode?.teacher?.subjects : []
   );
   const handleCancel = () => {
     setMode({ mode: null, teacher: null });
@@ -39,19 +49,18 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     const subs2SubGroup = (subs) => {
       const grouped = subs.reduce((acc, curr) => {
         const key = curr.subject;
-        const classEntry = [String(curr.classNo), curr.div];
+        const classNo = Number(curr.classNo);
         const existing = acc.find((item) => item.subject === key);
         if (existing) {
-          existing.classes.push(classEntry);
+          existing.classes.push(classNo);
         } else {
-          acc.push({ subject: key, classes: [classEntry] });
+          acc.push({ subject: key, classes: [classNo] });
         }
         return acc;
       }, []);
-      return grouped;
+      return grouped.flat();
     };
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash(password, salt);
+
     await axios
       .post(
         "https://class-tt-backend.onrender.com/api/teacher",
@@ -60,7 +69,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           class: "",
           subjects: subs2SubGroup(subs),
           username,
-          password: hashedPassword,
+          password,
         },
         { headers: { Authorization: `Bearer ${user.token}` } }
       )
@@ -87,17 +96,22 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     const subs2SubGroup = (subs) => {
       const grouped = subs.reduce((acc, curr) => {
         const key = curr.subject;
-        const classEntry = [String(curr.classNo), curr.div];
+        const classNo = curr.classes ? curr.classes : Number(curr.classNo);
         const existing = acc.find((item) => item.subject === key);
+        console.log(JSON.stringify(acc), curr, key, classNo, existing);
         if (existing) {
-          existing.classes.push(classEntry);
+          existing.classes.push(classNo);
         } else {
-          acc.push({ subject: key, classes: [classEntry] });
+          acc.push({ subject: key, classes: [classNo] });
         }
         return acc;
       }, []);
-      return grouped;
+      return grouped.map((sub) => ({
+        ...sub,
+        classes: [...new Set(sub.classes.flat())].toSorted((a, b) => a - b),
+      }));
     };
+    console.log(subs, subs2SubGroup(subs));
     await axios.patch(
       "https://class-tt-backend.onrender.com/api/teacher/" + _id,
       {
@@ -105,7 +119,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
         class: "",
         subjects: subs2SubGroup(subs),
         username,
-        password,
+        ...(password != "-------" && { password }),
       },
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
@@ -119,6 +133,19 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     setSubs([]);
   };
   useEffect(() => {
+    if (mode && mode.mode != "edit") setPassword(username + "123");
+  }, [username, mode]);
+  useEffect(() => {
+    if (mode && mode.mode == "edit") {
+      setTeacherName(mode.teacher.name);
+      setUsername(mode.teacher.username);
+      setPassword("-------");
+      console.log(mode.teacher.subjects);
+    } else {
+      setTeacherName("");
+      setUsername("");
+      setPassword("");
+    }
     const subs = mode?.teacher?.subjects;
     if (subs) {
       for (const sub of subs) {
@@ -164,14 +191,22 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 value={teacherName || ""}
                 onChange={(e) => {
                   setTeacherName(e.target.value);
-                  setUsername(e.target.value.toLowerCase().split(" ")[0]);
+                  if (
+                    allTeachers
+                      .map((tr) => tr.username)
+                      .includes(e.target.value.toLowerCase().split(" ")[0]) &&
+                    e.target.value.toLowerCase().split(" ")[1][0]
+                  ) {
+                    setUsername(
+                      e.target.value.toLowerCase().split(" ")[0] +
+                        e.target.value.toLowerCase().split(" ")[1][0]
+                    );
+                  } else {
+                    setUsername(e.target.value.toLowerCase().split(" ")[0]);
+                  }
+
                   setPassword(
-                    e.target.value
-                      .toLowerCase()
-                      .split(" ")
-                      .map((part) => part.slice(0, 4))
-                      .toReversed()
-                      .join("") +
+                    username +
                       // .split("")
                       // .map((char) => char.charCodeAt(0) - 96)
                       // .join("")
@@ -210,11 +245,15 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
               <input
                 type="text"
                 id="password"
-                value={password || ""}
+                value={(password == "-------" ? "" : password) || ""}
                 onChange={(e) => {
                   setPassword(e.target.value);
                 }}
-                placeholder="Enter teacher name"
+                placeholder={
+                  password == "-------"
+                    ? "Type new password to change password"
+                    : "Enter password"
+                }
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -249,7 +288,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   >
                     <option value="">Subject</option>
 
-                    {subjectList.map((subject) => (
+                    {trSubjectList.map((subject) => (
                       <option value={subject}>
                         {subjectToDisplayName[subject.subject] &&
                         subjectToDisplayName[subject.subject].length <= 10
@@ -287,7 +326,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                     placeholder="Class"
                     className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
-                  <select
+                  {/* <select
                     className="w px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     value={formData.div}
                     onChange={(e) => {
@@ -317,7 +356,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                     <option value="AC">AC</option>
                     <option value="BC">BC</option>
                     <option value="ABC">ABC</option>
-                  </select>
+                  </select> */}
                   <button
                     onClick={(e) => {
                       const sub = JSON.parse(JSON.stringify(formData));
@@ -336,12 +375,20 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 </div>
               </div>
               <ul>
-                {subs.map((sub) => (
-                  <li>
-                    {sub.subject} {sub.classNo}
-                    {sub.div}
-                  </li>
-                ))}
+                {subs.map((sub) => {
+                  {
+                    console.log(sub.classes);
+                  }
+
+                  return (
+                    <li>
+                      {sub.subject}{" "}
+                      {sub.classes
+                        ? sub.classes.join(", ").replace(" 0", "")
+                        : sub.classNo}
+                    </li>
+                  );
+                })}
               </ul>
               {/* Subject Input */}
             </div>

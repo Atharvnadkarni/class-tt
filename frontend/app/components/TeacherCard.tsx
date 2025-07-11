@@ -2,14 +2,19 @@ import { subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Pencil, Trash2, User } from "lucide-react";
 import { useSelector } from "react-redux";
+import DeleteModal from "./modals/DeleteModal";
+import { useState } from "react";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
   const user = useSelector((state) => state.user);
+  const [deleteModalId, setDeleteModalId] = useState(null);
   const deleteTeacher = async (_id: string) => {
     if (!user) return;
     await axios.delete(
       `https://class-tt-backend.onrender.com/api/teacher/${_id}`,
-      { headers: { Authorization: `Bearer ${user.token}` } }
+      {
+        headers: { Authorization: `Bearer ${user.token}` },
+      }
     );
     const newTeachers = await (
       await axios.get(`https://class-tt-backend.onrender.com/api/teacher/`, {
@@ -38,7 +43,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
           onClick={() => {
-            deleteTeacher(teacher._id);
+            setDeleteModalId(teacher._id);
           }}
         />
       </div>
@@ -57,7 +62,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
                   `${
                     subjectToDisplayName[subject.subject] || subject.subject
                   } ${subject.classes
-                    .map((classe) => classe.join(""))
+                    .map((classe) => (classe == 0 ? "" : classe))
                     .join(", ")}`
               )
               .reduce((previous, current) => {
@@ -66,6 +71,12 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
           </p>
         </div>
       </div>
+      {deleteModalId && (
+        <DeleteModal
+          setIsModalOpen={setDeleteModalId}
+          deleteAction={() => deleteTeacher(deleteModalId)}
+        />
+      )}
     </div>
   );
 };

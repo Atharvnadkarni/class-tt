@@ -39,7 +39,7 @@ const SubstitutionPage = () => {
     date: null,
   });
   const user = useSelector((state) => state.user);
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [deleteModalId, setDeleteModalId] = useState(null);
   function formatDate(date) {
     var d = new Date(date),
       month = "" + (d.getMonth() + 1),
@@ -205,28 +205,9 @@ const SubstitutionPage = () => {
                       className="w-4 h-4 cursor-pointer"
                     />
                     <Trash2
-                      onClick={() => setDeleteModalOpen(true)}
+                      onClick={() => setDeleteModalId(sub._id)}
                       className="w-4 h-4 cursor-pointer"
                     />
-                    {deleteModalOpen && (
-                      <DeleteModal
-                        setIsModalOpen={setDeleteModalOpen}
-                        deleteAction={async () => {
-                          await axios.delete(
-                            "https://class-tt-backend.onrender.com/api/substitution/" +
-                              sub._id +
-                              "/", {headers: {Authorization: `Bearer ${user.token}`}}
-                          );
-                          const newSubs = await (
-                            await axios.get(
-                              "https://class-tt-backend.onrender.com/api/substitution", {headers: {Authorization: `Bearer ${user.token}`}}
-                            )
-                          ).data.substitutions;
-                          setDeleteModalOpen(false);
-                          setSubs(newSubs);
-                        }}
-                      />
-                    )}
                   </div>
                   {new Date(sub.date).toLocaleDateString("en-IN", {
                     day: "2-digit",
@@ -239,6 +220,35 @@ const SubstitutionPage = () => {
           </ul>
         </div>
       </main>
+      {deleteModalId && (
+        <DeleteModal
+          setIsModalOpen={setDeleteModalId}
+          deleteAction={async () => {
+            await axios.delete(
+              "https://class-tt-backend.onrender.com/api/substitution/" +
+                deleteModalId +
+                "/",
+              {
+                headers: {
+                  Authorization: `Bearer ${user.token}`,
+                },
+              }
+            );
+            const newSubs = await (
+              await axios.get(
+                "https://class-tt-backend.onrender.com/api/substitution",
+                {
+                  headers: {
+                    Authorization: `Bearer ${user.token}`,
+                  },
+                }
+              )
+            ).data.substitutions;
+            setDeleteModalId(false);
+            setSubs(newSubs);
+          }}
+        />
+      )}
     </div>
   );
 };
