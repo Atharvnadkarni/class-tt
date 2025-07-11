@@ -3,7 +3,7 @@ import "./globals.css";
 import Providers from "@/context/providers/Providers";
 
 export const metadata: Metadata = {
-  title: "Class Timetable",
+  title: "Schedulr Timetable Manager",
   description: "Created with v0",
   generator: "v0.dev",
 };
