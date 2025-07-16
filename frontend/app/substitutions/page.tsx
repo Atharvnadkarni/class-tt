@@ -84,7 +84,7 @@ const SubstitutionPage = () => {
   return !user ? (
     router.push("/login")
   ) : (
-    <div className="max-w-full">
+    <div className="min-h-screen bg-gray-50">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
         <Tabs activeTab="subs" />
