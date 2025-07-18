@@ -66,6 +66,9 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
                 return [previous, <br key={previous} />, current].flat();
               })}
           </p>
+           <p className="text-sm/[18px] text-gray-600">
+            {teacher.tier}
+          </p>
         </div>
       </div>
       {deleteModalId && (
