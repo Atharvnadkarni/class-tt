@@ -63,7 +63,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
 
     await axios
       .post(
-        "https://class-tt-backend.onrender.com/api/teacher",
+        "http://localhost:4000/api/teacher",
         {
           name: teacherName,
           class: "",
@@ -75,7 +75,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       )
       .catch((err) => console.error(err.message));
     const newTeachers = await (
-      await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
+      await axios.get("http://localhost:4000/api/teacher", {
         headers: { Authorization: `Bearer ${user.token}` },
       })
     ).data.teacher;
@@ -113,7 +113,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     };
     console.log(subs, subs2SubGroup(subs));
     await axios.patch(
-      "https://class-tt-backend.onrender.com/api/teacher/" + _id,
+      "http://localhost:4000/api/teacher/" + _id,
       {
         name: teacherName,
         class: "",
@@ -124,7 +124,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
     const newTeachers = await (
-      await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
+      await axios.get("http://localhost:4000/api/teacher", {
         headers: { Authorization: `Bearer ${user.token}` },
       })
     ).data.teacher;

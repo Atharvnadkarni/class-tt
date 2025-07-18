@@ -106,7 +106,7 @@ function AdminPagee() {
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
+        await axios.get("http://localhost:4000/api/teacher", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
       ).data.teacher;

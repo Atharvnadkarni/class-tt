@@ -38,7 +38,7 @@ export default function TeacherPage() {
     const fetchTeachers = async () => {
       setIsLoading(true);
       const teachers = await (
-        await axios.get("https://class-tt-backend.onrender.com/api/teacher", {
+        await axios.get("http://localhost:4000/api/teacher", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
       ).data.teacher;
