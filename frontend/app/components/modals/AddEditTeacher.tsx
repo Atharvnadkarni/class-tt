@@ -6,15 +6,13 @@ import bcrypt from "bcryptjs";
 import { useSelector } from "react-redux";
 import { Tier } from "@/types";
 
-
-
 const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [formData, setFormData] = useState({
     subject: "",
     div: "",
     classNo: null,
   });
-  const [tier, setTier] = useState<string>(Tier.ADMIN)
+  const [tier, setTier] = useState<string>(Tier.ADMIN);
   console.log(
     mode && mode.mode == "edit",
     mode && mode.mode == "edit" ? mode.teacher.name : ""
@@ -74,7 +72,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           subjects: subs2SubGroup(subs),
           username,
           password,
-          tier
+          tier,
         },
         { headers: { Authorization: `Bearer ${user.token}` } }
       )
@@ -196,27 +194,29 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 value={teacherName || ""}
                 onChange={(e) => {
                   setTeacherName(e.target.value);
-                  if (
-                    allTeachers
-                      .map((tr) => tr.username)
-                      .includes(e.target.value.toLowerCase().split(" ")[0]) &&
-                    e.target.value.toLowerCase().split(" ")[1][0]
-                  ) {
-                    setUsername(
-                      e.target.value.toLowerCase().split(" ")[0] +
-                        e.target.value.toLowerCase().split(" ")[1][0]
-                    );
-                  } else {
-                    setUsername(e.target.value.toLowerCase().split(" ")[0]);
-                  }
+                  if (mode?.mode == "add") {
+                    if (
+                      allTeachers
+                        .map((tr) => tr.username)
+                        .includes(e.target.value.toLowerCase().split(" ")[0]) &&
+                      e.target.value.toLowerCase().split(" ")[1][0]
+                    ) {
+                      setUsername(
+                        e.target.value.toLowerCase().split(" ")[0] +
+                          e.target.value.toLowerCase().split(" ")[1][0]
+                      );
+                    } else {
+                      setUsername(e.target.value.toLowerCase().split(" ")[0]);
+                    }
 
-                  setPassword(
-                    username +
-                      // .split("")
-                      // .map((char) => char.charCodeAt(0) - 96)
-                      // .join("")
-                      "123"
-                  );
+                    setPassword(
+                      username +
+                        // .split("")
+                        // .map((char) => char.charCodeAt(0) - 96)
+                        // .join("")
+                        "123"
+                    );
+                  }
                 }}
                 placeholder="Enter teacher name"
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -419,14 +419,12 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                       //     ),
                       //   ],
                       // }));
-                      setTier(e.target.value)
+                      setTier(e.target.value);
                     }}
                   >
                     <option value={Tier.ADMIN}>Administrator</option>
                     <option value={Tier.COORDINATOR}>Coordinator</option>
                     <option value={Tier.TEACHER}>Teacher</option>
-
-                    
                   </select>
                   {/* {} */}
 
