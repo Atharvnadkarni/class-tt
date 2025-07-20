@@ -73,7 +73,7 @@ export default function TimetableHeader() {
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
                   Schedulr{" "}
                   <span className="text-md sm:text-lg font-bold tracking-tight text-black">
-                    Vidya Vikas Academy
+                    G. R. Kare College of Law
                   </span>
                 </h1>
               </Link>
@@ -81,7 +81,7 @@ export default function TimetableHeader() {
               <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
                 Schedulr{" "}
                 <span className="text-md sm:text-lg font-bold tracking-tight text-black">
-                  Vidya Vikas Academy
+                  G. R. Kare College of Law
                 </span>
               </h1>
             )}
