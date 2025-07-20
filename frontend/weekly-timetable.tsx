@@ -41,8 +41,8 @@ function WeeklyTimetablee({
   teacherMode = false,
 }: WeeklyTimetableProps) {
   const classSplit = [
-    parseInt(selectedClass.split("")[0]),
-    selectedClass.split("")[1],
+    selectedClass.slice(0, -1),
+    selectedClass[-1],
   ];
   const periods1to4 = [
     { name: "1", time: "7:35-8:15" },
