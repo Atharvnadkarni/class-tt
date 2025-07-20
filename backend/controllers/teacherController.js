@@ -46,14 +46,19 @@ const createTeacher = async (req, res) => {
 const updateTeacher = async (req, res) => {
   const { body } = req;
   const { id } = req.params;
-  const hashedPassword = await bcrypt.hash(body.password, 10);
+  let hashedPassword;
+  if (body.password) {
+    hashedPassword = await bcrypt.hash(body.password, 10);
+  }
 
   try {
-    const newTeacher = await Teacher.findByIdAndUpdate(
-      id,
-      Object.assign({}, body, { password: hashedPassword }),
-      { new: true }
-    );
+    const newTeacher = body.password
+      ? await Teacher.findByIdAndUpdate(
+          id,
+          Object.assign({}, body, { password: hashedPassword }),
+          { new: true }
+        )
+      : await Teacher.findByIdAndUpdate(id, body, { new: true });
     if (!newTeacher) {
       return res.status(404).json({ message: "Teacher not found" });
     }
