@@ -17,14 +17,14 @@ import { useSelector } from "react-redux";
 import AddEditSubstitution from "../components/modals/AddEditSubstitution";
 import axios from "axios";
 
-export default function AdminPage(props) {
+export default function TimetablePage(props) {
   return (
     <Suspense>
-      <AdminPagee {...props} />
+      <_TimetablePage {...props} />
     </Suspense>
   );
 }
-function AdminPagee() {
+function _TimetablePage() {
   const [selectedClass, setSelectedClass] = useState("1A");
   const [classTimetables, setClassTimetables] = useState<{
     [key: string]: any;

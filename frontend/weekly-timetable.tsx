@@ -28,12 +28,12 @@ interface WeeklyTimetableProps {
 export default function WeeklyTimetable(props) {
   return (
     <Suspense>
-      <WeeklyTimetablee {...props} />
+      <_WeeklyTimetable {...props} />
     </Suspense>
   );
 }
 
-function WeeklyTimetablee({
+function _WeeklyTimetable({
   isReadOnly = false,
   selectedClass = "1A",
   classTimetables = {},
