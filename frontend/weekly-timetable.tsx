@@ -40,40 +40,23 @@ function _WeeklyTimetable({
   setClassTimetables = () => {},
   teacherMode = false,
 }: WeeklyTimetableProps) {
-  const classSplit = [
-    selectedClass.slice(0, -1),
-    selectedClass[-1],
+  const periods = [
+    { name: "1", time: "8:30-9:20" },
+    { name: "2", time: "9:20-10:10" },
+    { name: "3", time: "10:10-11:00" },
+    { name: "Break", time: "11:00-11:20" },
+    { name: "4", time: "11:20-12:10" },
+    { name: "5", time: "12:10-1:00" },
   ];
-  const periods1to4 = [
-    { name: "1", time: "7:35-8:15" },
-    { name: "2", time: "8:15-8:55" },
-    { name: "3", time: "8:55-9:35" },
-    { name: "4", time: "9:35-10:10" },
-    { name: "Break", time: "10:10-10:30" },
-    { name: "5", time: "10:30-11:05" },
-    { name: "6", time: "11:05-11:45" },
-    { name: "7", time: "11:45-12:25" },
-    { name: "8", time: "12:25-1:05" },
-    { name: "9", time: "1:05-1:30" },
-  ];
-  const periods5to10 = [
-    { name: "1", time: "7:35-8:15" },
-    { name: "2", time: "8:15-8:55" },
-    { name: "3", time: "8:55-9:35" },
-    { name: "4", time: "9:35-10:10" },
-    { name: "5", time: "10:10-10:45" },
-    { name: "Break", time: "10:45-11:05" },
-    { name: "6", time: "11:05-11:45" },
-    { name: "7", time: "11:45-12:25" },
-    { name: "8", time: "12:25-1:05" },
-    { name: "9", time: "1:05-1:30" },
-  ];
-  const periods = classSplit[0] < 5 ? periods1to4 : periods5to10;
 
-  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
-  if (classSplit[0] > 5) {
-    days.push("Saturday");
-  }
+  const days = [
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+  ];
 
   // Get current class timetable data or teacher's schedule
   const timetableData = teacherMode
