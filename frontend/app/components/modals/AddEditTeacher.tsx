@@ -409,7 +409,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 <div className="flex w-full">
                   <select
                     className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={tier}
+                    value={mode?.teacher?.tier}
                     onChange={(e) => {
                       // setFormData((prev) => ({
                       //   ...formData,
