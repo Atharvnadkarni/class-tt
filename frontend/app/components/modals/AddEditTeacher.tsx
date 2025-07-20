@@ -123,6 +123,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
         subjects: subs2SubGroup(subs),
         username,
         ...(password != "-------" && { password }),
+        tier,
       },
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
