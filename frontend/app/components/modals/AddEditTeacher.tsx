@@ -162,6 +162,11 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
 
     setSubs(subs ?? []);
   }, [mode?.mode]);
+  useEffect(() => {
+    if (mode?.mode == "edit") {
+      setTier(mode?.teacher?.tier)
+    }
+  }, [])
   if (mode && mode.mode) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -274,7 +279,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 <div className="flex w-full">
                   <select
                     className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={mode?.teacher?.tier}
+                    value={tier}
                     onChange={(e) => {
                       // setFormData((prev) => ({
                       //   ...formData,
