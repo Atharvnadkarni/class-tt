@@ -34,7 +34,7 @@ module.exports = {
     "Political Science",
     "Contract II",
     "History",
-    "Crime Law",
+    "Law of Crimes",
     "Environmental Law",
     "Family Law",
     "Company Law",
