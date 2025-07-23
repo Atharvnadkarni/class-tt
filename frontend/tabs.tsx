@@ -7,7 +7,7 @@ const Tabs = ({ activeTab }) => {
     <div className="max-w-full">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">
-          Admin - School Management
+          College Management
         </h2>
 
         {/* Tab Navigation */}
