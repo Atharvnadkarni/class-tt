@@ -55,7 +55,7 @@ const SubstitutionPage = () => {
     const fetchSubs = async () => {
       const subs = await (
         await axios.get(
-          "https://class-tt-backend.onrender.com/api/substitution",
+          "https://localhost:4000/api/substitution",
           {
             headers: { Authorization: `Bearer ${user.token}` },
           }
