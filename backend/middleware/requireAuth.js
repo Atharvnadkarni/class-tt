@@ -12,7 +12,10 @@ const requireAuth = async (req, res, next) => {
     req.user = await Teacher.findOne({_id}).select('_id')
     next()
   } catch (error) {
-    console.error(error);
+    if (error instanceof jwt.TokenExpiredError) {
+      return res.status(401).json({error: "Token expired"})
+    }
+    console.error(JSON.stringify(error));
     res.status(401).json({ error: "Request is not authorized" });
   }
 };
