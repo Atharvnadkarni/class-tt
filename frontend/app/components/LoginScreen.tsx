@@ -11,7 +11,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogin } from "../hooks/useLogin";
 
-export default function LoginScreen() {
+export default function LoginScreen({sessionExpired}) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { logIn, isLoading, error } = useLogin();
@@ -25,9 +25,14 @@ export default function LoginScreen() {
 
   return user ? (
     router.push(`/${localStorage.getItem("currentTab") ?? "timetable"}` || "/timetable")
-  ) : (
+) : (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <TimetableHeader loggedIn={false} />
+      {sessionExpired && (
+        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
+          <span className="font-bold">Session expired:</span> Please log in again.
+        </div>
+      )}
       {/* Login Form */}
       <div className="flex-1 flex flex-col items-center justify-center p-4">
         <div className="bg-[#F0AF917F] rounded-lg shadow-lg p-8 w-full max-w-md">
