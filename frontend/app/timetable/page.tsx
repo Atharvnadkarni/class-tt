@@ -178,7 +178,6 @@ function _TimetablePage() {
         {}
         <CurrentPeriodBanner classTimetables={classTimetables} />
         <WeeklyTimetable
-          isReadOnly={false}
           selectedClass={params.get("class") || "1A"}
           classTimetables={classTimetables}
           setClassTimetables={setClassTimetables}
