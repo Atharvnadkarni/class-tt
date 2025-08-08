@@ -78,15 +78,22 @@ function _TimetablePage() {
     }
     const lastClass = localStorage.getItem("currentClass");
     history.pushState(null, "", "?class=" + lastClass);
-    const savedTimetables = localStorage.getItem("classTimetables");
-    if (savedTimetables) {
-      setClassTimetables(JSON.parse(savedTimetables));
-    }
+    (async () => {
+        const savedTimetables = await axios.get(
+          "http://localhost:4000/api/timetable",
+        )
+      if (savedTimetables) {
+        setClassTimetables(JSON.parse(savedTimetables.data));
+      }
+    })();
   }, []);
   useEffect(() => {
     (async () => {
       if (JSON.stringify(classTimetables) != "{}") {
-        await axios.patch("http://localhost:4000/api/timetable", classTimetables)
+        await axios.patch(
+          "http://localhost:4000/api/timetable",
+          classTimetables
+        );
       }
     })();
   }, [classTimetables]);
