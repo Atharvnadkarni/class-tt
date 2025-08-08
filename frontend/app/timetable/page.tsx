@@ -84,9 +84,11 @@ function _TimetablePage() {
     }
   }, []);
   useEffect(() => {
-    if (JSON.stringify(classTimetables) != "{}") {
-      localStorage.setItem("classTimetables", JSON.stringify(classTimetables));
-    }
+    (async () => {
+      if (JSON.stringify(classTimetables) != "{}") {
+        await axios.patch("http://localhost:4000/api/timetable", classTimetables)
+      }
+    })();
   }, [classTimetables]);
 
   const handleClassChange = (newClass: string) => {
