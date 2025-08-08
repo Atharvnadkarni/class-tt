@@ -34,7 +34,7 @@ export default function WeeklyTimetable(props) {
 }
 
 function _WeeklyTimetable({
-  isReadOnly = false,
+  isReadOnly = true,
   selectedClass = "1A",
   classTimetables = {},
   setClassTimetables = () => {},
@@ -108,7 +108,7 @@ function _WeeklyTimetable({
       const classTimetable = classTimetables[className];
       Object.keys(classTimetable).forEach((periodKey) => {
         const entry = classTimetable[periodKey];
-        console.log(entry[0].teacher)
+        console.log(entry.class, teacherName)
         if (entry.class == teacherName) {
           teacherSchedule[periodKey] = {
             subject: entry.subject,
