@@ -38,8 +38,12 @@ function _WeeklyTimetable({
   selectedClass = "1A",
   classTimetables = {},
   setClassTimetables = () => {},
-  teacherMode = false,
+  teacherMode = true,
 }: WeeklyTimetableProps) {
+  // Teacher mode is defaulted to TRUE now
+  // Since now, tr mode will be decided per auth status, which can cause delays
+  // If the default value was false, a non-admin would have admin powers for (maybe a few seconds), which is disturbing
+  // But if the default value was true, an admin would have non-admin powers for seconds, which is ok :)
   const periods = [
     { name: "1", time: "8:30-9:20" },
     { name: "2", time: "9:20-10:10" },
@@ -100,14 +104,15 @@ function _WeeklyTimetable({
 
   function getTeacherSchedule() {
     const teacherSchedule: TimetableData = {};
-    const teacherName = "Michelle"; // Current logged-in teacher
+    const teacherName = "Shrni"; // Current logged-in teacher
 
     // Go through all classes and find periods where this teacher is assigned
     Object.keys(classTimetables).forEach((className) => {
       const classTimetable = classTimetables[className];
       Object.keys(classTimetable).forEach((periodKey) => {
         const entry = classTimetable[periodKey];
-        if (entry.class === teacherName) {
+        console.log(entry[0].teacher)
+        if (entry.class == teacherName) {
           teacherSchedule[periodKey] = {
             subject: entry.subject,
             class: className, // Show the class name instead of teacher name
