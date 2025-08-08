@@ -17,7 +17,7 @@ const saveTimetable = async (req, res) => {
     await redisClient.set('timetable', JSON.stringify(body))
     res
       .status(200)
-      .json({ message: "Timetable saved successfully", timetable: body });
+      .json({ message: "Timetable saved successfully", timetable: JSON.stringify(body) });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
