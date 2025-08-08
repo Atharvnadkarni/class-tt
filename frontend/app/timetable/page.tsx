@@ -83,7 +83,7 @@ function _TimetablePage() {
           "http://localhost:4000/api/timetable",
         )
       if (savedTimetables) {
-        setClassTimetables(JSON.parse(savedTimetables.data));
+        setClassTimetables(JSON.parse(savedTimetables.data.timetable));
       }
     })();
   }, []);
