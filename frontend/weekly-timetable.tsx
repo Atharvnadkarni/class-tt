@@ -1,11 +1,12 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import { X, Save, Plus, Egg, EggFried, CircleAlert } from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { subjectList, subjects, subjectToDisplayName } from "./subjects";
 import { useSelector } from "react-redux";
+import { Tier } from "./types";
 
 interface TimetableEntry {
   subject: string[];
@@ -39,6 +40,13 @@ function _WeeklyTimetable({
   setClassTimetables = () => {},
   teacherMode = true,
 }: WeeklyTimetableProps) {
+  const teacherTier = useRef(Tier.TEACHER);
+  useEffect(() => {
+    const { tier } = JSON.parse(
+      localStorage.getItem("user") ?? JSON.stringify({ tier: Tier.TEACHER })
+    );
+    teacherTier.current = tier;
+  }, [localStorage]);
   let isReadOnly = teacherMode;
   const periods = [
     { name: "1", time: "8:30-9:20" },
@@ -107,8 +115,11 @@ function _WeeklyTimetable({
       const classTimetable = classTimetables[className];
       Object.keys(classTimetable).forEach((periodKey, index) => {
         const entry = classTimetable[periodKey];
-        console.log(entry, index)
-        if (entry?.subject[0]?.teacher == teacherName || entry?.subject[1]?.teacher == teacherName) {
+        console.log(entry, index);
+        if (
+          entry?.subject[0]?.teacher == teacherName ||
+          entry?.subject[1]?.teacher == teacherName
+        ) {
           teacherSchedule[periodKey] = {
             subject: entry.subject,
             class: className, // Show the class name instead of teacher name
@@ -257,11 +268,10 @@ function _WeeklyTimetable({
           </div>
 
           <div className="text-gray-500">
-            {data.class || data.subject
-              .map(
-                (batch) => batch.teacher.split(' ')[0]
-              )
-              .join(data.batchwise ? "/" : "")}
+            {data.class ||
+              data.subject
+                .map((batch) => batch.teacher.split(" ")[0])
+                .join(data.batchwise ? "/" : "")}
           </div>
         </div>
       );
