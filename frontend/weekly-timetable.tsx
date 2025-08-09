@@ -34,13 +34,12 @@ export default function WeeklyTimetable(props) {
 }
 
 function _WeeklyTimetable({
-  isReadOnly = true,
   selectedClass = "1A",
   classTimetables = {},
   setClassTimetables = () => {},
   teacherMode = true,
 }: WeeklyTimetableProps) {
-
+  let isReadOnly = teacherMode;
   const periods = [
     { name: "1", time: "8:30-9:20" },
     { name: "2", time: "9:20-10:10" },
