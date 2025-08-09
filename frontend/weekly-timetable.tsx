@@ -101,15 +101,15 @@ function _WeeklyTimetable({
 
   function getTeacherSchedule() {
     const teacherSchedule: TimetableData = {};
-    const teacherName = "Shrni"; // Current logged-in teacher
+    const teacherName = "Shrni Faldessai"; // Current logged-in teacher
 
     // Go through all classes and find periods where this teacher is assigned
     Object.keys(classTimetables).forEach((className) => {
       const classTimetable = classTimetables[className];
-      Object.keys(classTimetable).forEach((periodKey) => {
+      Object.keys(classTimetable).forEach((periodKey, index) => {
         const entry = classTimetable[periodKey];
-        console.log(entry.class, teacherName)
-        if (entry.class == teacherName) {
+        console.log(entry, index)
+        if (entry?.subject[0]?.teacher == teacherName || entry?.subject[1]?.teacher == teacherName) {
           teacherSchedule[periodKey] = {
             subject: entry.subject,
             class: className, // Show the class name instead of teacher name
@@ -122,46 +122,6 @@ function _WeeklyTimetable({
   }
 
   const params = useSearchParams();
-  const subjectToTeacher = {
-    Math: "Class Tr.",
-    "Mental Math": "Class Tr.",
-    Eng: "Class Tr.",
-    CE: "Class Tr.",
-    Hindi: "Vibha",
-    CH: "Vibha",
-    // "K/F": "Reshma/Shwetambari",
-    // "CK/CF": "Reshma/Shwetambari",
-    Konkani: "Sharmila",
-    CK: "Sharmila",
-    // French: "Shwetambari",
-    // CF: "Shwetambari",
-    // Science: "Sushma",
-    // "Science Lab": "Sushma/Clara/Poonam/Damodar",
-    EVS: "Class Tr.",
-    // History: "Rona",
-    // Geography: "Rona",
-    // "Political Science": "Rona",
-    PE: "Balika",
-    Games: "Balika",
-    Yoga: "Ashutosh",
-    MA: "Bharati",
-    Art: "Nidhi",
-    Music: "Esther",
-    Comp: "Manju",
-    JSL: "Class Tr.",
-    Library: "Archana P/Nutan",
-    SD: "Kimberly/Melifa",
-    Dance: "Mamta",
-    STEAM: "Faimaan",
-    WE: "Class Tr.",
-    GK: "Sushma",
-    LS: "Sherly",
-    "H&W": "Sherly",
-    EP: null,
-    JSL: "Class Tr.",
-    Play: null,
-    BG: null,
-  };
   // const subjectToTeacher = {
   //   Math: "Sushma",
   //   "Mental Math": "Sushma",
@@ -298,12 +258,11 @@ function _WeeklyTimetable({
           </div>
 
           <div className="text-gray-500">
-            {!data.subject[1].subject
-              ? data.subject
-                  .map((sub) => sub.teacher.split(" ")[0])
-                  .join("/")
-                  .slice(0, -1)
-              : data.subject.map((sub) => sub.teacher.split(" ")[0]).join("/")}
+            {data.class || data.subject
+              .map(
+                (batch) => batch.teacher.split(' ')[0]
+              )
+              .join(data.batchwise ? "/" : "")}
           </div>
         </div>
       );
@@ -428,7 +387,7 @@ function _WeeklyTimetable({
                         period.name === "Break"
                           ? "bg-gray-200 border-gray-300 border-b cursor-not-allowed"
                           : isReadOnly
-                          ? "cursor-default"
+                          ? "border-r cursor-default"
                           : "hover:bg-blue-50 cursor-pointer border-gray-200 border-r"
                       }`}
                       onClick={() => handleCellClick(day, period)}
