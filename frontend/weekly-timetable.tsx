@@ -287,8 +287,7 @@ function _WeeklyTimetable({
           </div>
 
           <div className="text-gray-500">
-            {data.class ||
-              data.subject
+            {data.subject
                 .map((batch) => batch.teacher.split(" ")[0])
                 .join(data.batchwise ? "/" : "")}
           </div>
