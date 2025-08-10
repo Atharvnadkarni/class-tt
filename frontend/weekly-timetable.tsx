@@ -38,16 +38,35 @@ function _WeeklyTimetable({
   selectedClass = "1A",
   classTimetables = {},
   setClassTimetables = () => {},
-  teacherMode = true,
 }: WeeklyTimetableProps) {
   const teacherTier = useRef(Tier.TEACHER);
+  const [isReadOnly, setIsReadOnly] = useState(false);
+  const [teacherMode, setTeacherMode] = useState(false);
   useEffect(() => {
     const { tier } = JSON.parse(
       localStorage.getItem("user") ?? JSON.stringify({ tier: Tier.TEACHER })
     );
     teacherTier.current = tier;
   }, [localStorage]);
-  let isReadOnly = teacherMode;
+  useEffect(() => {
+    switch (teacherTier.current) {
+      case Tier.ADMIN:
+        setIsReadOnly(true);
+        setTeacherMode(false);
+        break;
+      case Tier.COORDINATOR:
+        setIsReadOnly(false);
+        setTeacherMode(false);
+        break;
+      case Tier.TEACHER:
+        setIsReadOnly(true);
+        setTeacherMode(true);
+        break;
+      default:
+        setIsReadOnly(true);
+        setTeacherMode(true);
+    }
+  }, [teacherTier]);
   const periods = [
     { name: "1", time: "8:30-9:20" },
     { name: "2", time: "9:20-10:10" },
