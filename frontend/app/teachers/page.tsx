@@ -1,7 +1,7 @@
 "use client";
 
 import TimetableHeader from "../components/Header";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Tabs from "@/tabs";
 import axios from "axios";
 import { Plus } from "lucide-react";
@@ -9,6 +9,7 @@ import AddEditTeacher from "../components/modals/AddEditTeacher";
 import TeacherCard from "../components/TeacherCard";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { Tier } from "@/types";
 
 interface Teacher {
   name: String;
@@ -30,6 +31,14 @@ export default function TeacherPage() {
   }>({ mode: null, teacher: null });
 
   const [subs, setSubs] = useState([]);
+  const teacherTier = useRef(Tier.TEACHER);
+
+  useEffect(() => {
+    const { tier } = JSON.parse(
+      localStorage.getItem("user") ?? JSON.stringify({ tier: Tier.TEACHER })
+    );
+    teacherTier.current = tier;
+  }, [localStorage]);
 
   const [allTeachers, setAllTeachers] = useState([]);
   const user = useSelector((state) => state.user);
@@ -82,13 +91,13 @@ export default function TeacherPage() {
               <h3 className="text-xl font-semibold text-gray-800">
                 Available Teachers
               </h3>
-              <button
+              {teacherTier.current == Tier.ADMIN && <button
                 className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                 onClick={() => setMode({ mode: "add", teacher: null })}
               >
                 <Plus className="h-4 w-4" />
                 Add Teacher
-              </button>
+              </button>}
             </div>
 
             {/* Modal */}
@@ -112,7 +121,9 @@ export default function TeacherPage() {
               {/* {} */}
               {JSON.stringify(allTeachers) != "[]" &&
                 allTeachers.map((teacher) => (
-                  <TeacherCard {...{ teacher, setMode, setAllTeachers }} />
+                  <TeacherCard
+                    {...{ teacher, setMode, setAllTeachers, tier: teacherTier.current }}
+                  />
                 ))}
             </div>
           </div>

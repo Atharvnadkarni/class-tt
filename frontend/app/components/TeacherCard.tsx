@@ -4,8 +4,9 @@ import { Pencil, Trash2, User } from "lucide-react";
 import { useSelector } from "react-redux";
 import DeleteModal from "./modals/DeleteModal";
 import { useState } from "react";
+import { Tier } from "@/types";
 
-const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
+const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
   const user = useSelector((state) => state.user);
   const [deleteModalId, setDeleteModalId] = useState(null);
   const deleteTeacher = async (_id: string) => {
@@ -25,7 +26,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
       key={teacher.name}
       className="flex items-center justify-between p-4 border border-gray-200 rounded-lg hover:bg-gray-50 transition-colors relative"
     >
-      <div className="flex absolute top-2 right-2 gap-2">
+      {tier == Tier.ADMIN && <div className="flex absolute top-2 right-2 gap-2">
         <Pencil
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
@@ -43,7 +44,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers }) => {
             setDeleteModalId(teacher._id);
           }}
         />
-      </div>
+      </div>}
       <div className="flex items-center gap-4">
         <div className="p-2 bg-primary text-black rounded-lg">
           <User className="h-5 w-5 text-secondary" />
