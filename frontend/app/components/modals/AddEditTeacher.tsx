@@ -23,6 +23,9 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [username, setUsername] = useState(
     mode && mode.mode == "edit" ? mode.teacher.username : ""
   );
+  const [displayName, setDisplayName] = useState(
+    mode && mode.mode == "edit" ? mode.teacher.displayName : ""
+  );
   const [password, setPassword] = useState(
     mode && mode.mode == "edit" ? "-------" : ""
   );
@@ -142,11 +145,13 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   useEffect(() => {
     if (mode && mode.mode == "edit") {
       setTeacherName(mode.teacher.name);
+      setDisplayName(mode.teacher.displayName);
       setUsername(mode.teacher.username);
       setPassword("-------");
       console.log(mode.teacher.subjects);
     } else {
       setTeacherName("");
+      setDisplayName("");
       setUsername("");
       setPassword("");
     }
@@ -164,9 +169,9 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   }, [mode?.mode]);
   useEffect(() => {
     if (mode?.mode == "edit") {
-      setTier(mode?.teacher?.tier)
+      setTier(mode?.teacher?.tier);
     }
-  }, [])
+  }, []);
   if (mode && mode.mode) {
     return (
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -200,28 +205,26 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 value={teacherName || ""}
                 onChange={(e) => {
                   setTeacherName(e.target.value);
+                  let trimmedName = e.target.value
+                    .replaceAll(/(?:... Mr|Mrs|Ms|Dr)\.?/gi, "") // remove titles
+                    .trim();
+                  let tempDisplayName = trimmedName.split(" ")[0];
+                  let trimmedUserName = trimmedName.split(" ")[0].toLowerCase();
                   if (mode?.mode == "add") {
                     if (
                       allTeachers
                         .map((tr) => tr.username)
-                        .includes(e.target.value.toLowerCase().split(" ")[0]) &&
-                      e.target.value.toLowerCase().split(" ")[1][0]
+                        .includes(trimmedUserName) &&
+                      trimmedName.split(" ")[1][0]
                     ) {
-                      setUsername(
-                        e.target.value.toLowerCase().split(" ")[0] +
-                          e.target.value.toLowerCase().split(" ")[1][0]
-                      );
-                    } else {
-                      setUsername(e.target.value.toLowerCase().split(" ")[0]);
+                      trimmedUserName += trimmedName.split(" ")[1][0];
+                      trimmedUserName = trimmedUserName.toLowerCase();
+                      tempDisplayName += " " + trimmedName.split(" ")[1][0];
                     }
 
-                    setPassword(
-                      username +
-                        // .split("")
-                        // .map((char) => char.charCodeAt(0) - 96)
-                        // .join("")
-                        "123"
-                    );
+                    setDisplayName(tempDisplayName);
+                    setUsername(trimmedUserName);
+                    setPassword(trimmedUserName + 123);
                   }
                 }}
                 placeholder="Enter teacher name"
@@ -241,6 +244,24 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 value={username || ""}
                 onChange={(e) => {
                   setUsername(e.target.value);
+                }}
+                placeholder="Enter teacher name"
+                className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+            <div>
+              <label
+                htmlFor="displayName"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Display Name
+              </label>
+              <input
+                type="text"
+                id="displayName"
+                value={displayName || ""}
+                onChange={(e) => {
+                  setDisplayName(e.target.value);
                 }}
                 placeholder="Enter teacher name"
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
