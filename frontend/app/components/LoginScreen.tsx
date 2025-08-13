@@ -10,6 +10,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogin } from "../hooks/useLogin";
+import GrkclBg from "../../images/Grkcl.jpg";
 
 export default function LoginScreen({ sessionExpired }) {
   const [username, setUsername] = useState("");
@@ -22,13 +23,19 @@ export default function LoginScreen({ sessionExpired }) {
     e.preventDefault();
     logIn(username, password);
   };
+  let backgroundOpacity = 0.3
 
   return user ? (
     router.push(
       `/${localStorage.getItem("currentTab") ?? "timetable"}` || "/timetable"
     )
   ) : (
-    <div className="min-h-screen bg-gray-50 flex flex-col">
+    <div
+      className="min-h-screen flex flex-col bg-cover"
+      style={{
+        backgroundImage: `linear-gradient(rgba(255 255 255 / ${1-backgroundOpacity}), rgb(255 255 255 / ${1-backgroundOpacity})),url(${GrkclBg.src})`,
+      }}
+    >
       <TimetableHeader loggedIn={false} />
       {sessionExpired && (
         <div
