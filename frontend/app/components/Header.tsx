@@ -71,16 +71,16 @@ export default function TimetableHeader() {
             {!user ? (
               <Link href="/login">
                 <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-secondary">
-                  Schedulr{" "}
+                  <span className="text-secondary">Schedulr</span>{" "}
                   <span className="text-md sm:text-lg font-bold tracking-tight text-white">
                     G. R. Kare College of Law
                   </span>
                 </h1>
               </Link>
             ) : (
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight ">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-secondary">
                 Schedulr{" "}
-                <span className="text-md sm:text-lg font-bold tracking-tight ">
+                <span className="text-md sm:text-lg font-bold tracking-tight text-white">
                   G. R. Kare College of Law
                 </span>
               </h1>
