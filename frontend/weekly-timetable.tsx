@@ -266,7 +266,7 @@ function _WeeklyTimetable({
   ) => {
     if (period.name === "Break") {
       return (
-        <span className="text-secondary text-xs font-medium text-black">
+        <span className="text-primary text-xs font-medium text-black">
           Break Time
         </span>
       );
