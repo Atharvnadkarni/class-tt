@@ -326,6 +326,8 @@ function _WeeklyTimetable({
     setIsModalOpen(false);
     setSelectedCell(null);
     setFormData({ subject: null, class: null });
+    setIsClash({ class: null, subject: null });
+    setTeacherList([]);
   };
 
   const handleCancel = () => {
