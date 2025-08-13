@@ -37,7 +37,7 @@ const DeleteModal = ({ setIsModalOpen, deleteAction }) => {
               deleteAction();
               setIsModalOpen(null);
             }}
-            className="px-4 py-2 text-sm font-medium  bg-primary text-black hover:bg-primary text-black rounded-lg transition-colors flex items-center gap-2"
+            className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-primary text-black rounded-lg transition-colors flex items-center gap-2"
           >
             <Save className="h-4 w-4" />
             Save

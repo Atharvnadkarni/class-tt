@@ -513,7 +513,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   ? () => handleEditSave(mode.teacher._id)
                   : null
               }
-              className="px-4 py-2 text-sm font-medium  bg-primary text-black hover:bg-primary text-black rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-primary text-black rounded-lg transition-colors flex items-center gap-2"
             >
               OK
             </button>
