@@ -94,7 +94,7 @@ function _WeeklyTimetable({
     day: string;
     period: { name: string; time: string };
   } | null>(null);
-  const [teacherList, setTeacherList] = useState([]);
+  const [teachers, setTeachers] = useState([]);
   const [formData, setFormData] = useState({
     subject: [
       {
@@ -251,7 +251,7 @@ function _WeeklyTimetable({
         },
       ],
     });
-    setTeacherList(existingData?.class)
+    setTeachers(existingData?.class)
     setIsModalOpen(true);
   };
 
@@ -306,7 +306,7 @@ function _WeeklyTimetable({
           ...prev[selectedClass],
           [cellKey]: {
             subject: formData.subject,
-            class: teacherList,
+            class: teachers,
             batchwise: formData.batchwise,
           },
         },
@@ -328,7 +328,7 @@ function _WeeklyTimetable({
     setSelectedCell(null);
     setFormData({ subject: null, class: null });
     setIsClash({ class: null, subject: null });
-    setTeacherList([]);
+    setTeachers([]);
   };
 
   const handleCancel = () => {
@@ -336,10 +336,10 @@ function _WeeklyTimetable({
     setSelectedCell(null);
     setFormData({ subject: null, class: null });
     setIsClash({ class: null, subject: null });
-    setTeacherList([]);
+    setTeachers([]);
   };
 
-  const [teachers, setTeachers] = useState([]);
+  const [teacherList, setTeacherList] = useState([]);
   const user = useSelector((state) => state.user);
   useEffect(() => {
     const fetchTeachers = async () => {
@@ -348,7 +348,7 @@ function _WeeklyTimetable({
           headers: { Authorization: `Bearer ${user.token}` },
         })
       ).data.teacher;
-      setTeachers(teachers);
+      setTeacherList(teachers);
     };
     fetchTeachers();
   }, []);
@@ -603,7 +603,7 @@ function _WeeklyTimetable({
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select teacher</option>
-                        {teachers.map((teacher) => (
+                        {teacherList.map((teacher) => (
                           <option value={teacher.displayName}>
                             {teacher.name}
                           </option>
@@ -612,7 +612,7 @@ function _WeeklyTimetable({
                       <button
                         onClick={(e) => {
                           const lastTeacher = formData.subject[0].teacher;
-                          setTeacherList((prevtrlist) => {
+                          setTeachers((prevtrlist) => {
                             const newTrList = [...prevtrlist, lastTeacher];
                             return newTrList.filter((item, index) => {
                               return newTrList.indexOf(item) == index;
@@ -631,7 +631,7 @@ function _WeeklyTimetable({
                         <Plus className="" />
                       </button>
                     </div>
-                    <div>{teacherList.join(", ").replace(/,\s+$/g)}</div>
+                    <div>{teachers.join(", ").replace(/,\s+$/g)}</div>
                   </div>
                 </>
               )}
