@@ -281,9 +281,7 @@ function _WeeklyTimetable({
           </div>
 
           <div className="text-gray-500">
-            {data.subject
-              .map((batch) => batch.teacher)
-              .join(data.batchwise ? "/" : "")}
+            {data.class.join("/").replaceAll(/\/$/g, "")}
           </div>
         </div>
       );
@@ -307,7 +305,7 @@ function _WeeklyTimetable({
           ...prev[selectedClass],
           [cellKey]: {
             subject: formData.subject,
-            class: formData.teacher,
+            class: teacherList,
             batchwise: formData.batchwise,
           },
         },
