@@ -91,22 +91,32 @@ export default function TeacherPage() {
               <h3 className="text-xl font-semibold text-gray-800">
                 Available Teachers
               </h3>
-              {teacherTier.current == Tier.ADMIN && <button
-                className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                onClick={() => setMode({ mode: "add", teacher: null })}
-              >
-                <Plus className="h-4 w-4" />
-                Add Teacher
-              </button>}
+              {teacherTier.current == Tier.ADMIN && (
+                <button
+                  className="px-4 py-2 bg-secondary text-black text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  onClick={() => setMode({ mode: "add", teacher: null })}
+                >
+                  <Plus className="h-4 w-4" />
+                  Add Teacher
+                </button>
+              )}
             </div>
 
             {/* Modal */}
             <AddEditTeacher
               {...{ mode, setMode, allTeachers, setAllTeachers, subs, setSubs }}
             />
-            {isLoading && (
+            {/* {isLoading && (
               <div className="flex justify-center items-center py-10">
                 <span className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-primary mr-3"></span>
+                <span className="text-gray-600 text-sm">
+                  Loading teachers...
+                </span>
+              </div>
+            )} */}
+            {isLoading && (
+              <div className="flex justify-center items-center py-10 gap-2">
+                <div className="h-8 w-8 border-2 border-secondary border-t-transparent rounded-full animate-spin"></div>
                 <span className="text-gray-600 text-sm">
                   Loading teachers...
                 </span>
@@ -122,7 +132,12 @@ export default function TeacherPage() {
               {JSON.stringify(allTeachers) != "[]" &&
                 allTeachers.map((teacher) => (
                   <TeacherCard
-                    {...{ teacher, setMode, setAllTeachers, tier: teacherTier.current }}
+                    {...{
+                      teacher,
+                      setMode,
+                      setAllTeachers,
+                      tier: teacherTier.current,
+                    }}
                   />
                 ))}
             </div>
