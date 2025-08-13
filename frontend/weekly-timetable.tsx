@@ -610,10 +610,12 @@ function _WeeklyTimetable({
                       <button
                         onClick={(e) => {
                           const lastTeacher = formData.subject[0].teacher;
-                          setTeacherList((prevtrlist) => [
-                            ...prevtrlist,
-                            lastTeacher,
-                          ]);
+                          setTeacherList((prevtrlist) => {
+                            const newTrList = [...prevtrlist, lastTeacher];
+                            return newTrList.filter((item, index) => {
+                              return newTrList.indexOf(item) != index;
+                            });
+                          });
                           setFormData((oldFormdata) => ({
                             ...oldFormdata,
                             subject: [
@@ -627,9 +629,7 @@ function _WeeklyTimetable({
                         <Plus className="" />
                       </button>
                     </div>
-                    <div>
-                      {teacherList.join(", ").replace(/,\s+$/g)}
-                    </div>
+                    <div>{teacherList.join(", ").replace(/,\s+$/g)}</div>
                   </div>
                 </>
               )}
