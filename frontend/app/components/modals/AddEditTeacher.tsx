@@ -12,7 +12,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     div: "",
     classNo: null,
   });
-  const [tier, setTier] = useState<string>(Tier.ADMIN);
+  const [tier, setTier] = useState<string>(Tier.TEACHER);
   console.log(
     mode && mode.mode == "edit",
     mode && mode.mode == "edit" ? mode.teacher.name : ""
