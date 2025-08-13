@@ -11,7 +11,7 @@ import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogin } from "../hooks/useLogin";
 
-export default function LoginScreen({sessionExpired}) {
+export default function LoginScreen({ sessionExpired }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { logIn, isLoading, error } = useLogin();
@@ -24,21 +24,27 @@ export default function LoginScreen({sessionExpired}) {
   };
 
   return user ? (
-    router.push(`/${localStorage.getItem("currentTab") ?? "timetable"}` || "/timetable")
-) : (
+    router.push(
+      `/${localStorage.getItem("currentTab") ?? "timetable"}` || "/timetable"
+    )
+  ) : (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <TimetableHeader loggedIn={false} />
       {sessionExpired && (
-        <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4" role="alert">
-          <span className="font-bold">Session expired:</span> Please log in again.
+        <div
+          className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4"
+          role="alert"
+        >
+          <span className="font-bold">Session expired:</span> Please log in
+          again.
         </div>
       )}
       {/* Login Form */}
       <div className="flex-1 flex flex-col items-center justify-center p-4">
-        <div className="bg-[#F0AF917F] rounded-lg shadow-lg p-8 w-full max-w-md">
+        <div className="bg-primary rounded-lg shadow-lg p-8 w-full max-w-md">
           <div className="text-center mb-8">
-            <h2 className="text-2xl font-bold text-gray-800">Teacher Login</h2>
-            <p className="text-gray-600 mt-2">
+            <h2 className="text-2xl font-bold text-secondary">Teacher Login</h2>
+            <p className="text-gray-200 mt-2">
               Enter your username to access your timetable
             </p>
           </div>
@@ -47,7 +53,7 @@ export default function LoginScreen({sessionExpired}) {
             <div>
               <label
                 htmlFor="username"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-300 mb-1"
               >
                 Username
               </label>
@@ -64,7 +70,7 @@ export default function LoginScreen({sessionExpired}) {
             <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium text-gray-700 mb-1"
+                className="block text-sm font-medium text-gray-300 mb-1"
               >
                 Password
               </label>
@@ -111,7 +117,7 @@ export default function LoginScreen({sessionExpired}) {
         <div className="mt-8">
           <div>
             <button
-              className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+              className="px-4 py-2 bg-primary text-white hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
               onClick={() => router.push("/about-the-dev")}
             >
               <CircleUser className="w-4 h-4" />
