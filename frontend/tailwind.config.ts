@@ -13,6 +13,9 @@ const config: Config = {
       colors: {
         primary: { main: "#0b0047" },
         secondary: { main: "#ff6f00ff" },
+        highlight: { main: "#ffca28" },
+        contrast: { main: "#2196f3" },
+        neutral: { main: "#e0e0e0" },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
