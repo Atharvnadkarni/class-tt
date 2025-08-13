@@ -613,7 +613,7 @@ function _WeeklyTimetable({
                           setTeacherList((prevtrlist) => {
                             const newTrList = [...prevtrlist, lastTeacher];
                             return newTrList.filter((item, index) => {
-                              return newTrList.indexOf(item) != index;
+                              return newTrList.indexOf(item) == index;
                             });
                           });
                           setFormData((oldFormdata) => ({
