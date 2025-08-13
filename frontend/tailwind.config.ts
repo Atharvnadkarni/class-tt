@@ -11,7 +11,7 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: { main: "#F0AF91" },
+        primary: { main: "#0b0047" },
         secondary: { main: "#3D2614" },
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
