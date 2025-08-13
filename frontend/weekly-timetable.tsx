@@ -76,13 +76,7 @@ function _WeeklyTimetable({
     { name: "5", time: "12:10-1:00" },
   ];
 
-  const classes = [
-    "1st Year",
-    "2nd Year",
-    "3rd Year",
-    "4th Year",
-    "5th Year"
-  ];
+  const classes = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"];
 
   // Get current class timetable data or teacher's schedule
   const timetableData = teacherMode
@@ -100,6 +94,7 @@ function _WeeklyTimetable({
     day: string;
     period: { name: string; time: string };
   } | null>(null);
+  const [teacherList, setTeacherList] = useState([]);
   const [formData, setFormData] = useState({
     subject: [
       {
@@ -287,8 +282,8 @@ function _WeeklyTimetable({
 
           <div className="text-gray-500">
             {data.subject
-                .map((batch) => batch.teacher)
-                .join(data.batchwise ? "/" : "")}
+              .map((batch) => batch.teacher)
+              .join(data.batchwise ? "/" : "")}
           </div>
         </div>
       );
@@ -512,104 +507,133 @@ function _WeeklyTimetable({
                     >
                       Teacher
                     </label>
-                    <select
-                      id="teacher"
-                      value={
-                        formData.batchwise ? "" : formData.subject[0].teacher
-                      }
-                      onChange={(e) => {
-                        const classKey = `${selectedCell.day}-${selectedCell.period.name}`;
-                        let isBatch1Clash = false;
-                        let isBatch2Clash = false;
-                        let isClash = false;
+                    <div className="flex w-full">
+                      <select
+                        id="teacher"
+                        value={
+                          formData.batchwise ? "" : formData.subject[0].teacher
+                        }
+                        onChange={(e) => {
+                          const classKey = `${selectedCell.day}-${selectedCell.period.name}`;
+                          let isBatch1Clash = false;
+                          let isBatch2Clash = false;
+                          let isClash = false;
 
-                        for (const classe in classTimetables) {
-                          if (
-                            classTimetables[classe].hasOwnProperty(classKey)
-                          ) {
+                          for (const classe in classTimetables) {
                             if (
-                              classTimetables[classe][classKey].subject[0]
-                                .subject
+                              classTimetables[classe].hasOwnProperty(classKey)
                             ) {
-                              if (!e.target.value) {
-                                console.log(
-                                  e.target.value,
-                                  classTimetables[classe][classKey].subject[0]
-                                    .teacher,
-                                  classTimetables[classe][classKey].subject[1]
-                                    .teacher,
-                                  classe,
-                                  "is clash unset"
-                                );
-                                setIsClash({
-                                  class: null,
-                                  subject: null,
-                                });
-                              } else if (
-                                (classTimetables[classe][classKey].subject[0]
-                                  .teacher == e.target.value ||
-                                  classTimetables[classe][classKey].subject[1]
-                                    .teacher == e.target.value) &&
-                                classe != selectedClass
+                              if (
+                                classTimetables[classe][classKey].subject[0]
+                                  .subject
                               ) {
-                                console.log(
-                                  e.target.value,
-                                  classTimetables[classe][classKey].subject[0]
-                                    .teacher,
-                                  classTimetables[classe][classKey].subject[1]
-                                    .teacher,
-                                  classe,
+                                if (!e.target.value) {
+                                  console.log(
+                                    e.target.value,
+                                    classTimetables[classe][classKey].subject[0]
+                                      .teacher,
+                                    classTimetables[classe][classKey].subject[1]
+                                      .teacher,
+                                    classe,
+                                    "is clash unset"
+                                  );
+                                  setIsClash({
+                                    class: null,
+                                    subject: null,
+                                  });
+                                } else if (
                                   (classTimetables[classe][classKey].subject[0]
                                     .teacher == e.target.value ||
                                     classTimetables[classe][classKey].subject[1]
                                       .teacher == e.target.value) &&
-                                    classe != selectedClass,
-                                  "is clash set"
-                                );
-                                setIsClash({
-                                  class: classe,
-                                  subject: classTimetables[classe][classKey]
-                                    .subject[1].subject
-                                    ? classTimetables[classe][classKey].subject
-                                        .map((sub) => sub.subject)
-                                        .join("/")
-                                    : classTimetables[classe][classKey]
-                                        .subject[0].subject,
-                                });
-                              } else if (classe != selectedClass) {
-                                console.log(
-                                  e.target.value,
-                                  classTimetables[classe][classKey].subject[0]
-                                    .teacher,
-                                  classTimetables[classe][classKey].subject[1]
-                                    .teacher,
-                                  classe,
-                                  "is clash unset"
-                                );
-                                setIsClash({ class: null, subject: null });
+                                  classe != selectedClass
+                                ) {
+                                  console.log(
+                                    e.target.value,
+                                    classTimetables[classe][classKey].subject[0]
+                                      .teacher,
+                                    classTimetables[classe][classKey].subject[1]
+                                      .teacher,
+                                    classe,
+                                    (classTimetables[classe][classKey]
+                                      .subject[0].teacher == e.target.value ||
+                                      classTimetables[classe][classKey]
+                                        .subject[1].teacher ==
+                                        e.target.value) &&
+                                      classe != selectedClass,
+                                    "is clash set"
+                                  );
+                                  setIsClash({
+                                    class: classe,
+                                    subject: classTimetables[classe][classKey]
+                                      .subject[1].subject
+                                      ? classTimetables[classe][
+                                          classKey
+                                        ].subject
+                                          .map((sub) => sub.subject)
+                                          .join("/")
+                                      : classTimetables[classe][classKey]
+                                          .subject[0].subject,
+                                  });
+                                } else if (classe != selectedClass) {
+                                  console.log(
+                                    e.target.value,
+                                    classTimetables[classe][classKey].subject[0]
+                                      .teacher,
+                                    classTimetables[classe][classKey].subject[1]
+                                      .teacher,
+                                    classe,
+                                    "is clash unset"
+                                  );
+                                  setIsClash({ class: null, subject: null });
+                                }
                               }
                             }
                           }
-                        }
-                        setFormData((prev) => ({
-                          ...prev,
-                          subject: [
-                            { ...prev.subject[0], teacher: e.target.value },
-                            { subject: "", teacher: "" },
-                          ],
-                        }));
-                      }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Select teacher</option>
-                      {teachers.map((teacher) => (
-                        <option value={teacher.displayName}>{teacher.name}</option>
-                      ))}
-                    </select>
+                          setFormData((prev) => ({
+                            ...prev,
+                            subject: [
+                              { ...prev.subject[0], teacher: e.target.value },
+                              { subject: "", teacher: "" },
+                            ],
+                          }));
+                        }}
+                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      >
+                        <option value="">Select teacher</option>
+                        {teachers.map((teacher) => (
+                          <option value={teacher.displayName}>
+                            {teacher.name}
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        onClick={(e) => {
+                          const lastTeacher = formData.subject[0].teacher;
+                          setTeacherList((prevtrlist) => [
+                            ...prevtrlist,
+                            lastTeacher,
+                          ]);
+                          setFormData((oldFormdata) => ({
+                            ...oldFormdata,
+                            subject: [
+                              { ...oldFormdata.subject[0], teacher: "" },
+                              { subject: "", teacher: "" },
+                            ],
+                          }));
+                        }}
+                        className="px-2 h-[45px] ml-5 text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                      >
+                        <Plus className="" />
+                      </button>
+                    </div>
+                    <div>
+                      {teacherList.join(", ").replace(/,\s+$/g)}
+                    </div>
                   </div>
                 </>
               )}
-              {formData.batchwise && (
+              {/* {formData.batchwise && (
                 <>
                   <div>
                     <label
@@ -641,7 +665,7 @@ function _WeeklyTimetable({
                     </select>
                   </div>
 
-                  {/* Subject Input */}
+                  Subject Input
                   <div>
                     <label
                       htmlFor="teacher"
@@ -706,7 +730,7 @@ function _WeeklyTimetable({
                     </select>
                   </div>
 
-                  {/* Subject Input */}
+                  {/* Subject Input
                   <div>
                     <label
                       htmlFor="batch2tr"
@@ -735,7 +759,7 @@ function _WeeklyTimetable({
                     </select>
                   </div>
                 </>
-              )}
+              )} */}
               <div className="flex justify-end">
                 <div
                   className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
@@ -752,7 +776,9 @@ function _WeeklyTimetable({
                       }))
                     }
                   />
-                  <label htmlFor="batchwise" className="text-white">Batchwise Period</label>
+                  <label htmlFor="batchwise" className="text-white">
+                    Batchwise Period
+                  </label>
                 </div>
               </div>
             </div>
