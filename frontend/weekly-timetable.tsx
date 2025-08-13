@@ -288,7 +288,7 @@ function _WeeklyTimetable({
 
           <div className="text-gray-500">
             {data.subject
-                .map((batch) => batch.teacher.split(" ")[0])
+                .map((batch) => batch.teacher)
                 .join(data.batchwise ? "/" : "")}
           </div>
         </div>
@@ -604,7 +604,7 @@ function _WeeklyTimetable({
                     >
                       <option value="">Select teacher</option>
                       {teachers.map((teacher) => (
-                        <option value={teacher.name}>{teacher.name}</option>
+                        <option value={teacher.displayName}>{teacher.name}</option>
                       ))}
                     </select>
                   </div>
@@ -666,7 +666,7 @@ function _WeeklyTimetable({
                     >
                       <option value="">Select teacher</option>
                       {teachers.map((teacher) => (
-                        <option value={teacher.name}>{teacher.name}</option>
+                        <option value={teacher.displayName}>{teacher.name}</option>
                       ))}
                     </select>
                   </div>
@@ -731,7 +731,7 @@ function _WeeklyTimetable({
                     >
                       <option value="">Select teacher</option>
                       {teachers.map((teacher) => (
-                        <option value={teacher.name}>{teacher.name}</option>
+                        <option value={teacher.displayName}>{teacher.name}</option>
                       ))}
                     </select>
                   </div>
