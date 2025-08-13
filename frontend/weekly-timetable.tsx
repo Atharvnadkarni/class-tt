@@ -335,6 +335,7 @@ function _WeeklyTimetable({
     setSelectedCell(null);
     setFormData({ subject: null, class: null });
     setIsClash({ class: null, subject: null });
+    setTeacherList([]);
   };
 
   const [teachers, setTeachers] = useState([]);
