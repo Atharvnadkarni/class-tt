@@ -11,11 +11,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        primary: { main: "#0b0047" },
-        secondary: { main: "#ff6f00ff" },
-        highlight: { main: "#ffca28" },
-        contrast: { main: "#2196f3" },
-        neutral: { main: "#e0e0e0" },
+        primary: "#0b0047",
+        secondary: "#ff6f00ff",
+        highlight: "#ffca28",
+        contrast: "#2196f3",
+        neutral: "#e0e0e0",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
         card: {
