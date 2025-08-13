@@ -753,7 +753,7 @@ function _WeeklyTimetable({
                       }))
                     }
                   />
-                  <label htmlFor="batchwise">Batchwise Period</label>
+                  <label htmlFor="batchwise" className="text-white">Batchwise Period</label>
                 </div>
               </div>
             </div>
