@@ -76,13 +76,12 @@ function _WeeklyTimetable({
     { name: "5", time: "12:10-1:00" },
   ];
 
-  const days = [
-    "Monday",
-    "Tuesday",
-    "Wednesday",
-    "Thursday",
-    "Friday",
-    "Saturday",
+  const classes = [
+    "1st Year",
+    "2nd Year",
+    "3rd Year",
+    "4th Year",
+    "5th Year"
   ];
 
   // Get current class timetable data or teacher's schedule
@@ -396,7 +395,7 @@ function _WeeklyTimetable({
 
             {/* Table Body - Days as rows */}
             <tbody>
-              {days.map((day, dayIndex) => (
+              {classes.map((day, dayIndex) => (
                 <tr
                   key={day}
                   className="border-b border-gray-200 hover:bg-gray-50 transition-colors bg-white"
