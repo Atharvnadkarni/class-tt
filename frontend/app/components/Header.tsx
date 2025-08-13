@@ -60,27 +60,27 @@ export default function TimetableHeader() {
   const user = useSelector(state => state.user);
 
   return (
-    <header className="bg-[#F0AF91]  shadow-lg relative">
-      <div className="container mx-0 px-4 py-4">
+    <header className="bg-primary px-[60px] shadow-lg relative text-white">
+      <div className="container mx-0  py-4">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
           {/* App Title */}
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-              <Book className="h-6 w-6 text-black" />
+              <Book className="h-6 w-6 text-white" />
             </div>
             {!user ? (
               <Link href="/login">
-                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
+                <h1 className="text-2xl sm:text-3xl font-bold tracking-tight ">
                   Schedulr{" "}
-                  <span className="text-md sm:text-lg font-bold tracking-tight text-black">
+                  <span className="text-md sm:text-lg font-bold tracking-tight ">
                     G. R. Kare College of Law
                   </span>
                 </h1>
               </Link>
             ) : (
-              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-black">
+              <h1 className="text-2xl sm:text-3xl font-bold tracking-tight ">
                 Schedulr{" "}
-                <span className="text-md sm:text-lg font-bold tracking-tight text-black">
+                <span className="text-md sm:text-lg font-bold tracking-tight ">
                   G. R. Kare College of Law
                 </span>
               </h1>
@@ -90,7 +90,7 @@ export default function TimetableHeader() {
           {/* Teacher Greeting with Menu */}
           {user && (
             <div
-              className="absolute top-1/2 right-4 transform -translate-y-1/2"
+              className="top-1/2 right-4"
               ref={menuRef}
             >
               <button
