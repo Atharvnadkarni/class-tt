@@ -251,6 +251,7 @@ function _WeeklyTimetable({
         },
       ],
     });
+    setTeacherList(existingData?.class)
     setIsModalOpen(true);
   };
 
