@@ -20,7 +20,7 @@
 
 @layer base {
   :root {
-    --primary: #0b0047 !important;
+    --primary: 249, 100%, 14% !important;
     --secondary: 26, 51%, 16% !important;
     
 
