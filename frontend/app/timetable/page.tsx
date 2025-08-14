@@ -128,7 +128,7 @@ function _TimetablePage() {
   return !user ? (
     router.push("/login")
   ) : (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
       {/* Admin Banner */}
       {/* <div className="bg-red-50 border-y border-red-100">

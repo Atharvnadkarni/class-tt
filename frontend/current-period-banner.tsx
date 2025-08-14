@@ -125,7 +125,7 @@ export default function CurrentPeriodBanner({ classTimetables }) {
 
   if (!currentPeriod) {
     return (
-      <div className="bg-gray-100 border-y border-gray-200">
+      <div className="bg-gray-300 border-y border-gray-200 rounded-md">
         <div className="container mx-auto px-4 py-3 text-center">
           <p className="text-gray-600">No active period</p>
         </div>

@@ -13,8 +13,8 @@ const config: Config = {
       colors: {
         primary: "#0b0047",
         secondary: "#ff6f00ff",
-        highlight: "#ffca28",
-        contrast: "#2196f3",
+        highlight: "#ffdd76ff",
+        contrast: "#69bbffff",
         neutral: "#e0e0e0",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",

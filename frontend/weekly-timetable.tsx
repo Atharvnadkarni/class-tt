@@ -361,13 +361,13 @@ function _WeeklyTimetable({
             {/* Table Header - Periods across the top */}
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
-                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-r border-gray-200 w-24 sticky left-0 bg-[#ebedfc] z-10">
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-r border-gray-200 w-24 sticky left-0 bg-[#efd584] z-10">
                   Class/Period
                 </th>
                 {periods.map((period) => (
                   <th
                     key={period.name}
-                    className={`px-3 py-3 text-center text-sm font-semibold border-r border-gray-200 last:border-r-0 min-w-[100px] !bg-yellow-50 ${
+                    className={`px-3 py-3 text-center text-sm font-semibold border-r border-gray-200 last:border-r-0 min-w-[100px] !bg-highlight ${
                       period.name === "Break"
                         ? "!bg-gray-300 text-black"
                         : "text-gray-700"
@@ -398,7 +398,7 @@ function _WeeklyTimetable({
                   className="border-b border-gray-200 hover:bg-gray-50 transition-colors bg-white"
                 >
                   {/* Day Name */}
-                  <td className="px-4 py-4 text-sm font-medium text-gray-700 border-r border-gray-200 sticky left-0 bg-blue-200 z-10">
+                  <td className="px-4 py-4 text-sm font-medium text-white border-r border-gray-200 sticky left-0 bg-contrast z-10">
                     {day}
                   </td>
 

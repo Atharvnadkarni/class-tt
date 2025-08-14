@@ -61,7 +61,7 @@ export default function TeacherPage() {
   return !user ? (
     router.push("/login")
   ) : (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
         <Tabs activeTab="teachers" />

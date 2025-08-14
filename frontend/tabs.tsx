@@ -21,7 +21,7 @@ const Tabs = ({ activeTab }) => {
         </h2>
 
         {/* Tab Navigation */}
-        <div className="flex items-center gap-1 mb-6 bg-gray-100 p-1 rounded-lg w-fit">
+        <div className="flex items-center gap-1 mb-6 bg-neutral p-1 rounded-lg w-fit">
           <Link href="/timetable">
             <button
               onClick={() => {

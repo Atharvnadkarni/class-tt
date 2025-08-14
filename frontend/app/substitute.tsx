@@ -67,7 +67,7 @@ const SubstituteButton = ({ currentClass }) => {
   return (
     <div>
       <button
-        className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+        className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
         onClick={() => setIsModalOpen(true)}
       >
         <ArrowRightLeft className="h-4 w-4" />

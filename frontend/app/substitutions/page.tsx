@@ -84,7 +84,7 @@ const SubstitutionPage = () => {
   return !user ? (
     router.push("/login")
   ) : (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
         <Tabs activeTab="subs" />
@@ -96,7 +96,7 @@ const SubstitutionPage = () => {
             <div className="flex gap-2 items-center">
               <div>
                 <button
-                  className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => setMode({ mode: "add", sub: null })}
                 >
                   <ArrowRightLeft className="h-4 w-4" />
