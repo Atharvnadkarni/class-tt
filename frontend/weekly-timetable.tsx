@@ -251,7 +251,7 @@ function _WeeklyTimetable({
         },
       ],
     });
-    setTeachers(existingData?.class)
+    setTeachers(existingData?.class || [])
     setIsModalOpen(true);
   };
 
@@ -631,7 +631,8 @@ function _WeeklyTimetable({
                         <Plus className="" />
                       </button>
                     </div>
-                    <div>{teachers.join(", ").replace(/,\s+$/g)}</div>
+                    {console.log(teachers)}
+                    <div>{teachers.join(", ").replace(/,\s*$/g,"")}</div>
                   </div>
                 </>
               )}
