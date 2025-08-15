@@ -1,7 +1,16 @@
 "use client";
 
 import { Suspense, useEffect, useRef, useState } from "react";
-import { X, Save, Plus, Egg, EggFried, CircleAlert } from "lucide-react";
+import {
+  X,
+  Save,
+  Plus,
+  Egg,
+  EggFried,
+  CircleAlert,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { subjectList, subjects, subjectToDisplayName } from "./subjects";
@@ -342,6 +351,7 @@ function _WeeklyTimetable({
   const [teacherList, setTeacherList] = useState([]);
   const user = useSelector((state) => state.user);
   const [batches, setBatches] = useState(1);
+  const [currentBatch, setCurrentBatch] = useState(1);
   const incrementBatches = () => {
     setBatches((oldBatches) => (oldBatches += 1));
   };
@@ -412,7 +422,7 @@ function _WeeklyTimetable({
                       key={`${day}-${period.name}`}
                       className={`px-3 py-4 text-sm text-center last:border-r-0 transition-colors min-h-[60px] ${
                         period.name === "Break"
-                          ? "bg-gray-200 border-gray-300 border-b cursor-not-allowed"
+                          ? "bg-gray-200 border-gray-300 border-b cursor-pointer"
                           : isReadOnly
                           ? "border-r cursor-default"
                           : "hover:bg-blue-50 cursor-pointer border-gray-200 border-r"
@@ -638,141 +648,45 @@ function _WeeklyTimetable({
                     {console.log(teachers)}
                     <div>{teachers.join(", ").replace(/,\s*$/g, "")}</div>
                   </div>
-                  <button
-                    onClick={incrementBatches}
-                    className="px-2 h-[45px] ml-5 text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    <Plus className="" />
-                  </button>{batches}
+
+                  {/* Pagination for batches (nonfunctional) */}
+                  <div className="flex items-center justify-center mt-4">
+                    <button
+                      className="px-3 py-1 rounded-l bg-gray-200 text-gray-600 cursor-pointer"
+                      onClick={() => {
+                        setCurrentBatch((oldBatch) =>
+                          oldBatch <= 1 ? oldBatch : oldBatch - 1
+                        );
+                      }}
+                    >
+                      <ChevronLeft />
+                    </button>
+                    <span className="px-4 py-1 bg-gray-100 text-gray-700 font-medium">
+                      Batch {currentBatch}
+                    </span>
+                    <button
+                      className="px-3 py-1 rounded-r bg-gray-200 text-gray-600 cursor-pointer"
+                      onClick={() => {
+                        setCurrentBatch((oldBatch) =>
+                          oldBatch >= batches ? oldBatch : oldBatch + 1
+                        );
+                      }}
+                    >
+                      <ChevronRight />
+                    </button>
+                    <button
+                      onClick={() => {
+                        incrementBatches();
+                        setCurrentBatch(batches + 1);
+                      }}
+                      className="px-3 py-1 rounded-r bg-gray-200 text-gray-600 cursor-pointer"
+                    >
+                      <Plus />
+                    </button>
+                  </div>
                 </>
               )}
-              {/* {formData.batchwise && (
-                <>
-                  <div>
-                    <label
-                      htmlFor="batch1subject"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Batch 1 Subject
-                    </label>
-                    <select
-                      id="batch1subject"
-                      value={formData.subject[0].subject}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          subject: [
-                            { ...prev.subject[0], subject: e.target.value },
-                            prev.subject[1],
-                          ],
-                        }))
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">No subject</option>
-                      {subjectList.map((subject) => (
-                        <option value={subject}>
-                          {subjectToDisplayName[subject] || subject}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
 
-                  Subject Input
-                  <div>
-                    <label
-                      htmlFor="teacher"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Teacher
-                    </label>
-                    <select
-                      id="teacher"
-                      value={formData.subject[0].teacher}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          subject: [
-                            { ...prev.subject[0], teacher: e.target.value },
-                            prev.subject[1],
-                          ],
-                        }))
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Select teacher</option>
-                      {teachers.map((teacher) => (
-                        <option value={teacher.displayName}>{teacher.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                  <div>
-                    <label
-                      htmlFor="batch2subject"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Batch 2 Subject
-                    </label>
-                    <select
-                      id="batch2subject"
-                      value={formData.subject[1].subject}
-                      onChange={(e) => {
-                        console.log(formData, {
-                          ...formData,
-                          subject: [
-                            formData.subject[0],
-                            { ...formData.subject[1], subject: e.target.value },
-                          ],
-                        });
-                        setFormData((prev) => ({
-                          ...prev,
-                          subject: [
-                            prev.subject[0],
-                            { ...prev.subject[1], subject: e.target.value },
-                          ],
-                        }));
-                      }}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">No subject</option>
-                      {subjectList.map((subject) => (
-                        <option value={subject}>
-                          {subjectToDisplayName[subject] || subject}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-
-                  {/* Subject Input
-                  <div>
-                    <label
-                      htmlFor="batch2tr"
-                      className="block text-sm font-medium text-gray-700 mb-2"
-                    >
-                      Batch 2 Teacher
-                    </label>
-                    <select
-                      id="batch2tr"
-                      value={formData.subject[1].teacher}
-                      onChange={(e) =>
-                        setFormData((prev) => ({
-                          ...prev,
-                          subject: [
-                            prev.subject[0],
-                            { ...prev.subject[1], teacher: e.target.value },
-                          ],
-                        }))
-                      }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    >
-                      <option value="">Select teacher</option>
-                      {teachers.map((teacher) => (
-                        <option value={teacher.displayName}>{teacher.name}</option>
-                      ))}
-                    </select>
-                  </div>
-                </>
-              )} */}
               <div className="flex justify-end">
                 <div
                   className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
