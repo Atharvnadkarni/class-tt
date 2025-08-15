@@ -251,7 +251,7 @@ function _WeeklyTimetable({
         },
       ],
     });
-    setTeachers(existingData?.class || [])
+    setTeachers(existingData?.class || []);
     setIsModalOpen(true);
   };
 
@@ -341,6 +341,10 @@ function _WeeklyTimetable({
 
   const [teacherList, setTeacherList] = useState([]);
   const user = useSelector((state) => state.user);
+  const [batches, setBatches] = useState(1);
+  const incrementBatches = () => {
+    setBatches((oldBatches) => (oldBatches += 1));
+  };
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
@@ -632,8 +636,14 @@ function _WeeklyTimetable({
                       </button>
                     </div>
                     {console.log(teachers)}
-                    <div>{teachers.join(", ").replace(/,\s*$/g,"")}</div>
+                    <div>{teachers.join(", ").replace(/,\s*$/g, "")}</div>
                   </div>
+                  <button
+                    onClick={incrementBatches}
+                    className="px-2 h-[45px] ml-5 text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <Plus className="" />
+                  </button>{batches}
                 </>
               )}
               {/* {formData.batchwise && (
