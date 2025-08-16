@@ -79,9 +79,9 @@ function _TimetablePage() {
     const lastClass = localStorage.getItem("currentClass");
     history.pushState(null, "", "?class=" + lastClass);
     (async () => {
-        const savedTimetables = await axios.get(
-          "http://localhost:4000/api/timetable",
-        )
+      const savedTimetables = await axios.get(
+        "http://localhost:4000/api/timetable"
+      );
       if (savedTimetables) {
         setClassTimetables(JSON.parse(savedTimetables.data.timetable));
       }
