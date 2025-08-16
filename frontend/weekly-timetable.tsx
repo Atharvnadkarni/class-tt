@@ -527,7 +527,7 @@ function _WeeklyTimetable({
                       <select
                         id="teacher"
                         value={
-                          formData.batchwise ? "" : formData.subject[0].teacher
+                          formData.subject[currentBatch]?.teacher ?? ""
                         }
                         onChange={(e) => {
                           const classKey = `${selectedCell.day}-${selectedCell.period.name}`;
@@ -608,10 +608,10 @@ function _WeeklyTimetable({
                           }
                           setFormData((prev) => ({
                             ...prev,
-                            subject: [
-                              { ...prev.subject[0], teacher: e.target.value },
-                              { subject: "", teacher: "" },
-                            ],
+                            subject: {
+                              ...prev.subject,
+                              [currentBatch]: {...prev.subject[currentBatch], teacher: e.target.value}
+                            }
                           }));
                         }}
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
