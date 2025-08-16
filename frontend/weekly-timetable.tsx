@@ -277,7 +277,6 @@ function _WeeklyTimetable({
 
     const cellKey = `${day}-${period.name}`;
     const data = timetableData[cellKey];
-
     if (data && data.subject[0].subject) {
       return (
         <div className="text-xs">
@@ -307,7 +306,7 @@ function _WeeklyTimetable({
     if (!selectedCell) return;
 
     const cellKey = `${selectedCell.day}-${selectedCell.period.name}`;
-    if (formData.subject.join("/").trim()) {
+    if (Object.values(formData.subject).join("/").trim()) {
       setClassTimetables((prev) => ({
         ...prev,
         [selectedClass]: {
