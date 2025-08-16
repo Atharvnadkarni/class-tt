@@ -72,5 +72,5 @@ module.exports = {
     EP: "Edu Park",
     BG: "Board Games",
   },
-  classes: ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"],
+  classes: ["BA LLB"],
 };
