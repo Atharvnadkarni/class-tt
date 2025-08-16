@@ -27,6 +27,12 @@ interface TimetableData {
   [key: string]: TimetableEntry;
 }
 
+interface FormData {
+  subject: {
+    [key: number]: { subject: string; teacher: string };
+  };
+}
+
 interface WeeklyTimetableProps {
   isReadOnly?: boolean;
   selectedClass?: string;
@@ -104,17 +110,8 @@ function _WeeklyTimetable({
     period: { name: string; time: string };
   } | null>(null);
   const [teachers, setTeachers] = useState([]);
-  const [formData, setFormData] = useState({
-    subject: [
-      {
-        subject: "",
-        teacher: "",
-      },
-      {
-        subject: "",
-        teacher: "",
-      },
-    ],
+  const [formData, setFormData] = useState<FormData>({
+    subject: { 1: { subject: "", teacher: "" } },
     class: "",
     batchwise: false,
   });
@@ -492,17 +489,20 @@ function _WeeklyTimetable({
                     <select
                       id="subject"
                       value={
-                        formData.batchwise ? "" : formData.subject[0].subject
+                        formData.subject[currentBatch]?.subject ?? ""
                       }
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setFormData((prev) => ({
                           ...prev,
-                          subject: [
-                            { ...prev.subject[0], subject: e.target.value },
-                            { subject: "", teacher: "" },
-                          ],
-                        }))
-                      }
+                          subject: {
+                            ...prev.subject,
+                            [currentBatch]: {
+                              ...prev.subject[currentBatch],
+                              subject: e.target.value,
+                            },
+                          },
+                        }));
+                      }}
                       disabled={formData.batchwise}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
