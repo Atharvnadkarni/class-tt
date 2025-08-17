@@ -259,7 +259,8 @@ function _WeeklyTimetable({
         },
       ],
     });
-    setTeachers({ [currentBatch]: existingData?.class || [] });
+    setCurrentBatch(1);
+    setTeachers(existingData?.class || {[currentBatch]: []});
     setIsModalOpen(true);
   };
 
