@@ -26,7 +26,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
       key={teacher.name}
       className="flex items-center justify-between p-4 border border-gray-200 bg-[#b8defc] rounded-lg hover:bg-[#a6d7ff] transition-colors relative"
     >
-      {tier == Tier.ADMIN && <div className="flex absolute top-2 right-2 gap-2">
+      {(tier == Tier.ADMIN || tier == Tier.COORDINATOR) && <div className="flex absolute top-2 right-2 gap-2">
         <Pencil
           className="w-4 h-4"
           style={{ cursor: "pointer" }}
