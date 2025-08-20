@@ -54,6 +54,7 @@ function _WeeklyTimetable({
   classTimetables = {},
   setClassTimetables = () => {},
 }: WeeklyTimetableProps) {
+  const classSplit = [parseInt(selectedClass.slice(0, -1)), selectedClass[-1]];
   const teacherTier = useRef(Tier.TEACHER);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [teacherMode, setTeacherMode] = useState(false);
@@ -405,7 +406,7 @@ function _WeeklyTimetable({
 
             {/* Table Body - Days as rows */}
             <tbody>
-              {classes.map((day, dayIndex) => (
+              {periods.map((day, dayIndex) => (
                 <tr
                   key={day}
                   className="border-b border-gray-200 hover:bg-gray-50 transition-colors bg-white"
