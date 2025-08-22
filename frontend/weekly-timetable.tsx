@@ -37,7 +37,8 @@ interface WeeklyTimetableProps {
   isReadOnly?: boolean;
   selectedClass?: string;
   classTimetables?: { [key: string]: TimetableData };
-  setClassTimetables?: (timetables: { [key: string]: TimetableData }) => void;
+  setClassTimetables?: (timetables: { [
+    key: string]: TimetableData }) => void;
   teacherMode?: boolean;
 }
 
@@ -406,7 +407,7 @@ function _WeeklyTimetable({
 
             {/* Table Body - Days as rows */}
             <tbody>
-              {periods.map((day, dayIndex) => (
+              {days.map((day, dayIndex) => (
                 <tr
                   key={day}
                   className="border-b border-gray-200 hover:bg-gray-50 transition-colors bg-white"
