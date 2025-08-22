@@ -54,12 +54,9 @@ const SubstitutionPage = () => {
   useEffect(() => {
     const fetchSubs = async () => {
       const subs = await (
-        await axios.get(
-          "https://localhost:4000/api/substitution",
-          {
-            headers: { Authorization: `Bearer ${user.token}` },
-          }
-        )
+        await axios.get("https://localhost:4000/api/substitution", {
+          headers: { Authorization: `Bearer ${user.token}` },
+        })
       ).data.substitutions;
       setSubs(subs);
     };
@@ -225,9 +222,7 @@ const SubstitutionPage = () => {
           setIsModalOpen={setDeleteModalId}
           deleteAction={async () => {
             await axios.delete(
-              "https://class-tt-backend.onrender.com/api/substitution/" +
-                deleteModalId +
-                "/",
+              "http://localhost:4000/api/substitution/" + deleteModalId + "/",
               {
                 headers: {
                   Authorization: `Bearer ${user.token}`,
@@ -235,14 +230,11 @@ const SubstitutionPage = () => {
               }
             );
             const newSubs = await (
-              await axios.get(
-                "https://class-tt-backend.onrender.com/api/substitution",
-                {
-                  headers: {
-                    Authorization: `Bearer ${user.token}`,
-                  },
-                }
-              )
+              await axios.get("http://localhost:4000/api/substitution", {
+                headers: {
+                  Authorization: `Bearer ${user.token}`,
+                },
+              })
             ).data.substitutions;
             setDeleteModalId(false);
             setSubs(newSubs);

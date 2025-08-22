@@ -42,7 +42,7 @@ const SubstituteButton = ({ currentClass }) => {
   const handleSave = async () => {
     const newSub = await (
       await axios.post(
-        "https://class-tt-backend.onrender.com/api/substitution",
+        "http://localhost:4000/api/substitution",
         {
           class: formData.class,
           period: formData.period,

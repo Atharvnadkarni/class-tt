@@ -46,7 +46,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       return;
     }
     await axios.post(
-      "https://class-tt-backend.onrender.com/api/substitution",
+      "http://localhost:4000/api/substitution",
       {
         ...formData,
 
@@ -64,17 +64,14 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       return;
     }
     await axios.patch(
-      "https://class-tt-backend.onrender.com/api/substitution/" + _id,
+      "http://localhost:4000/api/substitution/" + _id,
       formData,
       { headers: { Authorization: `Bearer ${user.token}` } }
     );
     const newSubstitutions = await (
-      await axios.get(
-        "https://class-tt-backend.onrender.com/api/substitution",
-        {
-          headers: { Authorization: `Bearer ${user.token}` },
-        }
-      )
+      await axios.get("http://localhost:4000/api/substitution", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
     ).data.substitutions;
     console.log(newSubstitutions);
     setMode(null);
