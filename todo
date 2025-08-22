@@ -1,0 +1,6 @@
+# - change subjects to school subjects
+# - change timetable subjects to appear
+# - add workload feature
+# - implement teacher schedule
+- move add subject in teacher page to the side
+- move add teacher in timetable page to the side
