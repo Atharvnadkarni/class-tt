@@ -8,6 +8,7 @@ import { Tier } from "@/types";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
   const user = useSelector((state) => state.user);
+  const [workloadTr, setWorkloadTr] = useState(null);
   const [deleteModalId, setDeleteModalId] = useState(null);
   const deleteTeacher = async (_id: string) => {
     if (!user) return;
@@ -28,7 +29,11 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
     >
       {(tier == Tier.ADMIN || tier == Tier.COORDINATOR) && (
         <div className="flex absolute top-2 right-2 gap-2">
-          <BookCopy className="w-4 h-4" style={{ cursor: "pointer" }} />
+          <BookCopy
+            className="w-4 h-4"
+            style={{ cursor: "pointer" }}
+            onClick={() => setWorkloadTr(teacher)}
+          />
           <Pencil
             className="w-4 h-4"
             style={{ cursor: "pointer" }}
