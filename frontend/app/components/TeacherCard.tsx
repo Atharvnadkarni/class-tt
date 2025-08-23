@@ -8,7 +8,7 @@ import { Tier } from "@/types";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
   const user = useSelector((state) => state.user);
-  const [workloadTr, setWorkloadTr] = useState(null);
+  const [workloadVisible, setWorkloadVisible] = useState(false);
   const [deleteModalId, setDeleteModalId] = useState(null);
   const deleteTeacher = async (_id: string) => {
     if (!user) return;
@@ -32,7 +32,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
           <BookCopy
             className="w-4 h-4"
             style={{ cursor: "pointer" }}
-            onClick={() => setWorkloadTr(teacher)}
+            onClick={() => setWorkloadVisible(true)}
           />
           <Pencil
             className="w-4 h-4"
