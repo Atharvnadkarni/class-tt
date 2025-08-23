@@ -287,7 +287,7 @@ function _WeeklyTimetable({
           </div>
 
           <div className="text-gray-500">
-            {Object.values(data.teachers).join("/").replaceAll(/\/$/g, "")}
+            {Object.values(data.teachers).map(teacherList => teacherList.join("/")).join(" | ").replaceAll(/\/$/g, "")}
           </div>
         </div>
       );
