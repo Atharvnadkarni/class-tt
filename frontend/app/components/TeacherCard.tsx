@@ -88,7 +88,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
         />
       )}
       {workloadVisible && (
-        <WorkloadModal visible={workloadVisible} teacher={teacher} />
+        <WorkloadModal setVisibility={setWorkloadVisible} teacher={teacher} />
       )}
     </div>
   );
