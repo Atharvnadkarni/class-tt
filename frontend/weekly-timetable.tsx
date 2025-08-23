@@ -619,7 +619,7 @@ function _WeeklyTimetable({
                           console.log();
                           const lastTeacher = formData.teacher[currentBatch];
                           setTeachers((prevtrlist) => {
-                            const currentTrList = prevlist[currentBatch] || []
+                            const currentTrList = prevtrlist[currentBatch] || []
                             const newTrList = [
                               ...currentTrList,
                               lastTeacher,
