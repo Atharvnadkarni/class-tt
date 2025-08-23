@@ -7,6 +7,7 @@ const {
   deleteTeacher,
   loginTeacher,
   signupTeacher,
+  getTeacherWorkload,
 } = require("../controllers/teacherController");
 const requireAuth = require("../middleware/requireAuth");
 
@@ -22,5 +23,7 @@ teacherRouter.get("/:id", getTeacher);
 teacherRouter.post("/", createTeacher);
 teacherRouter.patch("/:id", updateTeacher);
 teacherRouter.delete("/:id", deleteTeacher);
+
+teacherRouter.get("/workload", getTeacherWorkload);
 
 module.exports = teacherRouter;
