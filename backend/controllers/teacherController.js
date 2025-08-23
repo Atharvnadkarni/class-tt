@@ -1,6 +1,7 @@
 const Teacher = require("../models/Teacher");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
+const redisClient = require("../redis");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
@@ -109,6 +110,39 @@ const signupTeacher = async (req, res) => {
   }
 };
 
+const getTeacherWorkload = async (req, res) => {
+  // get timetable
+  const { _id } = req.params;
+  const teacher = await Teacher.findById(_id);
+
+  const timetableStr = await redisClient.get("timetable");
+  const timetable = JSON.parse(timetableStr);
+
+  const teacherSubjects = {};
+  // see tr subjects
+  for (const class_ of Object.keys(timetable)) {
+    for (const key of Object.keys(class_)) {
+      if (Object.values(key.teachers).flat().includes(teacher.displayName)) {
+        if (teacherSubjects[Object.values(key.subject).join("/")]) {
+          teacherSubjects[Object.values(key.subject).join("/")] += 1;
+        } else {
+          teacherSubjects[Object.values(key.subject).join("/")] = 0;
+        }
+      }
+    }
+  }
+  const trSubjectsArray = Object.entries(teacherSubjects).map(([subject, allotted]) => ({
+    subject: subject,
+    allotted: allotted,
+  }));
+  // return allotted
+  return res.json({
+    message: "Workload obtained successfully",
+    teacher,
+    workload: trSubjectsArray,
+  });
+};
+
 module.exports = {
   getTeachers,
   getTeacher,
@@ -117,4 +151,5 @@ module.exports = {
   deleteTeacher,
   loginTeacher,
   signupTeacher,
+  getTeacherWorkload
 };
