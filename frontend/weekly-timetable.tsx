@@ -621,7 +621,7 @@ function _WeeklyTimetable({
                           setTeachers((prevtrlist) => {
                             const currentTrList = prevlist[currentBatch] || []
                             const newTrList = [
-                              ...currentTrList
+                              ...currentTrList,
                               lastTeacher,
                             ];
                             const filteredNewTrList = newTrList.filter(
