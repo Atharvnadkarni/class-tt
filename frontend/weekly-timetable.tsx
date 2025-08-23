@@ -37,8 +37,7 @@ interface WeeklyTimetableProps {
   isReadOnly?: boolean;
   selectedClass?: string;
   classTimetables?: { [key: string]: TimetableData };
-  setClassTimetables?: (timetables: { [
-    key: string]: TimetableData }) => void;
+  setClassTimetables?: (timetables: { [key: string]: TimetableData }) => void;
   teacherMode?: boolean;
 }
 
@@ -115,8 +114,8 @@ function _WeeklyTimetable({
     1: [],
   });
   const [formData, setFormData] = useState<FormData>({
-    subject: { 1: { subject: "", teacher: "" } },
-    class: "",
+    subject: { 1: "" },
+    teachers: { 1: "" },
     batchwise: false,
   });
   const [isClash, setIsClash] = useState({ class: null, subject: null });
@@ -250,19 +249,15 @@ function _WeeklyTimetable({
     const cellKey = `${day}-${period.name}`;
     const existingData = timetableData[cellKey];
     setFormData({
-      subject: existingData?.subject || [
-        {
-          subject: "",
-          teacher: "",
-        },
-        {
-          subject: "",
-          teacher: "",
-        },
-      ],
+      subject: existingData?.subject || {
+        1: "",
+      },
+      teacher: existingData?.teachers || {
+        1: "",
+      },
     });
     setCurrentBatch(1);
-    setTeachers(existingData?.class || {[currentBatch]: []});
+    setTeachers(existingData?.teachers || { [currentBatch]: [] });
     setIsModalOpen(true);
   };
 
@@ -280,7 +275,7 @@ function _WeeklyTimetable({
 
     const cellKey = `${day}-${period.name}`;
     const data = timetableData[cellKey];
-    if (data && data.subject[0].subject) {
+    if (data?.subject[0]?.subject) {
       return (
         <div className="text-xs">
           <div className="font-medium text-gray-800">
@@ -316,7 +311,7 @@ function _WeeklyTimetable({
           ...prev[selectedClass],
           [cellKey]: {
             subject: formData.subject,
-            class: teachers,
+            teachers: teachers,
             batchwise: formData.batchwise,
           },
         },
@@ -492,16 +487,13 @@ function _WeeklyTimetable({
                     </label>
                     <select
                       id="subject"
-                      value={formData.subject[currentBatch]?.subject ?? ""}
+                      value={formData.subject[currentBatch] ?? ""}
                       onChange={(e) => {
                         setFormData((prev) => ({
                           ...prev,
                           subject: {
                             ...prev.subject,
-                            [currentBatch]: {
-                              ...prev.subject[currentBatch],
-                              subject: e.target.value,
-                            },
+                            [currentBatch]: e.target.value,
                           },
                         }));
                       }}
@@ -528,7 +520,7 @@ function _WeeklyTimetable({
                     <div className="flex w-full">
                       <select
                         id="teacher"
-                        value={formData.subject[currentBatch]?.teacher ?? ""}
+                        value={formData.teacher[currentBatch] ?? ""}
                         onChange={(e) => {
                           const classKey = `${selectedCell.day}-${selectedCell.period.name}`;
                           let isBatch1Clash = false;
@@ -541,7 +533,6 @@ function _WeeklyTimetable({
                             ) {
                               if (
                                 classTimetables[classe][classKey].subject[0]
-                                  .subject
                               ) {
                                 if (!e.target.value) {
                                   console.log(
@@ -608,12 +599,9 @@ function _WeeklyTimetable({
                           }
                           setFormData((prev) => ({
                             ...prev,
-                            subject: {
-                              ...prev.subject,
-                              [currentBatch]: {
-                                ...prev.subject[currentBatch],
-                                teacher: e.target.value,
-                              },
+                            teacher: {
+                              ...prev.teacher,
+                              [currentBatch]: e.target.value,
                             },
                           }));
                         }}
@@ -628,8 +616,8 @@ function _WeeklyTimetable({
                       </select>
                       <button
                         onClick={(e) => {
-                          const lastTeacher =
-                            formData.subject[currentBatch].teacher;
+                          console.log();
+                          const lastTeacher = formData.teacher[currentBatch];
                           setTeachers((prevtrlist) => {
                             const newTrList = [
                               ...prevtrlist[currentBatch],
@@ -642,17 +630,13 @@ function _WeeklyTimetable({
                             );
                             return {
                               ...prevtrlist,
-                              [currentBatch]: newTrList,
+                              [currentBatch]: filteredNewTrList,
                             };
                           });
                           setFormData((oldFormdata) => ({
                             ...oldFormdata,
-                            subject: {
-                              ...oldFormdata.subject,
-                              [currentBatch]: {
-                                ...oldFormdata.subject[currentBatch],
-                                teacher: "",
-                              },
+                            teacher: {
+                              [currentBatch]: "",
                             },
                           }));
                         }}
