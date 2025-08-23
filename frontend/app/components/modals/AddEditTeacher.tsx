@@ -390,7 +390,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   >
                     <option value="">Subject</option>
 
-                    {trSubjectList.map((subject) => (
+                    {subjectList.map((subject) => (
                       <option value={subject}>
                         {subjectToDisplayName[subject.subject] &&
                         subjectToDisplayName[subject.subject].length <= 10
