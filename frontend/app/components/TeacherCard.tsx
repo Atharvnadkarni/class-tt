@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import DeleteModal from "./modals/DeleteModal";
 import { useState } from "react";
 import { Tier } from "@/types";
+import WorkloadModal from "./modals/WorkloadModal";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
   const user = useSelector((state) => state.user);
@@ -85,6 +86,9 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
           setIsModalOpen={setDeleteModalId}
           deleteAction={() => deleteTeacher(deleteModalId)}
         />
+      )}
+      {workloadVisible && (
+        <WorkloadModal visible={workloadVisible} teacher={teacher} />
       )}
     </div>
   );
