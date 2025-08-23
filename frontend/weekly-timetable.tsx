@@ -275,19 +275,19 @@ function _WeeklyTimetable({
 
     const cellKey = `${day}-${period.name}`;
     const data = timetableData[cellKey];
-    if (data?.subject[0]?.subject) {
+    if (data?.subject && data?.teachers) {
       return (
         <div className="text-xs">
           <div className="font-medium text-gray-800">
-            {data.subject
+            {Object.values(data.subject)
               .map(
-                (batch) => subjectToDisplayName[batch.subject] || batch.subject
+                (batch) => subjectToDisplayName[batch] || batch
               )
-              .join(data.batchwise ? "/" : "")}
+              .join("/")}
           </div>
 
           <div className="text-gray-500">
-            {data.class.join("/").replaceAll(/\/$/g, "")}
+            {Object.values(data.teachers).join("/").replaceAll(/\/$/g, "")}
           </div>
         </div>
       );
