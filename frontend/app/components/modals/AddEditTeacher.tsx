@@ -208,7 +208,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 onChange={(e) => {
                   setTeacherName(e.target.value);
                   let trimmedName = e.target.value
-                    .replaceAll(/(?:... Mr|Mrs|Ms|Dr)\.?/gi, "") // remove titles
+                    .replaceAll(/^(?:Dr|Mr|Mrs)\.?\s+.*/gi, "") // remove titles
                     .trim();
                   let tempDisplayName = trimmedName.split(" ")[0];
                   let trimmedUserName = trimmedName.split(" ")[0].toLowerCase();
@@ -264,8 +264,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 value={displayName || ""}
                 onChange={(e) => {
                   setDisplayName(e.target.value);
-                  setUsername(e.target.value.toLowerCase())
-                  setPassword(e.target.value.toLowerCase() + 123)
+                  setUsername(e.target.value.toLowerCase());
+                  setPassword(e.target.value.toLowerCase() + 123);
                 }}
                 placeholder="Enter teacher name"
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
