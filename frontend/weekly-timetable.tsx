@@ -98,6 +98,7 @@ function _WeeklyTimetable({
   const timetableData = teacherMode
     ? getTeacherSchedule()
     : classTimetables[selectedClass] || {};
+  console.log(timetableData, teacherMode);
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
@@ -130,22 +131,27 @@ function _WeeklyTimetable({
 
   function getTeacherSchedule() {
     const teacherSchedule: TimetableData = {};
-    const teacherName = "Shrni Faldessai"; // Current logged-in teacher
+    const teacherName = JSON.parse(
+      localStorage.getItem("user") ?? JSON.stringify({ displayName: "" })
+    ).displayName; // Current logged-in teacher
+    console.log(teacherName);
 
     // Go through all classes and find periods where this teacher is assigned
     Object.keys(classTimetables).forEach((className) => {
       const classTimetable = classTimetables[className];
       Object.keys(classTimetable).forEach((periodKey, index) => {
         const entry = classTimetable[periodKey];
-        console.log(entry, index);
-        if (
-          entry?.subject[0]?.teacher == teacherName ||
-          entry?.subject[1]?.teacher == teacherName
-        ) {
-          teacherSchedule[periodKey] = {
-            subject: entry.subject,
-            class: className, // Show the class name instead of teacher name
-          };
+        console.log(entry, index, className, periodKey);
+        if (entry?.teachers) {
+          if (
+            Object.values(entry?.teachers).flat().includes(teacherName) ||
+            Object.values(entry?.teachers).flat().includes(teacherName)
+          ) {
+            teacherSchedule[periodKey] = {
+              subject: entry.subject,
+              class: className, // Show the class name instead of teacher name
+            };
+          }
         }
       });
     });
@@ -281,8 +287,13 @@ function _WeeklyTimetable({
     }
 
     const cellKey = `${day}-${period.name}`;
+    console.log(cellKey, timetableData[cellKey]);
     const data = timetableData[cellKey];
-    if (data?.subject && data?.teachers) {
+    if (
+      teacherMode
+        ? data?.subject && data?.class
+        : data?.subject && data?.teachers
+    ) {
       return (
         <div className="text-xs">
           <div className="font-medium text-gray-800">
@@ -292,10 +303,7 @@ function _WeeklyTimetable({
           </div>
 
           <div className="text-gray-500">
-            {Object.values(data.teachers)
-              .map((teacherList) => teacherList.join("/"))
-              .join(" | ")
-              .replaceAll(/\/$/g, "")}
+            {Object.values(teacherMode ? data.class : data.teachers)}
           </div>
         </div>
       );
