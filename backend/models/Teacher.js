@@ -4,13 +4,13 @@ const validator = require("validator");
 
 const teacherSchema = new mongoose.Schema({
   name: String,
-  subjects: [
+  subjects: {type: [
     {
       _id: false,
       subject: String,
       classes: [Number],
     },
-  ],
+  ], default: []},
   displayName:{ type: String, required: true },
   username: { type: String, unique: true, required: true },
   password: { type: String, required: true },
