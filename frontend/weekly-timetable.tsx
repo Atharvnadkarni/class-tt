@@ -301,9 +301,13 @@ function _WeeklyTimetable({
               .map((batch) => subjectToDisplayName[batch] || batch)
               .join("/")}
           </div>
-
+          {console.log(data)}
           <div className="text-gray-500">
-            {Object.values(teacherMode ? data.class : data.teachers)}
+            {teacherMode
+              ? Object.values(data.class)
+              : Object.values(data.teachers).map(teacher => teacher.join('/')).join(
+                  "/"
+                )}
           </div>
         </div>
       );
