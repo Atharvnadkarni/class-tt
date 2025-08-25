@@ -258,7 +258,7 @@ function _WeeklyTimetable({
     });
     setCurrentBatch(1);
     setBatches(
-      Math.max(...Object.keys(existingData?.subject).map((key) => parseInt(key)))
+      Math.max(...Object.keys(existingData?.subject || {1: ""}).map((key) => parseInt(key)))
     );
     setTeachers(existingData?.teachers || { [currentBatch]: [] });
     setIsModalOpen(true);
