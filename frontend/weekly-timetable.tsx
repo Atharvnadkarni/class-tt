@@ -705,25 +705,24 @@ function _WeeklyTimetable({
                       : "bg-neutral  text-gray-500"
                   } text-sm font-medium rounded-lg transition-colors flex items-center gap-2 cursor-pointer`}
                   onClick={() => {
-                    setTeachers(oldTeachers => ({
+                    setTeachers((oldTeachers) => ({
                       ...oldTeachers,
-                      [currentBatch]: []
-                    }))
-                    setFormData(oldFormData => ({
+                      [currentBatch]: [],
+                    }));
+                    setFormData((oldFormData) => ({
                       ...oldFormData,
                       subject: {
                         ...oldFormData.subject,
-                        [currentBatch]: ""
-                      },teacher: {
+                        [currentBatch]: "",
+                      },
+                      teacher: {
                         ...oldFormData.teacher,
-                        [currentBatch]: ""
-                      }
-                    }))
+                        [currentBatch]: "",
+                      },
+                    }));
                   }}
                 >
-                  <label htmlFor="batchwise" className="">
-                    Clear Period
-                  </label>
+                  Clear Period
                 </button>
               </div>
             </div>
