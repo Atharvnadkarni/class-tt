@@ -548,72 +548,69 @@ function _WeeklyTimetable({
                               classTimetables[classe].hasOwnProperty(
                                 classKey
                               ) &&
-                              classTimetables[classe][classKey]
+                              classTimetables[classe][classKey] &&
+                              classTimetables[classe][classKey].subject &&
+                              classTimetables[classe][classKey].teachers
                             ) {
-                              console.log(classTimetables[classe]);
+                              console.log(
+                                "clash",
+                                classe,
+                                classKey,
+                                classTimetables[classe][classKey]
+                              );
+                              if (!e.target.value) {
+                                console.log(
+                                  e.target.value,
+                                  classTimetables[classe][classKey].subject[0]
+                                    .teacher,
+                                  classTimetables[classe][classKey].subject[1]
+                                    .teacher,
+                                  classe,
+                                  "is clash unset"
+                                );
+                                setIsClash({
+                                  class: null,
+                                  subject: null,
+                                });
+                              }
                               if (
-                                classTimetables[classe][classKey].subject[0]
+                                Object.values(
+                                  classTimetables[classe][classKey].teachers
+                                )
+                                  .flat()
+                                  .includes(e.target.value) &&
+                                classe != selectedClass
                               ) {
-                                if (!e.target.value) {
-                                  console.log(
-                                    e.target.value,
-                                    classTimetables[classe][classKey].subject[0]
-                                      .teacher,
-                                    classTimetables[classe][classKey].subject[1]
-                                      .teacher,
-                                    classe,
-                                    "is clash unset"
-                                  );
-                                  setIsClash({
-                                    class: null,
-                                    subject: null,
-                                  });
-                                } else if (
-                                  (classTimetables[classe][classKey].subject[0]
-                                    .teacher == e.target.value ||
-                                    classTimetables[classe][classKey].subject[1]
-                                      .teacher == e.target.value) &&
-                                  classe != selectedClass
-                                ) {
-                                  console.log(
-                                    e.target.value,
-                                    classTimetables[classe][classKey].subject[0]
-                                      .teacher,
-                                    classTimetables[classe][classKey].subject[1]
-                                      .teacher,
-                                    classe,
-                                    (classTimetables[classe][classKey]
-                                      .subject[0].teacher == e.target.value ||
-                                      classTimetables[classe][classKey]
-                                        .subject[1].teacher ==
-                                        e.target.value) &&
-                                      classe != selectedClass,
-                                    "is clash set"
-                                  );
-                                  setIsClash({
-                                    class: classe,
-                                    subject: classTimetables[classe][classKey]
-                                      .subject[1].subject
-                                      ? classTimetables[classe][
-                                          classKey
-                                        ].subject
-                                          .map((sub) => sub.subject)
-                                          .join("/")
-                                      : classTimetables[classe][classKey]
-                                          .subject[0].subject,
-                                  });
-                                } else if (classe != selectedClass) {
-                                  console.log(
-                                    e.target.value,
-                                    classTimetables[classe][classKey].subject[0]
-                                      .teacher,
-                                    classTimetables[classe][classKey].subject[1]
-                                      .teacher,
-                                    classe,
-                                    "is clash unset"
-                                  );
-                                  setIsClash({ class: null, subject: null });
-                                }
+                                console.log(
+                                  e.target.value,
+                                  Object.values(
+                                    classTimetables[classe][classKey].teachers
+                                  ).flat(),
+                                  classe,
+                                  Object.values(
+                                    classTimetables[classe][classKey].teachers
+                                  )
+                                    .flat()
+                                    .includes(e.target.value) &&
+                                    classe != selectedClass,
+                                  "is clash set"
+                                );
+                                setIsClash({
+                                  class: classe,
+                                  subject: Object.values(
+                                    classTimetables[classe][classKey].subject
+                                  ).join("/"),
+                                });
+                              } else if (classe != selectedClass) {
+                                console.log(
+                                  e.target.value,
+                                  Object.values(
+                                    classTimetables[classe][classKey].teachers
+                                  ).flat(),
+                                  classe,
+                                  "is clash unset"
+                                );
+                                setIsClash({ class: null, subject: null });
                               }
                             }
                           }
