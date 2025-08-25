@@ -91,7 +91,16 @@ const loginTeacher = async (req, res) => {
 
     // create token
     const token = createToken(teacher._id);
-    res.status(200).json({ _id: teacher._id, username, token, tier: teacher.tier, name: teacher.name, displayName: teacher.displayName });
+    res
+      .status(200)
+      .json({
+        _id: teacher._id,
+        username,
+        token,
+        tier: teacher.tier,
+        name: teacher.name,
+        displayName: teacher.displayName,
+      });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -124,13 +133,17 @@ const getTeacherWorkload = async (req, res) => {
     const classKeys = timetable[class_];
     for (const key of Object.keys(classKeys)) {
       const value = classKeys[key];
-      console.log(Object.values(value.teachers).flat(), teacher.displayName);
-      if (Object.values(value.teachers).flat().includes(teacher.displayName)) {
-        console.log(teacherSubjects[Object.values(value.subject).join("/")]);
-        if (!teacherSubjects[Object.values(value.subject).join("/")]) {
-          teacherSubjects[Object.values(value.subject).join("/")] = 0;
+      if (value && value?.subject && value?.teachers) {
+        console.log(Object.values(value?.teachers).flat(), teacher.displayName);
+        if (
+          Object.values(value?.teachers).flat().includes(teacher.displayName)
+        ) {
+          console.log(teacherSubjects[Object.values(value?.subject).join("/")]);
+          if (!teacherSubjects[Object.values(value?.subject).join("/")]) {
+            teacherSubjects[Object.values(value?.subject).join("/")] = 0;
+          }
+          teacherSubjects[Object.values(value?.subject).join("/")] += 1;
         }
-        teacherSubjects[Object.values(value.subject).join("/")] += 1;
       }
     }
   }
