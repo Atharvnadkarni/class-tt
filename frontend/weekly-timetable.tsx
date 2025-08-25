@@ -258,7 +258,11 @@ function _WeeklyTimetable({
     });
     setCurrentBatch(1);
     setBatches(
-      Math.max(...Object.keys(existingData?.subject || {1: ""}).map((key) => parseInt(key)))
+      Math.max(
+        ...Object.keys(existingData?.subject || { 1: "" }).map((key) =>
+          parseInt(key)
+        )
+      )
     );
     setTeachers(existingData?.teachers || { [currentBatch]: [] });
     setIsModalOpen(true);
@@ -694,25 +698,33 @@ function _WeeklyTimetable({
               )}
 
               <div className="flex justify-end">
-                <div
-                  className="px-4 py-2 bg-primary text-black hover:bg-primary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                  onClick={() => {}}
+                <button
+                  className={`px-4 py-2 ${
+                    formData.subject[currentBatch]
+                      ? "bg-primary text-white"
+                      : "bg-neutral  text-gray-500"
+                  } text-sm font-medium rounded-lg transition-colors flex items-center gap-2 cursor-pointer`}
+                  onClick={() => {
+                    setTeachers(oldTeachers => ({
+                      ...oldTeachers,
+                      [currentBatch]: []
+                    }))
+                    setFormData(oldFormData => ({
+                      ...oldFormData,
+                      subject: {
+                        ...oldFormData.subject,
+                        [currentBatch]: ""
+                      },teacher: {
+                        ...oldFormData.teacher,
+                        [currentBatch]: ""
+                      }
+                    }))
+                  }}
                 >
-                  <input
-                    id="batchwise"
-                    type="checkbox"
-                    className="bg-white"
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        batchwise: e.target.checked,
-                      }))
-                    }
-                  />
-                  <label htmlFor="batchwise" className="text-white">
-                    Batchwise Period
+                  <label htmlFor="batchwise" className="">
+                    Clear Period
                   </label>
-                </div>
+                </button>
               </div>
             </div>
 
