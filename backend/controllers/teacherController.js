@@ -91,7 +91,7 @@ const loginTeacher = async (req, res) => {
 
     // create token
     const token = createToken(teacher._id);
-    res.status(200).json({ username, token, tier: teacher.tier });
+    res.status(200).json({ username, token, tier: teacher.tier, name: teacher.name, displayName: teacher.displayName });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
