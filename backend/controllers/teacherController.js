@@ -155,6 +155,42 @@ const getTeacherWorkload = async (req, res) => {
       allotted: allotted,
     })
   );
+
+  const subjectOrder = [
+    "Math",
+    "Eng",
+    "Science",
+    "SS",
+    "Hindi",
+    "Konkani",
+    "French",
+    "Mental Math",
+    "CE",
+    "Science Lab",
+    "CH",
+    "CK",
+    "CF",
+    "PE",
+    "Games",
+    "Yoga",
+    "MA",
+    "Art",
+    "Music",
+    "SD",
+    "Dance",
+    "Comp",
+    "Library",
+    "STEAM",
+    "ATL",
+    "WE",
+    "GK",
+    "LS",
+    "H&W",
+  ];
+  trSubjectsArray.sort((a, b) => {
+    return subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject);
+  });
+
   // return allotted
   return res.json({
     message: "Workload obtained successfully",
