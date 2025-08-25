@@ -43,6 +43,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
             <thead className="w-full">
               <tr className="w-full">
                 <th className="w-24 text-left">Subject</th>
+                <th className="w-24 text-left">Class</th>
                 <th className="w-24 text-left">Allotted</th>
               </tr>
             </thead>
@@ -51,6 +52,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               {workload.map((subject) => (
                 <tr className="w-full">
                   <td className="w-24">{subject.subject}</td>
+                  <td className="w-24">{subject.class}</td>
                   <td className="w-24">{subject.allotted}</td>
                 </tr>
               ))}
