@@ -537,8 +537,12 @@ function _WeeklyTimetable({
 
                           for (const classe in classTimetables) {
                             if (
-                              classTimetables[classe].hasOwnProperty(classKey)
+                              classTimetables[classe].hasOwnProperty(
+                                classKey
+                              ) &&
+                              classTimetables[classe][classKey]
                             ) {
+                              console.log(classTimetables[classe]);
                               if (
                                 classTimetables[classe][classKey].subject[0]
                               ) {
