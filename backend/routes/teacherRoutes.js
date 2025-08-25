@@ -24,6 +24,6 @@ teacherRouter.post("/", createTeacher);
 teacherRouter.patch("/:id", updateTeacher);
 teacherRouter.delete("/:id", deleteTeacher);
 
-teacherRouter.get("/workload", getTeacherWorkload);
+teacherRouter.get("/workload/:id", getTeacherWorkload);
 
 module.exports = teacherRouter;

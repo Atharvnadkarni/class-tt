@@ -112,7 +112,7 @@ const signupTeacher = async (req, res) => {
 
 const getTeacherWorkload = async (req, res) => {
   // get timetable
-  const { _id } = req.params;
+  const { id: _id } = req.params;
   const teacher = await Teacher.findById(_id);
 
   const timetableStr = await redisClient.get("timetable");
@@ -121,20 +121,26 @@ const getTeacherWorkload = async (req, res) => {
   const teacherSubjects = {};
   // see tr subjects
   for (const class_ of Object.keys(timetable)) {
-    for (const key of Object.keys(class_)) {
-      if (Object.values(key.teachers).flat().includes(teacher.displayName)) {
-        if (teacherSubjects[Object.values(key.subject).join("/")]) {
-          teacherSubjects[Object.values(key.subject).join("/")] += 1;
-        } else {
-          teacherSubjects[Object.values(key.subject).join("/")] = 0;
+    const classKeys = timetable[class_];
+    for (const key of Object.keys(classKeys)) {
+      const value = classKeys[key];
+      console.log(Object.values(value.teachers).flat(), teacher.displayName);
+      if (Object.values(value.teachers).flat().includes(teacher.displayName)) {
+        console.log(teacherSubjects[Object.values(value.subject).join("/")]);
+        if (!teacherSubjects[Object.values(value.subject).join("/")]) {
+          teacherSubjects[Object.values(value.subject).join("/")] = 0;
         }
+        teacherSubjects[Object.values(value.subject).join("/")] += 1;
       }
     }
   }
-  const trSubjectsArray = Object.entries(teacherSubjects).map(([subject, allotted]) => ({
-    subject: subject,
-    allotted: allotted,
-  }));
+  console.log(teacherSubjects);
+  const trSubjectsArray = Object.entries(teacherSubjects).map(
+    ([subject, allotted]) => ({
+      subject: subject,
+      allotted: allotted,
+    })
+  );
   // return allotted
   return res.json({
     message: "Workload obtained successfully",
@@ -151,5 +157,5 @@ module.exports = {
   deleteTeacher,
   loginTeacher,
   signupTeacher,
-  getTeacherWorkload
+  getTeacherWorkload,
 };
