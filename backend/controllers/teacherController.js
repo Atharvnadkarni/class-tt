@@ -132,15 +132,16 @@ const getTeacherWorkload = async (req, res) => {
     for (const key of Object.keys(classKeys)) {
       const value = classKeys[key];
       if (value && value?.subject && value?.teachers) {
-        console.log(Object.values(value?.teachers).flat(), teacher.displayName);
-        if (
-          Object.values(value?.teachers).flat().includes(teacher.displayName)
-        ) {
-          console.log(teacherSubjects[Object.values(value?.subject).join("/")]);
-          if (!teacherSubjects[Object.values(value?.subject).join("/")]) {
-            teacherSubjects[Object.values(value?.subject).join("/")] = 0;
+        const subjectBatches = value?.subject;
+        const subjectArray = Object.values(subjectBatches);
+        const teacherBatches = value?.teachers;
+        const teacherArray = Object.values(teacherBatches);
+        const teacherArrayFlat = teacherArray.flat();
+        if (teacherArray.flat().includes(teacher.displayName)) {
+          if (!teacherSubjects[[subjectArray.join("/"), class_].join(" | ")]) {
+            teacherSubjects[[subjectArray.join("/"), class_].join(" | ")] = 0;
           }
-          teacherSubjects[Object.values(value?.subject).join("/")] += 1;
+          teacherSubjects[[subjectArray.join("/"), class_].join(" | ")] += 1;
         }
       }
     }
@@ -149,7 +150,8 @@ const getTeacherWorkload = async (req, res) => {
   const { name, displayName, username } = teacher.toObject();
   const trSubjectsArray = Object.entries(teacherSubjects).map(
     ([subject, allotted]) => ({
-      subject: subject,
+      subject: subject.split(" | ")[0],
+      class: subject.split(" | ")[1],
       allotted: allotted,
     })
   );
