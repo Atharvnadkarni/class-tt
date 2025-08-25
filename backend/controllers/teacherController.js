@@ -117,6 +117,28 @@ const signupTeacher = async (req, res) => {
   }
 };
 
+const findTeacherInBatchArray = (teacher, teacherArray) => {
+  let index = [];
+  for (let i = 0; i < teacherArray.length; i++) {
+    const batch = teacherArray[i];
+    console.log(teacherArray)
+    for (let j = 0; j < batch.length; j++) {
+      const teacher_ = batch[j];
+      if (teacher_ == teacher) {
+        index = [i,j]
+      }
+    }
+  }
+  return index;
+}
+// const getNestedValue = (array, indexArr) => {
+//   let latestDivision = array;
+//   for (const index of indexArr) {
+//     latestDivision = latestDivision[index]
+//   }
+//   return latestDivision
+// }
+
 const getTeacherWorkload = async (req, res) => {
   // get timetable
   const { id: _id } = req.params;
@@ -136,12 +158,13 @@ const getTeacherWorkload = async (req, res) => {
         const subjectArray = Object.values(subjectBatches);
         const teacherBatches = value?.teachers;
         const teacherArray = Object.values(teacherBatches);
-        const teacherArrayFlat = teacherArray.flat();
-        if (teacherArray.flat().includes(teacher.displayName)) {
-          if (!teacherSubjects[[subjectArray.join("/"), class_].join(" | ")]) {
-            teacherSubjects[[subjectArray.join("/"), class_].join(" | ")] = 0;
+        const teacherIndex = findTeacherInBatchArray(teacher.displayName, teacherArray)
+        if (teacherIndex.length > 1) {
+          const subject = subjectArray[teacherIndex[0]]
+          if (!teacherSubjects[[subject, class_].join(" | ")]) {
+            teacherSubjects[[subject, class_].join(" | ")] = 0;
           }
-          teacherSubjects[[subjectArray.join("/"), class_].join(" | ")] += 1;
+          teacherSubjects[[subject, class_].join(" | ")] += 1;
         }
       }
     }
