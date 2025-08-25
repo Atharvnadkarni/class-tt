@@ -63,7 +63,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
             {teacher.name}
           </h4>
           <p className="text-sm/[18px] text-gray-600">
-            {teacher.subjects
+            {teacher.subjects.length > 0 && teacher.subjects
               .map(
                 (subject) =>
                   `${
