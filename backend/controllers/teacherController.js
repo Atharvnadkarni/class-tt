@@ -211,6 +211,9 @@ const getTeacherWorkload = async (req, res) => {
     "H&W",
   ];
   trSubjectsArray.sort((a, b) => {
+    return a.class.localeCompare(b.class)
+  })
+  trSubjectsArray.sort((a, b) => {
     return subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject);
   });
 
