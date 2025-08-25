@@ -257,6 +257,9 @@ function _WeeklyTimetable({
       },
     });
     setCurrentBatch(1);
+    setBatches(
+      Math.max(...Object.keys(existingData?.subject).map((key) => parseInt(key)))
+    );
     setTeachers(existingData?.teachers || { [currentBatch]: [] });
     setIsModalOpen(true);
   };
@@ -280,14 +283,15 @@ function _WeeklyTimetable({
         <div className="text-xs">
           <div className="font-medium text-gray-800">
             {Object.values(data.subject)
-              .map(
-                (batch) => subjectToDisplayName[batch] || batch
-              )
+              .map((batch) => subjectToDisplayName[batch] || batch)
               .join("/")}
           </div>
 
           <div className="text-gray-500">
-            {Object.values(data.teachers).map(teacherList => teacherList.join("/")).join(" | ").replaceAll(/\/$/g, "")}
+            {Object.values(data.teachers)
+              .map((teacherList) => teacherList.join("/"))
+              .join(" | ")
+              .replaceAll(/\/$/g, "")}
           </div>
         </div>
       );
@@ -619,11 +623,9 @@ function _WeeklyTimetable({
                           console.log();
                           const lastTeacher = formData.teacher[currentBatch];
                           setTeachers((prevtrlist) => {
-                            const currentTrList = prevtrlist[currentBatch] || []
-                            const newTrList = [
-                              ...currentTrList,
-                              lastTeacher,
-                            ];
+                            const currentTrList =
+                              prevtrlist[currentBatch] || [];
+                            const newTrList = [...currentTrList, lastTeacher];
                             const filteredNewTrList = newTrList.filter(
                               (item, index) => {
                                 return newTrList.indexOf(item) == index;
