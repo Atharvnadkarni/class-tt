@@ -1,4 +1,4 @@
-import { X, Save } from "lucide-react";
+import { X, Save, Trash2 } from "lucide-react";
 
 const DeleteModal = ({ setIsModalOpen, deleteAction }) => {
   return (
@@ -39,8 +39,8 @@ const DeleteModal = ({ setIsModalOpen, deleteAction }) => {
             }}
             className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
           >
-            <Save className="h-4 w-4" />
-            Save
+            <Trash2 className="h-4 w-4" />
+            Delete
           </button>
         </div>
       </div>
