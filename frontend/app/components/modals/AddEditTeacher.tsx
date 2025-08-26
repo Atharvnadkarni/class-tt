@@ -186,13 +186,11 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
             <button
               onClick={handleCancel}
               className="text-gray-400 hover:text-gray-600 transition-colors"
-            >
-              <X className="h-5 w-5" />
-            </button>
+            ></button>
           </div>
 
           {/* Modal Body */}
-          <div className="flex flex-col p-6 space-y-4 flex-1 max-width-[90%] overflow-auto">
+          <div className="flex flex-col p-6 space-y-2 flex-1 overflow-auto">
             {/* Subject Input */}
             <div className="">
               <label
@@ -364,25 +362,15 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 self-end">
-            <button
-              onClick={handleCancel}
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 w-[200%] self-end invisible">
+            <div
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-            >
-              Cancel
-            </button>
-            <button
-              onClick={
-                mode.mode == "add"
-                  ? handleAddSave
-                  : mode.mode == "edit"
-                  ? () => handleEditSave(mode.teacher._id)
-                  : null
-              }
-              className="px-4 py-2 text-sm font-medium  bg-secondary text-black text-black rounded-lg transition-colors flex items-center gap-2"
-            >
-              OK
-            </button>
+            >a
+            </div>
+            <div
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            >b
+            </div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-xl w-full max-w-md h-[80%] flex flex-col rounded-s-none rounded-e-lg">
@@ -400,7 +388,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           </div>
 
           {/* Modal Body */}
-          <div className="p-6 space-y-4 flex-1 flex flex-col overflow-auto">
+          <div className="p-6 space-y-4 flex-1 flex flex-col overflow-auto relative">
             {/* Subject Input */}
             <ul className="flex-1">
               {subs.map((sub) => {
@@ -418,130 +406,70 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 );
               })}
             </ul>
-            <div className="flex justify-end self-end w-full">
-              <div className="subject">
-                <label
-                  htmlFor="class-taught"
-                  className="block text-sm font-medium text-gray-700 mb-2"
+            <div className="subject absolute bottom-6 right-6 z-10 w-auto">
+              <label
+                htmlFor="class-taught"
+                className="block text-sm font-medium text-gray-700 mb-2"
+              >
+                Add new Subject
+              </label>
+              <div className="flex w-full">
+                <select
+                  className="w px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  value={formData.subject}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      subject: e.target.value,
+                    }));
+                  }}
                 >
-                  Subjects
-                </label>
-                <div className="flex w-full">
-                  <select
-                    className="w px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={formData.subject}
-                    onChange={(e) => {
-                      // setFormData((prev) => ({
-                      //   ...formData,
-                      //   subjects: [
-                      //     { ...prev.subjects, subject: e.target.value },
-                      //     ...formData.subjects.filter(
-                      //       (elem, ind) => ind != i
-                      //     ),
-                      //   ],
-                      // }));
-                      setFormData((prev) => ({
-                        ...prev,
-                        subject: e.target.value,
-                      }));
-                    }}
-                  >
-                    <option value="">Subject</option>
-
-                    {subjectList.map((subject) => (
-                      <option value={subject}>
-                        {subjectToDisplayName[subject.subject] &&
-                        subjectToDisplayName[subject.subject].length <= 10
-                          ? subjectToDisplayName[subject.subject]
-                          : subject}
-                      </option>
-                    ))}
-                  </select>
-                  {/* {} */}
-                  <input
-                    type="number"
-                    id="teacherName"
-                    value={formData.classNo ?? 0}
-                    onChange={(e) => {
-                      // setFormData((prev) => ({
-                      //   ...prev,
-                      //   subjects: [
-                      //     {
-                      //       ...prev,
-                      //       classNo: parseInt(e.target.value),
-                      //     },
-                      //     ...prev.subjects.filter(
-                      //       (elem, ind) => ind != i
-                      //     ),
-                      //   ],
-                      // }));
-                      setFormData((prev) => ({
-                        ...prev,
-                        classNo:
-                          e.target.value == null
-                            ? ""
-                            : parseInt(e.target.value),
-                      }));
-                    }}
-                    placeholder="Class"
-                    className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                  {/* <select
-                    className="w px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                    value={formData.div}
-                    onChange={(e) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        div: e.target.value,
-                      }));
-                      // setFormData((prev) => ({
-                      //   ...prev,
-                      //   subjects: [
-                      //     {
-                      //       ...prev.subjects[i],
-                      //       div: e.target.value,
-                      //     },
-                      //     ...prev.subjects.filter(
-                      //       (elem, ind) => ind != i
-                      //     ),
-                      //   ],
-                      // }));
-                    }}
-                  >
-                    <option value="">Division</option>
-                    <option value="A">A</option>
-                    <option value="B">B</option>
-                    <option value="C">C</option>
-                    <option value="AB">AB</option>
-                    <option value="AC">AC</option>
-                    <option value="BC">BC</option>
-                    <option value="ABC">ABC</option>
-                  </select> */}
-                  <button
-                    onClick={(e) => {
-                      const sub = JSON.parse(JSON.stringify(formData));
-                      setFormData((prev) => ({
-                        subject: "",
-                        div: "",
-                        classNo: null,
-                      }));
-
-                      setSubs((prev) => [...prev, sub]);
-                    }}
-                    className="px-2 h-[45px] ml-5 text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
-                  >
-                    <Plus className="" />
-                  </button>
-                </div>
+                  <option value="">Subject</option>
+                  {subjectList.map((subject) => (
+                    <option value={subject}>
+                      {subjectToDisplayName[subject.subject] &&
+                      subjectToDisplayName[subject.subject].length <= 10
+                        ? subjectToDisplayName[subject.subject]
+                        : subject}
+                    </option>
+                  ))}
+                </select>
+                <input
+                  type="number"
+                  id="teacherName"
+                  value={formData.classNo ?? 0}
+                  onChange={(e) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      classNo:
+                        e.target.value == null ? "" : parseInt(e.target.value),
+                    }));
+                  }}
+                  placeholder="Class"
+                  className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+                <button
+                  onClick={(e) => {
+                    const sub = JSON.parse(JSON.stringify(formData));
+                    setFormData((prev) => ({
+                      subject: "",
+                      div: "",
+                      classNo: null,
+                    }));
+                    setSubs((prev) => [...prev, sub]);
+                  }}
+                  className="px-2 h-[45px] ml-5 text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <Plus className="" />
+                </button>
               </div>
-
-              {/* Subject Input */}
             </div>
-            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+
+            {/* Subject Input */}
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 self-end">
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 w-[200%] self-end">
             <button
               onClick={handleCancel}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
