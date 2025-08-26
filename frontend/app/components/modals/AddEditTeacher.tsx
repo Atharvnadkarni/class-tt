@@ -176,8 +176,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   }, []);
   if (mode && mode.mode) {
     return (
-      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-        <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4 flex">
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-md h-[80%] flex flex-col rounded-e-none rounded-s-lg">
           {/* Modal Header */}
           <div className="flex items-center justify-between p-6 border-b border-gray-200">
             <h3 className="text-lg font-semibold text-gray-800">
@@ -192,9 +192,9 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           </div>
 
           {/* Modal Body */}
-          <div className="p-6 space-y-4">
+          <div className="flex flex-col p-6 space-y-4 flex-1 max-width-[90%] overflow-auto">
             {/* Subject Input */}
-            <div>
+            <div className="">
               <label
                 htmlFor="teacherName"
                 className="block text-sm font-medium text-gray-700 mb-2"
@@ -233,7 +233,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <div>
+            <div className="">
               <label
                 htmlFor="username"
                 className="block text-sm font-medium text-gray-700 mb-2"
@@ -251,7 +251,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <div>
+            <div className="">
               <label
                 htmlFor="displayName"
                 className="block text-sm font-medium text-gray-700 mb-2"
@@ -271,7 +271,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
-            <div>
+            <div className="">
               <label
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700 mb-2"
@@ -360,7 +360,65 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
               </div>
               {/* Subject Input */}
             </div>
-            <div className="subjects">
+            {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
+          </div>
+
+          {/* Modal Footer */}
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 self-end">
+            <button
+              onClick={handleCancel}
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+            >
+              Cancel
+            </button>
+            <button
+              onClick={
+                mode.mode == "add"
+                  ? handleAddSave
+                  : mode.mode == "edit"
+                  ? () => handleEditSave(mode.teacher._id)
+                  : null
+              }
+              className="px-4 py-2 text-sm font-medium  bg-secondary text-black text-black rounded-lg transition-colors flex items-center gap-2"
+            >
+              OK
+            </button>
+          </div>
+        </div>
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-md h-[80%] flex flex-col rounded-s-none rounded-e-lg">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between p-6 border-b border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800">
+              Subjects (optional)
+            </h3>
+            <button
+              onClick={handleCancel}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
+
+          {/* Modal Body */}
+          <div className="p-6 space-y-4 flex-1 flex flex-col overflow-auto">
+            {/* Subject Input */}
+            <ul className="flex-1">
+              {subs.map((sub) => {
+                {
+                  console.log(sub.classes);
+                }
+
+                return (
+                  <li>
+                    {sub.subject}{" "}
+                    {sub.classes
+                      ? sub.classes.join(", ").replace(" 0", "")
+                      : sub.classNo}
+                  </li>
+                );
+              })}
+            </ul>
+            <div className="flex justify-end self-end w-full">
               <div className="subject">
                 <label
                   htmlFor="class-taught"
@@ -476,29 +534,14 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   </button>
                 </div>
               </div>
-              <ul>
-                {subs.map((sub) => {
-                  {
-                    console.log(sub.classes);
-                  }
 
-                  return (
-                    <li>
-                      {sub.subject}{" "}
-                      {sub.classes
-                        ? sub.classes.join(", ").replace(" 0", "")
-                        : sub.classNo}
-                    </li>
-                  );
-                })}
-              </ul>
               {/* Subject Input */}
             </div>
             {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 self-end">
             <button
               onClick={handleCancel}
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
