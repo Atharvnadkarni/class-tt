@@ -8,7 +8,6 @@ const Tnc = () => {
     <div className="min-h-screen bg-gray-50">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
-        <Tabs activeTab={null} />
         <div className="space-y-6">
           <div className="flex flex-col md:flex-row items-center bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="md:w-2/3 w-full text-center md:text-left">
