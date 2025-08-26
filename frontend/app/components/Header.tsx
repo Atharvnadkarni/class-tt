@@ -97,7 +97,7 @@ export default function TimetableHeader() {
                 onClick={handleMenuToggle}
                 className="flex items-center gap-1 text-sm font-medium  transition-colors focus:outline-none"
               >
-                <span>Hello, {user.username}</span>
+                <span>Hello, {user.displayName}</span>
                 <ChevronDown
                   className={`h-4 w-4 transition-transform ${
                     isMenuOpen ? "rotate-180" : ""
