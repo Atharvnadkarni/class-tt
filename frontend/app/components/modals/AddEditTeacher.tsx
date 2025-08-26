@@ -364,12 +364,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           {/* Modal Footer */}
           <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 w-[200%] self-end invisible">
             <div
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-            >a
-            </div>
-            <div
-              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
-            >b
+              className="py-2"
+            >‎ 
             </div>
           </div>
         </div>
