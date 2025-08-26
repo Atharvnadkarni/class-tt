@@ -364,7 +364,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           {/* Modal Footer */}
           <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 w-[200%] self-end invisible">
             <div
-              className="py-2"
+              className="py-2 text-sm"
             >‎ 
             </div>
           </div>
