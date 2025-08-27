@@ -140,7 +140,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Subject</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className="w-24">{subject.subject}</td>
+                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.subject}</td>
                 </tr>
               ))}
             </div>
@@ -148,7 +148,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Class</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className="w-24">{subject.class}</td>
+                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.class}</td>
                 </tr>
               ))}
             </div>
@@ -156,7 +156,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Allotted</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className="w-24">{subject.allotted}</td>
+                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.allotted}</td>
                 </tr>
               ))}
             </div>
@@ -164,7 +164,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Taken</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className="w-24">{subject.taken}</td>
+                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.taken}</td>
                 </tr>
               ))}
             </div>
