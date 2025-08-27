@@ -31,7 +31,9 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
     const fetchData = async () => {
       const teacherId = teacher._id;
       const res = await axios.get(
-        `http://localhost:4000/api/teacher/workload/${teacherId}?startDate=${formatDate(weekRange[0])}&endDate=${formatDate(weekRange[1])}`,
+        `http://localhost:4000/api/teacher/workload/${teacherId}?startDate=${formatDate(
+          weekRange[0]
+        )}&endDate=${formatDate(weekRange[1])}`,
         {
           headers: {
             Authorization: `Bearer ${
@@ -133,27 +135,40 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
           </div>
         </div>
         <div className="flex items-center justify-between p-6 pt-2 border-gray-200">
-          <table>
-            <thead className="w-full">
-              <tr className="w-full">
-                <th className="w-24 text-left">Subject</th>
-                <th className="w-24 text-left">Class</th>
-                <th className="w-24 text-left">Allotted</th>
-                <th className="w-24 text-left">Taken</th>
-              </tr>
-            </thead>
-            <tbody className="w-full">
-              {console.log(workload)}
+          <div className="grid grid-cols-4 w-full">
+            <div className="column">
+              <th className="w-24 text-left">Subject</th>
               {workload.map((subject) => (
                 <tr className="w-full">
                   <td className="w-24">{subject.subject}</td>
+                </tr>
+              ))}
+            </div>
+            <div className="column">
+              <th className="w-24 text-left">Class</th>
+              {workload.map((subject) => (
+                <tr className="w-full">
                   <td className="w-24">{subject.class}</td>
+                </tr>
+              ))}
+            </div>
+            <div className="column">
+              <th className="w-24 text-left">Allotted</th>
+              {workload.map((subject) => (
+                <tr className="w-full">
                   <td className="w-24">{subject.allotted}</td>
+                </tr>
+              ))}
+            </div>
+            <div className="column">
+              <th className="w-24 text-left">Taken</th>
+              {workload.map((subject) => (
+                <tr className="w-full">
                   <td className="w-24">{subject.taken}</td>
                 </tr>
               ))}
-            </tbody>
-          </table>
+            </div>
+          </div>
         </div>
       </div>
     </div>
