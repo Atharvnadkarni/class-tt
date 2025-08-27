@@ -258,13 +258,13 @@ const getTeacherWorkload = async (req, res) => {
   
   teacherSubsIn += trSubs.length;
   
-  const fullWorkload = trSubjectsArray.map((subject, index) => {
+  const workload = trSubjectsArray.map((subject, index) => {
     return {
       ...subject,
       taken: subject.allotted - (teacherSubsOut[index] ?? 0),
     };
   });
-  fullWorkload.push({
+  workload.push({
     subject: "Substitutions",
     allotted: 0,
     taken: teacherSubsIn,
@@ -275,7 +275,7 @@ const getTeacherWorkload = async (req, res) => {
   return res.json({
     message: "Workload obtained successfully",
     teacher: { name, displayName, username },
-    workload: trSubjectsArray,
+    workload,
   });
 };
 
