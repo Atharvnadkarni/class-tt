@@ -3,3 +3,8 @@ export enum Tier {
   COORDINATOR = "Coordinator",
   TEACHER = "Teacher",
 }
+
+export enum ReportRange {
+  WEEKLY = "Weekly",
+  MONTHLY = "Monthly"
+}
