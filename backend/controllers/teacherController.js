@@ -1,4 +1,5 @@
 const Teacher = require("../models/Teacher");
+const Substitution = require("../models/Substitution");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 const redisClient = require("../redis");
@@ -121,16 +122,15 @@ const findTeacherInBatchArray = (teacher, teacherArray) => {
   let index = [];
   for (let i = 0; i < teacherArray.length; i++) {
     const batch = teacherArray[i];
-    console.log(teacherArray)
     for (let j = 0; j < batch.length; j++) {
       const teacher_ = batch[j];
       if (teacher_ == teacher) {
-        index = [i,j]
+        index = [i, j];
       }
     }
   }
   return index;
-}
+};
 // const getNestedValue = (array, indexArr) => {
 //   let latestDivision = array;
 //   for (const index of indexArr) {
@@ -142,6 +142,8 @@ const findTeacherInBatchArray = (teacher, teacherArray) => {
 const getTeacherWorkload = async (req, res) => {
   // get timetable
   const { id: _id } = req.params;
+  const { startDate, endDate } = req.query;
+  
   const teacher = await Teacher.findById(_id);
 
   const timetableStr = await redisClient.get("timetable");
@@ -158,9 +160,12 @@ const getTeacherWorkload = async (req, res) => {
         const subjectArray = Object.values(subjectBatches);
         const teacherBatches = value?.teachers;
         const teacherArray = Object.values(teacherBatches);
-        const teacherIndex = findTeacherInBatchArray(teacher.displayName, teacherArray)
+        const teacherIndex = findTeacherInBatchArray(
+          teacher.displayName,
+          teacherArray
+        );
         if (teacherIndex.length > 1) {
-          const subject = subjectArray[teacherIndex[0]]
+          const subject = subjectArray[teacherIndex[0]];
           if (!teacherSubjects[[subject, class_].join(" | ")]) {
             teacherSubjects[[subject, class_].join(" | ")] = 0;
           }
@@ -169,7 +174,6 @@ const getTeacherWorkload = async (req, res) => {
       }
     }
   }
-  console.log(teacherSubjects);
   const { name, displayName, username } = teacher.toObject();
   const trSubjectsArray = Object.entries(teacherSubjects).map(
     ([subject, allotted]) => ({
@@ -211,11 +215,61 @@ const getTeacherWorkload = async (req, res) => {
     "H&W",
   ];
   trSubjectsArray.sort((a, b) => {
-    return a.class.localeCompare(b.class)
-  })
+    return a.class.localeCompare(b.class);
+  });
   trSubjectsArray.sort((a, b) => {
     return subjectOrder.indexOf(a.subject) - subjectOrder.indexOf(b.subject);
   });
+
+  const substitutions = await Substitution.find({
+    date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+  });
+
+  let teacherSubsOut = {},
+    teacherSubsIn = 0;
+  for (let i = 0; i < trSubjectsArray.length; i++) {
+    const { subject, class: class_ } = trSubjectsArray[i];
+    for (const substitution of substitutions) {
+      const subDate = new Date(substitution.date);
+      const subDay = new Intl.DateTimeFormat("en-IN", {
+        weekday: "long",
+      }).format(subDate);
+      const period = substitution.period;
+      const timetablePeriod = timetable[class_][`${subDay}-${period}`];
+      
+      if (
+        Object.values(timetablePeriod?.subject || []).includes(subject) &&
+        substitution.class == class_ &&
+        findTeacherInBatchArray(
+          teacher.displayName,
+          Object.values(timetablePeriod.teachers)
+        )
+      ) {
+        if (!teacherSubsOut[i]) teacherSubsOut[i] = 0;
+        teacherSubsOut[i] += 1;
+        
+      }
+    }
+  }
+  const trSubs = await Substitution.find({
+    date: { $gte: new Date(startDate), $lte: new Date(endDate) },
+    teacher: teacher.name,
+  });
+  
+  teacherSubsIn += trSubs.length;
+  
+  const fullWorkload = trSubjectsArray.map((subject, index) => {
+    return {
+      ...subject,
+      taken: subject.allotted - (teacherSubsOut[index] ?? 0),
+    };
+  });
+  fullWorkload.push({
+    subject: "Substitutions",
+    allotted: 0,
+    taken: teacherSubsIn,
+  });
+  
 
   // return allotted
   return res.json({
