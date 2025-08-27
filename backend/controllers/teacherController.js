@@ -143,7 +143,7 @@ const getTeacherWorkload = async (req, res) => {
   // get timetable
   const { id: _id } = req.params;
   const { startDate, endDate } = req.query;
-  
+
   const teacher = await Teacher.findById(_id);
 
   const timetableStr = await redisClient.get("timetable");
@@ -236,7 +236,7 @@ const getTeacherWorkload = async (req, res) => {
       }).format(subDate);
       const period = substitution.period;
       const timetablePeriod = timetable[class_][`${subDay}-${period}`];
-      
+
       if (
         Object.values(timetablePeriod?.subject || []).includes(subject) &&
         substitution.class == class_ &&
@@ -247,7 +247,6 @@ const getTeacherWorkload = async (req, res) => {
       ) {
         if (!teacherSubsOut[i]) teacherSubsOut[i] = 0;
         teacherSubsOut[i] += 1;
-        
       }
     }
   }
@@ -255,9 +254,9 @@ const getTeacherWorkload = async (req, res) => {
     date: { $gte: new Date(startDate), $lte: new Date(endDate) },
     teacher: teacher.name,
   });
-  
+
   teacherSubsIn += trSubs.length;
-  
+
   const workload = trSubjectsArray.map((subject, index) => {
     return {
       ...subject,
@@ -269,7 +268,15 @@ const getTeacherWorkload = async (req, res) => {
     allotted: 0,
     taken: teacherSubsIn,
   });
-  
+  let workloadSum = {allotted:0, taken:0};
+  workload.forEach((subject) => {
+    workloadSum.allotted += subject.allotted;
+    workloadSum.taken += subject.taken;
+  });
+  workload.push({
+    subject: "Total",
+    ...workloadSum
+  })
 
   // return allotted
   return res.json({
