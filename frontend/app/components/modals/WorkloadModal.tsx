@@ -18,6 +18,11 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
     lastMonday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
     const lastSaturday = new Date(today);
     lastSaturday.setDate(lastMonday.getDate() + 5);
+    // If lastSaturday is after today, go another week before
+    if (lastSaturday > today) {
+      lastMonday.setDate(lastMonday.getDate() - 7);
+      lastSaturday.setDate(lastSaturday.getDate() - 7);
+    }
 
     setWeekRange([lastMonday, lastSaturday]);
   }, []);
@@ -117,7 +122,8 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
                   const nextSaturday = new Date(sat);
                   nextMonday.setDate(mon.getDate() + 7);
                   nextSaturday.setDate(sat.getDate() + 7);
-                  setWeekRange([nextMonday, nextSaturday]);
+                  if (nextSaturday <= new Date())
+                    setWeekRange([nextMonday, nextSaturday]);
                 }}
                 className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
               >
