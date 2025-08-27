@@ -31,7 +31,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
     const fetchData = async () => {
       const teacherId = teacher._id;
       const res = await axios.get(
-        "http://localhost:4000/api/teacher/workload/" + teacherId,
+        `http://localhost:4000/api/teacher/workload/${teacherId}?startDate=${weekRange[0]}&endDate=${weekRange[1]}`,
         {
           headers: {
             Authorization: `Bearer ${
