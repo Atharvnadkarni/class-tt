@@ -139,6 +139,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
                 <th className="w-24 text-left">Subject</th>
                 <th className="w-24 text-left">Class</th>
                 <th className="w-24 text-left">Allotted</th>
+                <th className="w-24 text-left">Taken</th>
               </tr>
             </thead>
             <tbody className="w-full">
@@ -148,6 +149,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
                   <td className="w-24">{subject.subject}</td>
                   <td className="w-24">{subject.class}</td>
                   <td className="w-24">{subject.allotted}</td>
+                  <td className="w-24">{subject.taken}</td>
                 </tr>
               ))}
             </tbody>
