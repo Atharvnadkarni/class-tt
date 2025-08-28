@@ -30,7 +30,7 @@ const getSubstitution = async (req, res) => {
 
 const createSubstitution = async (req, res) => {
   const { body } = req;
-
+  let missingFields = []
   try {
     const newSubstitution = await Substitution.create(body);
     res.status(201).json({
@@ -38,6 +38,13 @@ const createSubstitution = async (req, res) => {
       substitution: newSubstitution,
     });
   } catch (err) {
+    if (!body.class) missingFields.push("class")
+    if (!body.period) missingFields.push("period")
+    if (!body.date) missingFields.push("date")
+    if (!body.teacher) missingFields.push("teacher")
+    if (missingFields) {
+      res.status(400).json({message: 'Bad request', error: `${missingFields.join(", ")} missing.`.slice(0,1).toUpperCase() + `${missingFields.join(", ")} missing.`.slice(1)})
+    }
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
