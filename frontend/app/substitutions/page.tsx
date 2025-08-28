@@ -161,6 +161,7 @@ const SubstitutionPage = () => {
             {...{
               mode,
               setMode,
+              setSubstitutions:setSubs,
               teachers,
             }}
           />

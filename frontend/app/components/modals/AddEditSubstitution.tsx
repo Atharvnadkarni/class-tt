@@ -4,7 +4,7 @@ import { Plus, Save, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
-const AddEditSubstitution = ({ mode, setMode, teachers }) => {
+const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
   const user = useSelector((state) => state.user);
   const [error, setError] = useState(null);
 
@@ -45,7 +45,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
       setError("Must be logged in");
       return;
     }
-    await axios.post(
+    const { substitutions } = await axios.post(
       "http://localhost:4000/api/substitution",
       {
         ...formData,
@@ -56,7 +56,12 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
     );
 
     setMode({ mode: null, sub: null });
-    location.reload();
+    const newSubstitutions = await (
+      await axios.get("http://localhost:4000/api/substitution", {
+        headers: { Authorization: `Bearer ${user.token}` },
+      })
+    ).data.substitutions;
+    setSubstitutions(newSubstitutions);
   };
   const handleEditSave = async (_id) => {
     if (!user) {
@@ -73,9 +78,8 @@ const AddEditSubstitution = ({ mode, setMode, teachers }) => {
         headers: { Authorization: `Bearer ${user.token}` },
       })
     ).data.substitutions;
-    console.log(newSubstitutions);
     setMode(null);
-    location.reload();
+    setSubstitutions(newSubstitutions);
   };
 
   if (mode && mode.mode) {
