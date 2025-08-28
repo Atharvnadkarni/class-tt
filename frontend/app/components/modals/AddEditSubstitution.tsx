@@ -45,6 +45,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
       setError("Must be logged in");
       return;
     }
+    try {
     const { substitutions } = await axios.post(
       "http://localhost:4000/api/substitution",
       {
@@ -61,7 +62,9 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
         headers: { Authorization: `Bearer ${user.token}` },
       })
     ).data.substitutions;
-    setSubstitutions(newSubstitutions);
+    setSubstitutions(newSubstitutions);} catch (err) {
+      setError(err.response.data.error)
+    }
   };
   const handleEditSave = async (_id) => {
     if (!user) {
