@@ -215,7 +215,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                       allTeachers
                         .map((tr) => tr.username)
                         .includes(trimmedUserName) &&
-                      trimmedName.split(" ")[1][0]
+                      trimmedName.split(" ")[1]?.[0]
                     ) {
                       trimmedUserName += trimmedName.split(" ")[1][0];
                       trimmedUserName = trimmedUserName.toLowerCase();
@@ -227,7 +227,12 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                     setPassword(trimmedUserName + 123);
                   }
                 }}
-                placeholder="Enter teacher name"
+                placeholder={
+                  typeof window !== "undefined" &&
+                  window.matchMedia("(max-width: 640px)").matches
+                    ? "Teacher name"
+                    : "Enter teacher name"
+                }
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -245,7 +250,12 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 onChange={(e) => {
                   setUsername(e.target.value);
                 }}
-                placeholder="Enter teacher name"
+                placeholder={
+                  typeof window !== "undefined" &&
+                  window.matchMedia("(max-width: 640px)").matches
+                    ? "Username"
+                    : "Enter username"
+                }
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -265,7 +275,12 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   setUsername(e.target.value.toLowerCase());
                   setPassword(e.target.value.toLowerCase() + 123);
                 }}
-                placeholder="Enter teacher name"
+                placeholder={
+                  typeof window !== "undefined" &&
+                  window.matchMedia("(max-width: 640px)").matches
+                    ? "Display name"
+                    : "Enter display name"
+                }
                 className="w-full px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               />
             </div>
@@ -284,7 +299,12 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   setPassword(e.target.value);
                 }}
                 placeholder={
-                  password == "-------"
+                  typeof window !== "undefined" &&
+                  window.matchMedia("(max-width: 640px)").matches
+                    ? password == "-------"
+                      ? "Change password"
+                      : "Password"
+                    : password == "-------"
                     ? "Type new password to change password"
                     : "Enter password"
                 }
@@ -363,10 +383,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
 
           {/* Modal Footer */}
           <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 w-[200%] self-end invisible">
-            <div
-              className="py-2 text-sm"
-            >‎ 
-            </div>
+            <div className="py-2 text-sm">‎</div>
           </div>
         </div>
         <div className="bg-white rounded-lg shadow-xl w-full max-w-md h-[80%] flex flex-col rounded-s-none rounded-e-lg">
@@ -402,14 +419,14 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 );
               })}
             </ul>
-            <div className="subject absolute bottom-6 right-6 z-10 w-auto flex flex-col sm:flex-row">
+            <div className="subject absolute bottom-6 right-6 z-10 w-auto left-6">
               <label
                 htmlFor="class-taught"
                 className="block text-sm font-medium text-gray-700 mb-2"
               >
                 Add new Subject
               </label>
-              <div className="flex w-full">
+              <div className="flex w-full flex-col sm:flex-row">
                 <select
                   className="w px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   value={formData.subject}
@@ -430,34 +447,38 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                     </option>
                   ))}
                 </select>
-                <input
-                  type="number"
-                  id="teacherName"
-                  value={formData.classNo ?? 0}
-                  onChange={(e) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      classNo:
-                        e.target.value == null ? "" : parseInt(e.target.value),
-                    }));
-                  }}
-                  placeholder="Class"
-                  className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-                <button
-                  onClick={(e) => {
-                    const sub = JSON.parse(JSON.stringify(formData));
-                    setFormData((prev) => ({
-                      subject: "",
-                      div: "",
-                      classNo: null,
-                    }));
-                    setSubs((prev) => [...prev, sub]);
-                  }}
-                  className="px-2 h-[45px] ml-5 text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <Plus className="" />
-                </button>
+                <div className="flex justify-between sm:block">
+                  <input
+                    type="number"
+                    id="teacherName"
+                    value={formData.classNo ?? 0}
+                    onChange={(e) => {
+                      setFormData((prev) => ({
+                        ...prev,
+                        classNo:
+                          e.target.value == null
+                            ? ""
+                            : parseInt(e.target.value),
+                      }));
+                    }}
+                    placeholder="Class"
+                    className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  />
+                  <button
+                    onClick={(e) => {
+                      const sub = JSON.parse(JSON.stringify(formData));
+                      setFormData((prev) => ({
+                        subject: "",
+                        div: "",
+                        classNo: null,
+                      }));
+                      setSubs((prev) => [...prev, sub]);
+                    }}
+                    className="px-2 h-[45px] ml-5 text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <Plus className="" />
+                  </button>
+                </div>
               </div>
             </div>
 
