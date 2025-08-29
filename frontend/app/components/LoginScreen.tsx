@@ -10,7 +10,6 @@ import Link from "next/link";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogin } from "../hooks/useLogin";
-import GrkclBg from "../../images/Grkcl.jpg";
 
 export default function LoginScreen({ sessionExpired }) {
   const [username, setUsername] = useState("");
@@ -31,10 +30,7 @@ export default function LoginScreen({ sessionExpired }) {
     )
   ) : (
     <div
-      className="min-h-screen flex flex-col bg-cover"
-      style={{
-        backgroundImage: `linear-gradient(rgba(255 255 255 / ${1-backgroundOpacity}), rgb(255 255 255 / ${1-backgroundOpacity})),url(${GrkclBg.src})`,
-      }}
+      className="min-h-screen flex flex-col bg-gray-200"
     >
       <TimetableHeader loggedIn={false} />
       {sessionExpired && (
