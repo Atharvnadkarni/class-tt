@@ -11,7 +11,8 @@ import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 
 export const useRequest = (options: UseRequestOptions = {}) => {
-  const baseURL = options.baseURL || "http://localhost:4000/api";
+  const baseURL =
+    options.baseURL || "https://class-tt-backend.onrender.com/api";
   const token = JSON.parse(localStorage.getItem("user")).token;
   const getAuthHeaders = () =>
     token ? { Authorization: `Bearer ${token}` } : {};
