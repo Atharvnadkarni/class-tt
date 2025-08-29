@@ -1,5 +1,6 @@
-
+import { logout } from "@/context/userSlice";
 import axios, { AxiosRequestConfig } from "axios";
+import { useRouter } from "next/navigation";
 
 export interface UseRequestOptions {
   baseURL?: string;
@@ -7,15 +8,18 @@ export interface UseRequestOptions {
 }
 
 import { useState, useCallback } from "react";
+import { useDispatch } from "react-redux";
 
 export const useRequest = (options: UseRequestOptions = {}) => {
   const baseURL = options.baseURL || "http://localhost:4000/api";
-  const token = JSON.parse(localStorage.getItem("user")).token
+  const token = JSON.parse(localStorage.getItem("user")).token;
   const getAuthHeaders = () =>
     token ? { Authorization: `Bearer ${token}` } : {};
 
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+  const dispatch = useDispatch();
 
   // Helper for requests
   const request = useCallback(
@@ -37,6 +41,11 @@ export const useRequest = (options: UseRequestOptions = {}) => {
         });
         return res;
       } catch (err: any) {
+        if (err?.response?.status == 401) {
+          localStorage.removeItem("user");
+          dispatch(logout());
+          router.push("/login");
+        }
         setError(err?.response?.data?.error || err.message || "Unknown error");
         throw err;
       } finally {
@@ -47,8 +56,7 @@ export const useRequest = (options: UseRequestOptions = {}) => {
   );
 
   // Teacher Requests
-  
 
   // Substitution Requests
-  return {request, isLoading, error}
-}
+  return { request, isLoading, error };
+};
