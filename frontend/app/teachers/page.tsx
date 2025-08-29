@@ -47,7 +47,7 @@ export default function TeacherPage() {
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await request("get", "/teacher")
-      setAllTeachers(teachers.data);
+      setAllTeachers(teachers.data.teacher);
     };
     fetchTeachers();
   }, [user]);
@@ -124,6 +124,7 @@ export default function TeacherPage() {
             )}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
               {/* {} */}
+              {console.log(127, allTeachers)}
               {JSON.stringify(allTeachers) != "[]" &&
                 allTeachers.map((teacher) => (
                   <TeacherCard
