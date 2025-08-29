@@ -93,11 +93,11 @@ const WorkloadModal = ({
               Monply Report
             </button>
           </div> */}
-          <div>
+          <div className="w-full">
             <label className="block text-sm text-gray-600 mb-1">
               Week Range
             </label>
-            <div className="grid gap-2">
+            <div className="sm:flex gap-2">
               <button
                 onClick={() => {
                   const [mon, sat] = weekRange;
@@ -117,7 +117,7 @@ const WorkloadModal = ({
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 // onChange={...}
               />
-              <span className="self-center text-gray-500">to</span>
+              <span className="self-center text-gray-500 hidden sm:inline">to</span>
               <input
                 type="date"
                 value={formatDate(weekRange[1])}
