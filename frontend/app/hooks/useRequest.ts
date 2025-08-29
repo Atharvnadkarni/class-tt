@@ -13,7 +13,15 @@ import { useDispatch } from "react-redux";
 export const useRequest = (options: UseRequestOptions = {}) => {
   const baseURL =
     options.baseURL || "https://class-tt-backend.onrender.com/api";
-  const token = JSON.parse(localStorage.getItem("user")).token;
+  let token = "";
+  if (typeof window !== "undefined") {
+    const userStr = window.localStorage.getItem("user");
+    if (userStr) {
+      try {
+        token = JSON.parse(userStr).token;
+      } catch {}
+    }
+  }
   const getAuthHeaders = () =>
     token ? { Authorization: `Bearer ${token}` } : {};
 
@@ -43,7 +51,9 @@ export const useRequest = (options: UseRequestOptions = {}) => {
         return res;
       } catch (err: any) {
         if (err?.response?.status == 401) {
-          localStorage.removeItem("user");
+          if (typeof window !== "undefined") {
+            window.localStorage.removeItem("user");
+          }
           dispatch(logout());
           router.push("/login");
         }

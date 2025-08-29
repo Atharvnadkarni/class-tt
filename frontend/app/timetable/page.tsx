@@ -84,16 +84,15 @@ function _TimetablePage() {
   // Save to localStorage whenever classTimetables changes
   const { request, isLoading, error } = useRequest();
   useEffect(() => {
-    if (!localStorage.getItem("currentClass")) {
-      localStorage.setItem("currentClass", "1A");
+    if (typeof window !== "undefined") {
+      if (!window.localStorage.getItem("currentClass")) {
+        window.localStorage.setItem("currentClass", "1A");
+      }
+      const lastClass = window.localStorage.getItem("currentClass");
+      window.history.pushState(null, "", "?class=" + lastClass);
     }
-    const lastClass = localStorage.getItem("currentClass");
-    history.pushState(null, "", "?class=" + lastClass);
     (async () => {
-      const savedTimetables = await request(
-        "get",
-        "/timetable"
-      );
+      const savedTimetables = await request("get", "/timetable");
       if (savedTimetables) {
         setClassTimetables(JSON.parse(savedTimetables.data.timetable));
       }
@@ -109,8 +108,10 @@ function _TimetablePage() {
 
   const handleClassChange = (newClass: string) => {
     setSelectedClass(newClass);
-    localStorage.setItem("currentClass", newClass);
-    history.pushState(null, "", "?class=" + newClass);
+    if (typeof window !== "undefined") {
+      window.localStorage.setItem("currentClass", newClass);
+      window.history.pushState(null, "", "?class=" + newClass);
+    }
   };
   const params = useSearchParams();
   const classe = params.get("class");

@@ -23,7 +23,9 @@ export const useLogin = () => {
 
       const data = response.data;
 
-      localStorage.setItem("user", JSON.stringify(data));
+      if (typeof window !== "undefined") {
+        window.localStorage.setItem("user", JSON.stringify(data));
+      }
       dispatch(login(data));
       setIsLoading(false);
     } catch (err) {

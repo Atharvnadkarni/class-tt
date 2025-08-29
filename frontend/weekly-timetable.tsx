@@ -61,11 +61,14 @@ function _WeeklyTimetable({
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [teacherMode, setTeacherMode] = useState(false);
   useEffect(() => {
-    const { tier } = JSON.parse(
-      localStorage.getItem("user") ?? JSON.stringify({ tier: Tier.TEACHER })
-    );
-    teacherTier.current = tier;
-  }, [localStorage]);
+    if (typeof window !== "undefined") {
+      const { tier } = JSON.parse(
+        window.localStorage.getItem("user") ??
+          JSON.stringify({ tier: Tier.TEACHER })
+      );
+      teacherTier.current = tier;
+    }
+  }, []);
   useEffect(() => {
     switch (teacherTier.current) {
       case Tier.ADMIN:
@@ -116,10 +119,11 @@ function _WeeklyTimetable({
     days.push("Saturday");
   }
   // Get current class timetable data or teacher's schedule
-  const timetableData = teacherMode || viewingOwnTt
-  ? getTeacherSchedule()
-  : classTimetables[selectedClass] || {};
-  console.log(121,timetableData, teacherMode);
+  const timetableData =
+    teacherMode || viewingOwnTt
+      ? getTeacherSchedule()
+      : classTimetables[selectedClass] || {};
+  console.log(121, timetableData, teacherMode);
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
@@ -389,7 +393,7 @@ function _WeeklyTimetable({
   const user = useSelector((state) => state.user);
   const [batches, setBatches] = useState(1);
   const [currentBatch, setCurrentBatch] = useState(1);
-  const {request, isLoading,error} = useRequest()
+  const { request, isLoading, error } = useRequest();
   const incrementBatches = () => {
     setBatches((oldBatches) => (oldBatches += 1));
   };

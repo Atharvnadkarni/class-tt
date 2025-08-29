@@ -34,19 +34,22 @@ export default function TeacherPage() {
   const teacherTier = useRef(Tier.TEACHER);
 
   useEffect(() => {
-    const { tier } = JSON.parse(
-      localStorage.getItem("user") ?? JSON.stringify({ tier: Tier.TEACHER })
-    );
-    teacherTier.current = tier;
-  }, [localStorage]);
+    if (typeof window !== "undefined") {
+      const { tier } = JSON.parse(
+        window.localStorage.getItem("user") ??
+          JSON.stringify({ tier: Tier.TEACHER })
+      );
+      teacherTier.current = tier;
+    }
+  }, []);
 
   const [allTeachers, setAllTeachers] = useState([]);
   const user = useSelector((state) => state.user);
-  const {request, isLoading, error} = useRequest()
+  const { request, isLoading, error } = useRequest();
 
   useEffect(() => {
     const fetchTeachers = async () => {
-      const teachers = await request("get", "/teacher")
+      const teachers = await request("get", "/teacher");
       setAllTeachers(teachers.data.teacher);
     };
     fetchTeachers();
@@ -86,7 +89,8 @@ export default function TeacherPage() {
               <h3 className="text-xl font-semibold text-gray-800">
                 Available Teachers
               </h3>
-              {(teacherTier.current == Tier.ADMIN || teacherTier.current) == Tier.COORDINATOR && (
+              {(teacherTier.current == Tier.ADMIN || teacherTier.current) ==
+                Tier.COORDINATOR && (
                 <button
                   className="px-4 py-2 bg-secondary text-black text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => setMode({ mode: "add", teacher: null })}

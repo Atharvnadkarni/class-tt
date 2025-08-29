@@ -39,6 +39,7 @@ const SubstitutionPage = () => {
     class: null,
     date: null,
   });
+  const [currentClass, setCurrentClass] = useState("");
   const user = useSelector((state) => state.user);
   const [deleteModalId, setDeleteModalId] = useState(null);
   function formatDate(date) {
@@ -66,6 +67,10 @@ const SubstitutionPage = () => {
     };
     fetchTeachers();
     fetchSubs();
+    // Only run on client
+    if (typeof window !== "undefined") {
+      setCurrentClass(window.localStorage.getItem("currentClass") || "");
+    }
   }, []);
   const [mode, setMode] = useState<{
     mode: null | "add" | "edit";
@@ -112,10 +117,7 @@ const SubstitutionPage = () => {
                       </label>
                       <select
                         className="w-full border border-gray-300 rounded px-2 py-1"
-                        value={
-                          dropdownData.class ??
-                          localStorage.getItem("currentClass")
-                        }
+                        value={dropdownData.class ?? currentClass}
                         onChange={(e) => {
                           setDropdownData((prev) => ({
                             ...prev,
@@ -218,13 +220,9 @@ const SubstitutionPage = () => {
         <DeleteModal
           setIsModalOpen={setDeleteModalId}
           deleteAction={async () => {
-            await request(
-              "delete",
-              "/substitution/" + deleteModalId + "/"
-            );
+            await request("delete", "/substitution/" + deleteModalId + "/");
             const newSubs = await (
-              await request("get", "/substitution", {
-              })
+              await request("get", "/substitution", {})
             ).data.substitutions;
             setDeleteModalId(false);
             setSubs(newSubs);

@@ -7,11 +7,14 @@ import { Tier } from "./types";
 const Tabs = ({ activeTab }) => {
   const teacherTier = useRef(Tier.TEACHER);
   useEffect(() => {
-    const { tier } = JSON.parse(
-      localStorage.getItem("user") ?? JSON.stringify({ tier: Tier.TEACHER })
-    );
-    teacherTier.current = tier;
-  }, [localStorage]);
+    if (typeof window !== "undefined") {
+      const { tier } = JSON.parse(
+        window.localStorage.getItem("user") ??
+          JSON.stringify({ tier: Tier.TEACHER })
+      );
+      teacherTier.current = tier;
+    }
+  }, []);
 
   return (
     <div className="max-w-full">
@@ -25,7 +28,9 @@ const Tabs = ({ activeTab }) => {
           <Link href="/timetable">
             <button
               onClick={() => {
-                localStorage.setItem("currentTab", "timetable");
+                if (typeof window !== "undefined") {
+                  window.localStorage.setItem("currentTab", "timetable");
+                }
               }}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 activeTab === "schedule"
@@ -39,7 +44,9 @@ const Tabs = ({ activeTab }) => {
           <Link href="/teachers">
             <button
               onClick={() => {
-                localStorage.setItem("currentTab", "teachers");
+                if (typeof window !== "undefined") {
+                  window.localStorage.setItem("currentTab", "teachers");
+                }
               }}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                 activeTab === "teachers"
@@ -54,7 +61,9 @@ const Tabs = ({ activeTab }) => {
             <Link href="/substitutions">
               <button
                 onClick={() => {
-                  localStorage.setItem("currentTab", "substitutions");
+                  if (typeof window !== "undefined") {
+                    window.localStorage.setItem("currentTab", "substitutions");
+                  }
                 }}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
                   activeTab === "subs"
