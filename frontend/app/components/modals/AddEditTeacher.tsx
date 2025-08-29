@@ -1,5 +1,5 @@
 import { subjectList, subjectToDisplayName, trSubjectList } from "@/subjects";
-import axios from "axios";
+import { useRequest } from "@/app/hooks/useRequest";
 import { Plus, X } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
 import bcrypt from "bcryptjs";
@@ -31,6 +31,11 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   );
   const [error, setError] = useState(null);
   const user = useSelector((state) => state.user);
+  const {
+    request,
+    isLoading,
+    error: requestError,
+  } = useRequest({ token: user?.token });
   console.log(13, mode?.teacher?.subjects);
   const [subs, setSubs] = useState(
     mode?.mode == "edit" ? mode?.teacher?.subjects : []
@@ -66,26 +71,16 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       return grouped.flat();
     };
 
-    await axios
-      .post(
-        "http://localhost:4000/api/teacher",
-        {
-          name: teacherName,
-          class: "",
-          subjects: subs2SubGroup(subs),
-          displayName,
-          username,
-          password,
-          tier,
-        },
-        { headers: { Authorization: `Bearer ${user.token}` } }
-      )
-      .catch((err) => console.error(err.message));
-    const newTeachers = await (
-      await axios.get("http://localhost:4000/api/teacher", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-    ).data.teacher;
+    await request("post", "teacher", {
+      name: teacherName,
+      class: "",
+      subjects: subs2SubGroup(subs),
+      displayName,
+      username,
+      password,
+      tier,
+    }).catch((err) => console.error(err.message));
+    const newTeachers = await request("get", "/teacher");
     setMode(null);
     setAllTeachers(newTeachers);
     setSubs([]);
@@ -119,24 +114,16 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       }));
     };
     console.log(subs, subs2SubGroup(subs));
-    await axios.patch(
-      "http://localhost:4000/api/teacher/" + _id,
-      {
-        name: teacherName,
-        class: "",
-        subjects: subs2SubGroup(subs),
-        username,
-        displayName,
-        ...(password != "-------" && { password }),
-        tier,
-      },
-      { headers: { Authorization: `Bearer ${user.token}` } }
-    );
-    const newTeachers = await (
-      await axios.get("http://localhost:4000/api/teacher", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-    ).data.teacher;
+    await request("patch", `/teacher/${_id}`, {
+      name: teacherName,
+      class: "",
+      subjects: subs2SubGroup(subs),
+      username,
+      displayName,
+      ...(password != "-------" && { password }),
+      tier,
+    });
+    const newTeachers = await request("get", "/teacher");
     setMode(null);
     setAllTeachers(newTeachers);
     setSubs([]);

@@ -4,7 +4,17 @@ import TimetableHeader from "../components/Header";
 import WeeklyTimetable from "../../weekly-timetable";
 import CurrentPeriodBanner from "../../current-period-banner";
 import TeacherDetails from "../../teacher-details";
-import { Clock, Shield, Plus, ArrowRightLeft, Save, User, Calendar, CalendarCheck, ClockIcon } from "lucide-react";
+import {
+  Clock,
+  Shield,
+  Plus,
+  ArrowRightLeft,
+  Save,
+  User,
+  Calendar,
+  CalendarCheck,
+  ClockIcon,
+} from "lucide-react";
 import { useState, useEffect, Suspense } from "react";
 import AdminTeacherDetails from "../components/AdminTeacherDetails";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -16,6 +26,7 @@ import { classes } from "@/subjects";
 import { useSelector } from "react-redux";
 import AddEditSubstitution from "../components/modals/AddEditSubstitution";
 import axios from "axios";
+import { useRequest } from "../hooks/useRequest";
 
 export default function TimetablePage(props) {
   return (
@@ -33,7 +44,7 @@ function _TimetablePage() {
     "schedule"
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [viewingOwnTt, setViewingOwnTt] = useState(false)
+  const [viewingOwnTt, setViewingOwnTt] = useState(false);
   const handleSave = () => {
     if (!selectedCell) return;
 
@@ -71,7 +82,7 @@ function _TimetablePage() {
 
   // Load data from localStorage on component mount
   // Save to localStorage whenever classTimetables changes
-
+  const { request, isLoading, error } = useRequest();
   useEffect(() => {
     if (!localStorage.getItem("currentClass")) {
       localStorage.setItem("currentClass", "1A");
@@ -79,8 +90,9 @@ function _TimetablePage() {
     const lastClass = localStorage.getItem("currentClass");
     history.pushState(null, "", "?class=" + lastClass);
     (async () => {
-      const savedTimetables = await axios.get(
-        "http://localhost:4000/api/timetable"
+      const savedTimetables = await request(
+        "get",
+        "/timetable"
       );
       if (savedTimetables) {
         setClassTimetables(JSON.parse(savedTimetables.data.timetable));
@@ -90,10 +102,7 @@ function _TimetablePage() {
   useEffect(() => {
     (async () => {
       if (JSON.stringify(classTimetables) != "{}") {
-        await axios.patch(
-          "http://localhost:4000/api/timetable",
-          classTimetables
-        );
+        await request("patch", "/timetable", classTimetables);
       }
     })();
   }, [classTimetables]);
@@ -115,7 +124,7 @@ function _TimetablePage() {
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher", {
+        await request("get", "/teacher", {
           headers: { Authorization: `Bearer ${user.token}` },
         })
       ).data.teacher;
@@ -149,11 +158,12 @@ function _TimetablePage() {
             <div className="flex flex-col sm:flex-row gap-2">
               <button
                 className="px-4 py-2 bg-highlight text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                onClick={() => setViewingOwnTt(oldvot => !oldvot)}
+                onClick={() => setViewingOwnTt((oldvot) => !oldvot)}
               >
-                
                 <ClockIcon className="h-4 w-4" />
-                {viewingOwnTt ? "View Complete Timetable" : "View Own Timetable"}
+                {viewingOwnTt
+                  ? "View Complete Timetable"
+                  : "View Own Timetable"}
               </button>
               <button
                 className="px-4 py-2 bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
@@ -162,7 +172,6 @@ function _TimetablePage() {
                 <ArrowRightLeft className="h-4 w-4" />
                 Substitute
               </button>
-              
             </div>
             <div className="flex items-center gap-2">
               <label

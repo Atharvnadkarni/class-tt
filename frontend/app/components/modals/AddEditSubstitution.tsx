@@ -1,3 +1,4 @@
+import { useRequest } from "@/app/hooks/useRequest";
 import { classes, subjects, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, Save, X } from "lucide-react";
@@ -40,30 +41,26 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
       setFormData(mode.sub);
     }
   }, [mode?.mode]);
+  const { request, isLoading, error } = useRequest();
   const handleAddSave = async (e) => {
     if (!user) {
       setError("Must be logged in");
       return;
     }
     try {
-    const { substitutions } = await axios.post(
-      "http://localhost:4000/api/substitution",
-      {
+      await request("post", "/substitution", {
         ...formData,
 
         date: formData.date ?? new Date(),
-      },
-      { headers: { Authorization: `Bearer ${user.token}` } }
-    );
+      });
 
-    setMode({ mode: null, sub: null });
-    const newSubstitutions = await (
-      await axios.get("http://localhost:4000/api/substitution", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-    ).data.substitutions;
-    setSubstitutions(newSubstitutions);} catch (err) {
-      setError(err.response.data.error)
+      setMode({ mode: null, sub: null });
+      const newSubstitutions = await (
+        await request("get", "/substitution")
+      ).data.substitutions;
+      setSubstitutions(newSubstitutions);
+    } catch (err) {
+      setError(err.response.data.error);
     }
   };
   const handleEditSave = async (_id) => {
@@ -71,15 +68,9 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
       setError("Must be logged in");
       return;
     }
-    await axios.patch(
-      "http://localhost:4000/api/substitution/" + _id,
-      formData,
-      { headers: { Authorization: `Bearer ${user.token}` } }
-    );
+    await request("patch", `/substitution/${_id}`, formData);
     const newSubstitutions = await (
-      await axios.get("http://localhost:4000/api/substitution", {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
+      await request("get", "/substitution")
     ).data.substitutions;
     setMode(null);
     setSubstitutions(newSubstitutions);

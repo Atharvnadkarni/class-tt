@@ -6,21 +6,17 @@ import DeleteModal from "./modals/DeleteModal";
 import { useState } from "react";
 import { Tier } from "@/types";
 import WorkloadModal from "./modals/WorkloadModal";
+import { useRequest } from "../hooks/useRequest";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
   const user = useSelector((state) => state.user);
   const [workloadVisible, setWorkloadVisible] = useState(false);
   const [deleteModalId, setDeleteModalId] = useState(null);
+  const {request, isLoading, error} = useRequest()
   const deleteTeacher = async (_id: string) => {
     if (!user) return;
-    await axios.delete(`http://localhost:4000/api/teacher/${_id}`, {
-      headers: { Authorization: `Bearer ${user.token}` },
-    });
-    const newTeachers = await (
-      await axios.get(`http://localhost:4000/api/teacher/`, {
-        headers: { Authorization: `Bearer ${user.token}` },
-      })
-    ).data.teacher;
+    await request("delete", `/teacher/${_id}`);
+    const newTeachers = await request("get", "/teacher").data.teacher;
     setAllTeachers(newTeachers);
   };
   return (

@@ -10,6 +10,7 @@ import TeacherCard from "../components/TeacherCard";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { Tier } from "@/types";
+import { useRequest } from "../hooks/useRequest";
 
 interface Teacher {
   name: String;
@@ -24,7 +25,6 @@ interface Teacher {
 }
 
 export default function TeacherPage() {
-  const [isLoading, setIsLoading] = useState(false);
   const [mode, setMode] = useState<{
     mode: null | "add" | "edit";
     teacher: null;
@@ -42,17 +42,12 @@ export default function TeacherPage() {
 
   const [allTeachers, setAllTeachers] = useState([]);
   const user = useSelector((state) => state.user);
+  const {request, isLoading, error} = useRequest()
 
   useEffect(() => {
     const fetchTeachers = async () => {
-      setIsLoading(true);
-      const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher", {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-      ).data.teacher;
-      setAllTeachers(teachers);
-      setIsLoading(false);
+      const teachers = await request("get", "/teacher")
+      setAllTeachers(teachers.data);
     };
     fetchTeachers();
   }, [user]);

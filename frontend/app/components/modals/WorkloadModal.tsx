@@ -1,14 +1,27 @@
 import { subjectToDisplayName } from "@/subjects";
 import { ReportRange } from "@/types";
-import axios from "axios";
+import { useRequest } from "@/app/hooks/useRequest";
 import { formatDate, setWeek } from "date-fns";
 import { ChevronLeft, ChevronRight, X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 const formatDate = (date: Date) => date && date.toISOString().slice(0, 10);
 
-const WorkloadModal = ({ setVisibility, teacher }) => {
-  const [workload, setWorkload] = useState([]);
+interface WorkloadItem {
+  subject: string;
+  class?: string;
+  allotted?: number;
+  taken?: number;
+}
+
+const WorkloadModal = ({
+  setVisibility,
+  teacher,
+}: {
+  setVisibility: (v: boolean) => void;
+  teacher: any;
+}) => {
+  const [workload, setWorkload] = useState<WorkloadItem[]>([]);
   const [reportRange, setReportRange] = useState(ReportRange.WEEKLY);
   const [weekRange, setWeekRange] = useState<Date[]>([]);
 
@@ -29,22 +42,16 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
   }, []);
 
   useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    const requestApi = useRequest({ token: user.token }) as Record<string, any>;
     const fetchData = async () => {
       const teacherId = teacher._id;
-      const res = await axios.get(
-        `http://localhost:4000/api/teacher/workload/${teacherId}?startDate=${formatDate(
-          weekRange[0]
-        )}&endDate=${formatDate(weekRange[1])}`,
-        {
-          headers: {
-            Authorization: `Bearer ${
-              JSON.parse(localStorage.getItem("user")).token
-            }`,
-          },
-        }
+      const workload = await requestApi.getTeacherWorkload(
+        teacherId,
+        formatDate(weekRange[0]),
+        formatDate(weekRange[1])
       );
-      const data = await res.data;
-      setWorkload(data.workload);
+      setWorkload(workload);
     };
     fetchData();
   }, [weekRange]);

@@ -17,6 +17,7 @@ import { classes } from "@/subjects";
 import DeleteModal from "../components/modals/DeleteModal";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import { useRequest } from "../hooks/useRequest";
 
 interface Sub {
   class: string;
@@ -51,21 +52,16 @@ const SubstitutionPage = () => {
 
     return [year, month, day].join("-");
   }
+  const { request, isLoading, error } = useRequest();
   useEffect(() => {
     const fetchSubs = async () => {
       const subs = await (
-        await axios.get("http://localhost:4000/api/substitution", {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
+        await request("get", "/substitution")
       ).data.substitutions;
       setSubs(subs);
     };
     const fetchTeachers = async () => {
-      const teachers = await (
-        await axios.get("http://localhost:4000/api/teacher", {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-      ).data.teacher;
+      const teachers = await (await request("get", "/teacher")).data.teacher;
       setTeachers(teachers);
     };
     fetchTeachers();
@@ -161,7 +157,7 @@ const SubstitutionPage = () => {
             {...{
               mode,
               setMode,
-              setSubstitutions:setSubs,
+              setSubstitutions: setSubs,
               teachers,
             }}
           />
@@ -222,19 +218,12 @@ const SubstitutionPage = () => {
         <DeleteModal
           setIsModalOpen={setDeleteModalId}
           deleteAction={async () => {
-            await axios.delete(
-              "http://localhost:4000/api/substitution/" + deleteModalId + "/",
-              {
-                headers: {
-                  Authorization: `Bearer ${user.token}`,
-                },
-              }
+            await request(
+              "delete",
+              "/substitution/" + deleteModalId + "/"
             );
             const newSubs = await (
-              await axios.get("http://localhost:4000/api/substitution", {
-                headers: {
-                  Authorization: `Bearer ${user.token}`,
-                },
+              await request("get", "/substitution", {
               })
             ).data.substitutions;
             setDeleteModalId(false);
