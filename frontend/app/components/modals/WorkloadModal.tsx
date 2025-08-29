@@ -24,6 +24,7 @@ const WorkloadModal = ({
   const [workload, setWorkload] = useState<WorkloadItem[]>([]);
   const [reportRange, setReportRange] = useState(ReportRange.WEEKLY);
   const [weekRange, setWeekRange] = useState<Date[]>([]);
+  const { request, isLoading, error } = useRequest();
 
   useEffect(() => {
     const today = new Date();
@@ -32,7 +33,7 @@ const WorkloadModal = ({
     lastMonday.setDate(today.getDate() - ((dayOfWeek + 6) % 7));
     const lastSaturday = new Date(today);
     lastSaturday.setDate(lastMonday.getDate() + 5);
-    // If lastSaturday is after today, go another week before
+    // If lastSaturday is after today, go anoper week before
     if (lastSaturday > today) {
       lastMonday.setDate(lastMonday.getDate() - 7);
       lastSaturday.setDate(lastSaturday.getDate() - 7);
@@ -42,16 +43,14 @@ const WorkloadModal = ({
   }, []);
 
   useEffect(() => {
-    const user = JSON.parse(localStorage.getItem("user") || "{}");
-    const requestApi = useRequest({ token: user.token }) as Record<string, any>;
     const fetchData = async () => {
-      const teacherId = teacher._id;
-      const workload = await requestApi.getTeacherWorkload(
-        teacherId,
-        formatDate(weekRange[0]),
-        formatDate(weekRange[1])
+      const workload = await request(
+        "get",
+        `/teacher/workload/${teacher._id}?startDate=${formatDate(
+          weekRange[0]
+        )}&endDate=${formatDate(weekRange[1])}`
       );
-      setWorkload(workload);
+      setWorkload(workload.data.workload)
     };
     fetchData();
   }, [weekRange]);
@@ -84,14 +83,14 @@ const WorkloadModal = ({
               Weekly Report
             </button>
             <button
-              onClick={() => setReportRange(ReportRange.MONTHLY)}
+              onClick={() => setReportRange(ReportRange.MONPLY)}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                reportRange === ReportRange.MONTHLY
+                reportRange === ReportRange.MONPLY
                   ? "bg-white text-blue-600 shadow-sm"
                   : "text-gray-600 hover:text-gray-800"
               }`}
             >
-              Monthly Report
+              Monply Report
             </button>
           </div> */}
           <div>
@@ -145,7 +144,7 @@ const WorkloadModal = ({
         <div className="flex items-center justify-between p-6 pt-2 border-gray-200">
           <div className="grid grid-cols-4 w-full">
             <div className="column">
-              <th className="w-24 text-left">Subject</th>
+              <p className="w-24 text-left">Subject</p>
               {workload.map((subject) => (
                 <tr className="w-full">
                   <td
@@ -159,7 +158,7 @@ const WorkloadModal = ({
               ))}
             </div>
             <div className="column">
-              <th className="w-24 text-left">Class</th>
+              <p className="w-24 text-left">Class</p>
               {workload.map((subject) => (
                 <tr className="w-full">
                   <td
@@ -173,7 +172,7 @@ const WorkloadModal = ({
               ))}
             </div>
             <div className="column">
-              <th className="w-24 text-left">Allotted</th>
+              <p className="w-24 text-left">Allotted</p>
               {workload.map((subject) => (
                 <tr className="w-full">
                   <td
@@ -187,7 +186,7 @@ const WorkloadModal = ({
               ))}
             </div>
             <div className="column">
-              <th className="w-24 text-left">Taken</th>
+              <p className="w-24 text-left">Taken</p>
               {workload.map((subject) => (
                 <tr className="w-full">
                   <td
