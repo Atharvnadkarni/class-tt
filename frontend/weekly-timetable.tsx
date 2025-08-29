@@ -53,6 +53,7 @@ function _WeeklyTimetable({
   selectedClass = "1A",
   classTimetables = {},
   setClassTimetables = () => {},
+  viewingOwnTt,
 }: WeeklyTimetableProps) {
   const classSplit = [parseInt(selectedClass.slice(0, -1)), selectedClass[-1]];
   const teacherTier = useRef(Tier.TEACHER);
@@ -91,14 +92,17 @@ function _WeeklyTimetable({
     { name: "4", time: "11:20-12:10" },
     { name: "5", time: "12:10-1:00" },
   ];
+  const periods = classSplit[0] < 5 ? periods1to4 : periods5to10;
 
-  const classes = ["1st Year", "2nd Year", "3rd Year", "4th Year", "5th Year"];
-
+  const days = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"];
+  if (classSplit[0] > 5) {
+    days.push("Saturday");
+  }
   // Get current class timetable data or teacher's schedule
-  const timetableData = teacherMode
-    ? getTeacherSchedule()
-    : classTimetables[selectedClass] || {};
-  console.log(timetableData, teacherMode);
+  const timetableData = teacherMode || viewingOwnTt
+  ? getTeacherSchedule()
+  : classTimetables[selectedClass] || {};
+  console.log(121,timetableData, teacherMode);
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
@@ -249,7 +253,7 @@ function _WeeklyTimetable({
     day: string,
     period: { name: string; time: string }
   ) => {
-    if (period.name === "Break" || isReadOnly) return;
+    if (period.name === "Break" || isReadOnly || viewingOwnTt) return;
 
     setSelectedCell({ day, period });
     const cellKey = `${day}-${period.name}`;
@@ -290,7 +294,7 @@ function _WeeklyTimetable({
     console.log(cellKey, timetableData[cellKey]);
     const data = timetableData[cellKey];
     if (
-      teacherMode
+      teacherMode || viewingOwnTt
         ? data?.subject && data?.class
         : data?.subject && data?.teachers
     ) {
@@ -303,17 +307,17 @@ function _WeeklyTimetable({
           </div>
           {console.log(data)}
           <div className="text-gray-500">
-            {teacherMode
+            {teacherMode || viewingOwnTt
               ? Object.values(data.class)
-              : Object.values(data.teachers).map(teacher => teacher.join('/')).join(
-                  "/"
-                )}
+              : Object.values(data.teachers)
+                  .map((teacher) => teacher.join("/"))
+                  .join("/")}
           </div>
         </div>
       );
     }
 
-    return isReadOnly ? (
+    return isReadOnly || viewingOwnTt ? (
       <span className="text-gray-400 text-xs">No class</span>
     ) : (
       <span className="text-gray-400 text-xs">Click to edit</span>
@@ -642,7 +646,9 @@ function _WeeklyTimetable({
                           setTeachers((prevtrlist) => {
                             const currentTrList =
                               prevtrlist[currentBatch] || [];
-                            const newTrList = lastTeacher ? [...currentTrList, lastTeacher] : currentTrList;
+                            const newTrList = lastTeacher
+                              ? [...currentTrList, lastTeacher]
+                              : currentTrList;
                             const filteredNewTrList = newTrList.filter(
                               (item, index) => {
                                 return newTrList.indexOf(item) == index;

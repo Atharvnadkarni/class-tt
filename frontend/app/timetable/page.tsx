@@ -4,7 +4,7 @@ import TimetableHeader from "../components/Header";
 import WeeklyTimetable from "../../weekly-timetable";
 import CurrentPeriodBanner from "../../current-period-banner";
 import TeacherDetails from "../../teacher-details";
-import { Clock, Shield, Plus, ArrowRightLeft, Save } from "lucide-react";
+import { Clock, Shield, Plus, ArrowRightLeft, Save, User, Calendar, CalendarCheck, ClockIcon } from "lucide-react";
 import { useState, useEffect, Suspense } from "react";
 import AdminTeacherDetails from "../components/AdminTeacherDetails";
 import { useRouter, useSearchParams } from "next/navigation";
@@ -33,7 +33,7 @@ function _TimetablePage() {
     "schedule"
   );
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [viewingOwnTt, setViewingOwnTt] = useState(false)
   const handleSave = () => {
     if (!selectedCell) return;
 
@@ -146,7 +146,15 @@ function _TimetablePage() {
         <div className="flex items-center justify-between mb-4">
           <TimeSystem />
           <div className="flex items-center gap-4">
-            <div>
+            <div className="flex flex-col sm:flex-row gap-2">
+              <button
+                className="px-4 py-2 bg-highlight text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => setViewingOwnTt(oldvot => !oldvot)}
+              >
+                
+                <ClockIcon className="h-4 w-4" />
+                {viewingOwnTt ? "View Complete Timetable" : "View Own Timetable"}
+              </button>
               <button
                 className="px-4 py-2 bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                 onClick={() => setMode({ mode: "add", sub: null })}
@@ -154,13 +162,14 @@ function _TimetablePage() {
                 <ArrowRightLeft className="h-4 w-4" />
                 Substitute
               </button>
+              
             </div>
             <div className="flex items-center gap-2">
               <label
                 htmlFor="classSelect"
                 className="text-sm font-medium text-gray-700"
               >
-                Select Class:
+                <span className="sm:inline hidden">Select </span>Class:
               </label>
               <select
                 id="classSelect"
@@ -183,6 +192,7 @@ function _TimetablePage() {
           selectedClass={params.get("class") || "1A"}
           classTimetables={classTimetables}
           setClassTimetables={setClassTimetables}
+          viewingOwnTt={viewingOwnTt}
         />
         <AddEditSubstitution
           {...{
