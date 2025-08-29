@@ -41,7 +41,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
       setFormData(mode.sub);
     }
   }, [mode?.mode]);
-  const { request, isLoading, error } = useRequest();
+  const { request, isLoading, error:reqError } = useRequest();
   const handleAddSave = async (e) => {
     if (!user) {
       setError("Must be logged in");
