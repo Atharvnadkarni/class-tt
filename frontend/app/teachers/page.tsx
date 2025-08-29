@@ -127,7 +127,7 @@ export default function TeacherPage() {
                 <span className="text-gray-600 text-sm">No teachers found</span>
               </div>
             )}
-            <div className="grid grid-cols-4 gap-2">
+            <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
               {/* {} */}
               {JSON.stringify(allTeachers) != "[]" &&
                 allTeachers.map((teacher) => (

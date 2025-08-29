@@ -1,7 +1,7 @@
 module.exports = {
   subjectList: [
     "Math",
-    "Mental Math",
+    "MM",
     "Eng",
     "CE",
     "Hindi",
@@ -13,7 +13,7 @@ module.exports = {
     "Konkani/French",
     "CK/CF",
     "Science",
-    "Science Lab",
+    "Sci Lab",
     "SS",
     "History",
     "Geography",
@@ -54,6 +54,8 @@ module.exports = {
     GK: "General Knowledge (GK)",
     PE: "Physical Education (PE)",
     CE: "Communicative English",
+    MM: "Mental Math",
+    "Sci Lab": "Science Lab"
   },
   classes: [
     [1, "A"],

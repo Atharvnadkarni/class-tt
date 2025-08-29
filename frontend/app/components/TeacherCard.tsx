@@ -59,24 +59,33 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
           <User className="h-5 w-5 text-secondary" />
         </div>
         <div className="mt-2">
-          <h4 className="text-lg/[23px] font-semibold text-gray-800">
+          <h4 className="text-sm/[18px] md:text-lg/[23px] font-semibold text-gray-800">
             {teacher.name}
           </h4>
-          <p className="text-sm/[18px] text-gray-600">
-            {teacher.subjects.length > 0 && teacher.subjects
-              .map(
-                (subject) =>
-                  `${
-                    subjectToDisplayName[subject.subject] || subject.subject
-                  } ${subject.classes
-                    .map((classe) => (classe == 0 ? "" : classe))
-                    .join(", ")}`
-              )
-              .reduce((previous, current) => {
-                return [previous, <br key={previous} />, current].flat();
-              })}
+          <p className="text-xs/[15px] md:text-sm/[18px] text-gray-600 font-[550]">
+            {teacher.subjects.length > 0 &&
+              teacher.subjects
+                .map((subject) => (
+                  <>
+                    <span>
+                      <span className="hidden sm:inline">
+                        {subjectToDisplayName[subject.subject] ||
+                          subject.subject}
+                      </span>
+                      <span className="inline sm:hidden">
+                        {subject.subject}
+                      </span>{" "}
+                      {subject.classes
+                        .map((classe) => (classe == 0 ? "" : classe))
+                        .join(", ")}
+                    </span>
+                  </>
+                ))
+                .reduce((previous, current) => {
+                  return [previous, <br key={previous} />, current].flat();
+                })}
           </p>
-          <p className="text-sm/[18px] text-gray-600">
+          <p className="text-xs/[15px] md:text-sm/[18px] text-gray-600">
             {teacher.tier ?? Tier.TEACHER}
           </p>
         </div>

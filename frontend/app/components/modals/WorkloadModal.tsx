@@ -1,3 +1,4 @@
+import { subjectToDisplayName } from "@/subjects";
 import { ReportRange } from "@/types";
 import axios from "axios";
 import { formatDate, setWeek } from "date-fns";
@@ -64,7 +65,7 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
           </button>
         </div>
         <div className="flex items-center justify-between px-6 py-2 border-gray-200">
-          <div>
+          {/* <div>
             <button
               onClick={() => setReportRange(ReportRange.WEEKLY)}
               className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
@@ -85,12 +86,12 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
             >
               Monthly Report
             </button>
-          </div>
+          </div> */}
           <div>
             <label className="block text-sm text-gray-600 mb-1">
               Week Range
             </label>
-            <div className="flex gap-2">
+            <div className="grid gap-2">
               <button
                 onClick={() => {
                   const [mon, sat] = weekRange;
@@ -140,7 +141,13 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Subject</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.subject}</td>
+                  <td
+                    className={`w-24 ${
+                      subject.subject == "Total" && "font-bold"
+                    }`}
+                  >
+                    {subject.subject}
+                  </td>
                 </tr>
               ))}
             </div>
@@ -148,7 +155,13 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Class</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.class}</td>
+                  <td
+                    className={`w-24 ${
+                      subject.subject == "Total" && "font-bold"
+                    }`}
+                  >
+                    {subject.class}
+                  </td>
                 </tr>
               ))}
             </div>
@@ -156,7 +169,13 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Allotted</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.allotted}</td>
+                  <td
+                    className={`w-24 ${
+                      subject.subject == "Total" && "font-bold"
+                    }`}
+                  >
+                    {subject.allotted}
+                  </td>
                 </tr>
               ))}
             </div>
@@ -164,7 +183,13 @@ const WorkloadModal = ({ setVisibility, teacher }) => {
               <th className="w-24 text-left">Taken</th>
               {workload.map((subject) => (
                 <tr className="w-full">
-                  <td className={`w-24 ${subject.subject == "Total" && "font-bold"}`}>{subject.taken}</td>
+                  <td
+                    className={`w-24 ${
+                      subject.subject == "Total" && "font-bold"
+                    }`}
+                  >
+                    {subject.taken}
+                  </td>
                 </tr>
               ))}
             </div>

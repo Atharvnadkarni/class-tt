@@ -402,7 +402,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                 );
               })}
             </ul>
-            <div className="subject absolute bottom-6 right-6 z-10 w-auto">
+            <div className="subject absolute bottom-6 right-6 z-10 w-auto flex flex-col sm:flex-row">
               <label
                 htmlFor="class-taught"
                 className="block text-sm font-medium text-gray-700 mb-2"
