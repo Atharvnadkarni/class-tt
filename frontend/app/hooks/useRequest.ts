@@ -24,7 +24,7 @@ export const useRequest = (options: UseRequestOptions = {}) => {
       url: string,
       data?: any,
       config?: AxiosRequestConfig
-    ): Promise<T> => {
+    ) => {
       setIsLoading(true);
       setError(null);
       try {
@@ -35,7 +35,7 @@ export const useRequest = (options: UseRequestOptions = {}) => {
           headers: { ...getAuthHeaders(), ...(config?.headers || {}) },
           ...config,
         });
-        return res.data;
+        return res;
       } catch (err: any) {
         setError(err?.response?.data?.error || err.message || "Unknown error");
         throw err;
