@@ -400,7 +400,7 @@ function _WeeklyTimetable({
   useEffect(() => {
     const fetchTeachers = async () => {
       const teachers = await request("get", "/teacher");
-      setTeacherList(teachers.teacher);
+      setTeacherList(teachers.data.teacher);
     };
     fetchTeachers();
   }, []);

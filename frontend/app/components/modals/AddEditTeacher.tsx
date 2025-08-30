@@ -82,7 +82,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     }).catch((err) => console.error(err.message));
     const newTeachers = await request("get", "/teacher");
     setMode(null);
-    setAllTeachers(newTeachers);
+    setAllTeachers(newTeachers.data.teacher);
     setSubs([]);
   };
   const handleEditSave = async (_id) => {
@@ -125,7 +125,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     });
     const newTeachers = await request("get", "/teacher");
     setMode(null);
-    setAllTeachers(newTeachers);
+    setAllTeachers(newTeachers.data.teacher);
     setSubs([]);
   };
   useEffect(() => {
