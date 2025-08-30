@@ -71,7 +71,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       return grouped.flat();
     };
 
-    await request("post", "teacher", {
+    await request("post", "/teacher", {
       name: teacherName,
       class: "",
       subjects: subs2SubGroup(subs),
