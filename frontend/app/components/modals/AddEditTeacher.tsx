@@ -434,7 +434,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                     </option>
                   ))}
                 </select>
-                <div className="flex justify-between sm:block">
+                <div className="flex justify-between">
                   <input
                     type="number"
                     id="teacherName"
