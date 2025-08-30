@@ -5,10 +5,10 @@ import { useState, useEffect } from "react";
 interface Period {
   name: string;
   time: string;
-  startHour: number;
-  startMinute: number;
-  endHour: number;
-  endMinute: number;
+  startHour?: number;
+  startMinute?: number;
+  endHour?: number;
+  endMinute?: number;
 }
 
 interface TimetableEntry {
@@ -16,10 +16,194 @@ interface TimetableEntry {
   class: string;
 }
 
-export default function CurrentPeriodBanner({ classTimetables }) {
+interface CurrentPeriodBannerProps {
+  classTimetables?: { [key: string]: TimetableEntry };
+  selectedClass?: string;
+}
+
+export default function CurrentPeriodBanner({
+  classTimetables = {},
+  selectedClass = "1A",
+}: CurrentPeriodBannerProps) {
   // Using the demo time of 9:45 AM on Tuesday
   const demoTime = new Date(); // Tuesday
   const currentDay = demoTime.toLocaleDateString("en-IN", { weekday: "long" });
+
+  // Use classSplit logic from weekly-timetable
+  const classSplit = [
+    parseInt(selectedClass.slice(0, -1)),
+    selectedClass.slice(-1),
+  ];
+
+  // Periods for classes 1-4
+  const periods1to4: Period[] = [
+    {
+      name: "1",
+      time: "7:35-8:15",
+      startHour: 7,
+      startMinute: 35,
+      endHour: 8,
+      endMinute: 15,
+    },
+    {
+      name: "2",
+      time: "8:15-8:55",
+      startHour: 8,
+      startMinute: 15,
+      endHour: 8,
+      endMinute: 55,
+    },
+    {
+      name: "3",
+      time: "8:55-9:35",
+      startHour: 8,
+      startMinute: 55,
+      endHour: 9,
+      endMinute: 35,
+    },
+    {
+      name: "4",
+      time: "9:35-10:10",
+      startHour: 9,
+      startMinute: 35,
+      endHour: 10,
+      endMinute: 10,
+    },
+    {
+      name: "Break",
+      time: "10:10-10:30",
+      startHour: 10,
+      startMinute: 10,
+      endHour: 10,
+      endMinute: 30,
+    },
+    {
+      name: "5",
+      time: "10:30-11:05",
+      startHour: 10,
+      startMinute: 30,
+      endHour: 11,
+      endMinute: 5,
+    },
+    {
+      name: "6",
+      time: "11:05-11:45",
+      startHour: 11,
+      startMinute: 5,
+      endHour: 11,
+      endMinute: 45,
+    },
+    {
+      name: "7",
+      time: "11:45-12:25",
+      startHour: 11,
+      startMinute: 45,
+      endHour: 12,
+      endMinute: 25,
+    },
+    {
+      name: "8",
+      time: "12:25-1:05",
+      startHour: 12,
+      startMinute: 25,
+      endHour: 13,
+      endMinute: 5,
+    },
+    {
+      name: "9",
+      time: "1:05-1:30",
+      startHour: 13,
+      startMinute: 5,
+      endHour: 13,
+      endMinute: 30,
+    },
+  ];
+  // Periods for classes 5-10
+  const periods5to10: Period[] = [
+    {
+      name: "1",
+      time: "7:35-8:15",
+      startHour: 7,
+      startMinute: 35,
+      endHour: 8,
+      endMinute: 15,
+    },
+    {
+      name: "2",
+      time: "8:15-8:55",
+      startHour: 8,
+      startMinute: 15,
+      endHour: 8,
+      endMinute: 55,
+    },
+    {
+      name: "3",
+      time: "8:55-9:35",
+      startHour: 8,
+      startMinute: 55,
+      endHour: 9,
+      endMinute: 35,
+    },
+    {
+      name: "4",
+      time: "9:35-10:10",
+      startHour: 9,
+      startMinute: 35,
+      endHour: 10,
+      endMinute: 10,
+    },
+    {
+      name: "5",
+      time: "10:10-10:45",
+      startHour: 10,
+      startMinute: 10,
+      endHour: 10,
+      endMinute: 45,
+    },
+    {
+      name: "Break",
+      time: "10:45-11:05",
+      startHour: 10,
+      startMinute: 45,
+      endHour: 11,
+      endMinute: 5,
+    },
+    {
+      name: "6",
+      time: "11:05-11:45",
+      startHour: 11,
+      startMinute: 5,
+      endHour: 11,
+      endMinute: 45,
+    },
+    {
+      name: "7",
+      time: "11:45-12:25",
+      startHour: 11,
+      startMinute: 45,
+      endHour: 12,
+      endMinute: 25,
+    },
+    {
+      name: "8",
+      time: "12:25-1:05",
+      startHour: 12,
+      startMinute: 25,
+      endHour: 13,
+      endMinute: 5,
+    },
+    {
+      name: "9",
+      time: "1:05-1:30",
+      startHour: 13,
+      startMinute: 5,
+      endHour: 13,
+      endMinute: 30,
+    },
+  ];
+  // Use correct periods array
+  const periods: Period[] =
+    Number(classSplit[0]) < 5 ? periods1to4 : periods5to10;
 
   const [currentPeriod, setCurrentPeriod] = useState<Period | null>(null);
   const [currentSubject, setCurrentSubject] = useState<TimetableEntry | null>(
@@ -43,57 +227,6 @@ export default function CurrentPeriodBanner({ classTimetables }) {
     // Add more as needed...
   };
 
-  const periods: Period[] = [
-    {
-      name: "1",
-      time: "8:30-9:20",
-      startHour: 8,
-      startMinute: 30,
-      endHour: 9,
-      endMinute: 20,
-    },
-    {
-      name: "2",
-      time: "9:20-10:10",
-      startHour: 9,
-      startMinute: 20,
-      endHour: 10,
-      endMinute: 10,
-    },
-    {
-      name: "3",
-      time: "10:10-11:00",
-      startHour: 10,
-      startMinute: 10,
-      endHour: 11,
-      endMinute: 0,
-    },
-    {
-      name: "Break",
-      time: "11:00-11:20",
-      startHour: 11,
-      startMinute: 0,
-      endHour: 11,
-      endMinute: 20,
-    },
-    {
-      name: "4",
-      time: "11:20-12:10",
-      startHour: 11,
-      startMinute: 20,
-      endHour: 12,
-      endMinute: 10,
-    },
-    {
-      name: "5",
-      time: "12:10-1:00",
-      startHour: 12,
-      startMinute: 10,
-      endHour: 13,
-      endMinute: 0,
-    },
-  ];
-
   useEffect(() => {
     // Find current period based on demo time
     const hour = demoTime.getHours();
@@ -101,13 +234,24 @@ export default function CurrentPeriodBanner({ classTimetables }) {
 
     const currentPeriod =
       periods.find((period) => {
-        const isAfterStart =
-          hour > period.startHour ||
-          (hour === period.startHour && minute >= period.startMinute);
-        const isBeforeEnd =
-          hour < period.endHour ||
-          (hour === period.endHour && minute < period.endMinute);
-        return isAfterStart && isBeforeEnd;
+        if (period.name === "Break") {
+          return (
+            (hour > (period.startHour ?? 0) ||
+              (hour === (period.startHour ?? 0) &&
+                minute >= (period.startMinute ?? 0))) &&
+            (hour < (period.endHour ?? 0) ||
+              (hour === (period.endHour ?? 0) &&
+                minute < (period.endMinute ?? 0)))
+          );
+        }
+        return (
+          (hour > (period.startHour ?? 0) ||
+            (hour === (period.startHour ?? 0) &&
+              minute >= (period.startMinute ?? 0))) &&
+          (hour < (period.endHour ?? 0) ||
+            (hour === (period.endHour ?? 0) &&
+              minute < (period.endMinute ?? 0)))
+        );
       }) || null;
 
     setCurrentPeriod(currentPeriod);
@@ -115,13 +259,15 @@ export default function CurrentPeriodBanner({ classTimetables }) {
 
     // Get the subject for current period
     if (currentPeriod && currentPeriod.name !== "Break") {
-      const timetableKey = `${demoTime.getDay()}-${currentPeriod.name}`;
-      const subject = classTimetables[timetableKey] || null;
+      const timetableKey = `${currentDay}-${currentPeriod.name}`;
+      const subject = classTimetables
+        ? (classTimetables as { [key: string]: TimetableEntry })[timetableKey]
+        : null;
       setCurrentSubject(subject);
     } else {
       setCurrentSubject(null);
     }
-  }, [currentDay]);
+  }, [currentDay, classTimetables]);
 
   if (!currentPeriod) {
     return (
