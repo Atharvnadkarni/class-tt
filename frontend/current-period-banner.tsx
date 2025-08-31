@@ -232,13 +232,25 @@ export default function CurrentPeriodBanner({
     const hour = demoTime.getHours();
     const minute = demoTime.getMinutes();
 
-    if (demoTime.getDay() == 0) setCurrentPeriod(null);
-    if (Number(classSplit[0]) < 6 && demoTime.getDay() == 6)
+    if (demoTime.getDay() == 0) {
+      console.log("sunday");
       setCurrentPeriod(null);
-
-    const currentPeriod =
-      periods.find((period) => {
-        if (period.name === "Break") {
+    } else if (Number(classSplit[0]) < 6 && demoTime.getDay() == 6) {
+      console.log("satday");
+      setCurrentPeriod(null);
+    } else {
+      const currentPeriod =
+        periods.find((period) => {
+          if (period.name === "Break") {
+            return (
+              (hour > (period.startHour ?? 0) ||
+                (hour === (period.startHour ?? 0) &&
+                  minute >= (period.startMinute ?? 0))) &&
+              (hour < (period.endHour ?? 0) ||
+                (hour === (period.endHour ?? 0) &&
+                  minute < (period.endMinute ?? 0)))
+            );
+          }
           return (
             (hour > (period.startHour ?? 0) ||
               (hour === (period.startHour ?? 0) &&
@@ -247,29 +259,21 @@ export default function CurrentPeriodBanner({
               (hour === (period.endHour ?? 0) &&
                 minute < (period.endMinute ?? 0)))
           );
-        }
-        return (
-          (hour > (period.startHour ?? 0) ||
-            (hour === (period.startHour ?? 0) &&
-              minute >= (period.startMinute ?? 0))) &&
-          (hour < (period.endHour ?? 0) ||
-            (hour === (period.endHour ?? 0) &&
-              minute < (period.endMinute ?? 0)))
-        );
-      }) || null;
+        }) || null;
 
-    setCurrentPeriod(currentPeriod);
-    setIsBreak(currentPeriod?.name === "Break");
+      setCurrentPeriod(currentPeriod);
+      setIsBreak(currentPeriod?.name === "Break");
 
-    // Get the subject for current period
-    if (currentPeriod && currentPeriod.name !== "Break") {
-      const timetableKey = `${currentDay}-${currentPeriod.name}`;
-      const subject = classTimetables
-        ? (classTimetables as { [key: string]: TimetableEntry })[timetableKey]
-        : null;
-      setCurrentSubject(subject);
-    } else {
-      setCurrentSubject(null);
+      // Get the subject for current period
+      if (currentPeriod && currentPeriod.name !== "Break") {
+        const timetableKey = `${currentDay}-${currentPeriod.name}`;
+        const subject = classTimetables
+          ? (classTimetables as { [key: string]: TimetableEntry })[timetableKey]
+          : null;
+        setCurrentSubject(subject);
+      } else {
+        setCurrentSubject(null);
+      }
     }
   }, [currentDay, classTimetables]);
 
