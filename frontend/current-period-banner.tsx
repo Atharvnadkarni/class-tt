@@ -232,6 +232,10 @@ export default function CurrentPeriodBanner({
     const hour = demoTime.getHours();
     const minute = demoTime.getMinutes();
 
+    if (demoTime.getDay() == 0) setCurrentPeriod(null);
+    if (Number(classSplit[0]) < 6 && demoTime.getDay() == 6)
+      setCurrentPeriod(null);
+
     const currentPeriod =
       periods.find((period) => {
         if (period.name === "Break") {
