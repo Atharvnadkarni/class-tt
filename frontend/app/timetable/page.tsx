@@ -135,6 +135,7 @@ function _TimetablePage() {
     };
     const teacher = JSON.parse(localStorage.getItem("user"));
     teacherTier.current = teacher.tier;
+    setViewingOwnTt(teacher.tier == Tier.TEACHER)
     fetchTeachers();
   }, []);
   console.log(teachers);
@@ -178,7 +179,7 @@ function _TimetablePage() {
                 Substitute
               </button>
             </div>
-            {!viewingOwnTt && teacherTier.current == Tier.COORDINATOR && (
+            {!viewingOwnTt && (
               <div className="flex items-center gap-2">
                 <label
                   htmlFor="classSelect"

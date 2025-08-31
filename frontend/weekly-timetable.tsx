@@ -120,11 +120,16 @@ function _WeeklyTimetable({
     days.push("Saturday");
   }
   // Get current class timetable data or teacher's schedule
-  const timetableData =
-    teacherMode || viewingOwnTt
+  
+    
+  const [timetableData, setTimetableData] = useState({})
+  useEffect(() => {
+    console.log(127, viewingOwnTt, classTimetables, selectedClass)
+    setTimetableData(viewingOwnTt
       ? getTeacherSchedule()
-      : classTimetables[selectedClass] || {};
-  console.log(121, timetableData, teacherMode);
+      : classTimetables[selectedClass] || { })
+  }, [viewingOwnTt, classTimetables, selectedClass])
+  useEffect(() => {console.log(timetableData)}, [timetableData])
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
@@ -313,10 +318,10 @@ function _WeeklyTimetable({
     }
 
     const cellKey = `${day}-${period.name}`;
-    console.log(cellKey, timetableData[cellKey]);
+    console.log(12, timetableData[cellKey], cellKey);
     const data = timetableData[cellKey];
     if (
-      teacherMode || viewingOwnTt
+      viewingOwnTt
         ? data?.subject && data?.class
         : data?.subject && data?.teachers
     ) {
@@ -329,7 +334,7 @@ function _WeeklyTimetable({
           </div>
           {console.log(data)}
           <div className="text-gray-500">
-            {teacherMode || viewingOwnTt
+            {viewingOwnTt
               ? Object.values(data.class)
               : Object.values(data.teachers)
                   .map((teacher) => teacher.join("/"))
