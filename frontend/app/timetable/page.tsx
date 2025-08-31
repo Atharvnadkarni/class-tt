@@ -15,7 +15,7 @@ import {
   CalendarCheck,
   ClockIcon,
 } from "lucide-react";
-import { useState, useEffect, Suspense } from "react";
+import { useState, useEffect, Suspense, useRef } from "react";
 import AdminTeacherDetails from "../components/AdminTeacherDetails";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -27,6 +27,7 @@ import { useSelector } from "react-redux";
 import AddEditSubstitution from "../components/modals/AddEditSubstitution";
 import axios from "axios";
 import { useRequest } from "../hooks/useRequest";
+import { Tier } from "@/types";
 
 export default function TimetablePage(props) {
   return (
@@ -113,6 +114,7 @@ function _TimetablePage() {
       window.history.pushState(null, "", "?class=" + newClass);
     }
   };
+  const teacherTier = useRef(Tier.TEACHER);
   const params = useSearchParams();
   const classe = params.get("class");
   const router = useRouter();
@@ -131,6 +133,8 @@ function _TimetablePage() {
       ).data.teacher;
       setTeachers(teachers);
     };
+    const teacher = JSON.parse(localStorage.getItem("user"));
+    teacherTier.current = teacher.tier;
     fetchTeachers();
   }, []);
   console.log(teachers);
@@ -174,26 +178,28 @@ function _TimetablePage() {
                 Substitute
               </button>
             </div>
-            <div className="flex items-center gap-2">
-              <label
-                htmlFor="classSelect"
-                className="text-sm font-medium text-gray-700"
-              >
-                <span className="sm:inline hidden">Select </span>Class:
-              </label>
-              <select
-                id="classSelect"
-                value={classe}
-                onChange={(e) => handleClassChange(e.target.value)}
-                className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
-              >
-                {classes
-                  .map((classe) => classe.join(""))
-                  .map((classe) => (
-                    <option value={classe}>{classe}</option>
-                  ))}
-              </select>
-            </div>
+            {!viewingOwnTt && teacherTier.current == Tier.COORDINATOR && (
+              <div className="flex items-center gap-2">
+                <label
+                  htmlFor="classSelect"
+                  className="text-sm font-medium text-gray-700"
+                >
+                  <span className="sm:inline hidden">Select </span>Class:
+                </label>
+                <select
+                  id="classSelect"
+                  value={classe}
+                  onChange={(e) => handleClassChange(e.target.value)}
+                  className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm"
+                >
+                  {classes
+                    .map((classe) => classe.join(""))
+                    .map((classe) => (
+                      <option value={classe}>{classe}</option>
+                    ))}
+                </select>
+              </div>
+            )}
           </div>
         </div>
         {}

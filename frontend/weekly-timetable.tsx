@@ -87,6 +87,7 @@ function _WeeklyTimetable({
         setIsReadOnly(true);
         setTeacherMode(true);
     }
+    setIsReadOnly(oldro => oldro || viewingOwnTt)
   }, [teacherTier]);
   const periods1to4 = [
     { name: "1", time: "7:35-8:15" },
@@ -460,7 +461,7 @@ function _WeeklyTimetable({
                       key={`${day}-${period.name}`}
                       className={`px-3 py-4 text-sm text-center last:border-r-0 transition-colors min-h-[60px] ${
                         period.name === "Break"
-                          ? "bg-gray-200 border-gray-300 border-b cursor-pointer"
+                          ? "bg-gray-200 border-gray-300 border-b"
                           : isReadOnly
                           ? "border-r cursor-default"
                           : "hover:bg-blue-50 cursor-pointer border-gray-200 border-r"
