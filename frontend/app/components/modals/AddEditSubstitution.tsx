@@ -116,7 +116,7 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
               >
                 <option value="">No class</option>
                 {classes.map((classe) => (
-                  <option value={classe}>{classe}</option>
+                  <option value={classe.join("")}>{classe}</option>
                 ))}
               </select>
             </div>
