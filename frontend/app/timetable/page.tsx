@@ -204,7 +204,7 @@ function _TimetablePage() {
           </div>
         </div>
         {}
-        <CurrentPeriodBanner classTimetables={classTimetables} />
+        <CurrentPeriodBanner classTimetables={classTimetables} selectedClass={params.get("class") || "1A"} />
         <WeeklyTimetable
           selectedClass={params.get("class") || "1A"}
           classTimetables={classTimetables}
