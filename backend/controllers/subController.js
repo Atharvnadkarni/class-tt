@@ -3,7 +3,7 @@ const Substitution = require("../models/Substitution");
 
 const getSubstitutions = async (req, res) => {
   try {
-    const substitutions = await Substitution.find();
+    const substitutions = await Substitution.find().sort({ date: -1 });
     res
       .status(200)
       .json({ message: "Substitutions fetched successfully", substitutions });
