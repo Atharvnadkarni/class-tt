@@ -1,10 +1,20 @@
 [build]
-  # This tells Netlify to treat 'app/backend' as the base directory
-  # for all commands and file lookups.
-  base = "backend"
+  # The base directory where your package.json and node_modules are located.
+  base = "app/backend"
+  
+  # The directory where your serverless functions are located, relative to the base.
   functions = "netlify/functions"
+  
+  # The command Netlify runs to build your site. Since the backend doesn't have a build step
+  # like a static site, you can set this to a simple command or leave it empty.
+  command = "echo 'No build command needed for this backend'"
+  
+  # The directory containing static assets to publish. If your backend doesn't serve
+  # any static files, you can omit this or point it to a non-existent folder.
+  publish = "public"
 
 [[redirects]]
+  # This rule redirects all incoming requests to your serverless function.
   from = "/*"
   to = "/.netlify/functions/api"
   status = 200
