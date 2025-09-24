@@ -1,10 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Book, User, Settings, LogOut, ChevronDown } from "lucide-react";
+import { Book, User, Settings, LogOut, ChevronDown, Calendar } from "lucide-react";
 import Link from "next/link";
 import { useDispatch, useSelector } from "react-redux";
 import { logout } from "@/context/userSlice";
+import Icon from "../../images/icon.jpeg"
 
 export default function TimetableHeader() {
   const [currentTime] = useState(new Date(2024, 0, 1, 9, 45, 0)); // Demo time: 9:45 AM
@@ -66,7 +67,7 @@ export default function TimetableHeader() {
           {/* App Title */}
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/10 rounded-lg backdrop-blur-sm">
-              <Book className="h-6 w-6 text-white" />
+              <Calendar className="h-6 w-6 text-secondary" />
             </div>
             {!user ? (
               <Link href="/login">
