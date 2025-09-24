@@ -10,6 +10,7 @@ import Link from "next/link";
 import axios from "axios";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogin } from "../hooks/useLogin";
+import VVA from "../../images/vva.jpeg";
 
 export default function LoginScreen({ sessionExpired }) {
   const [username, setUsername] = useState("");
@@ -32,7 +33,10 @@ export default function LoginScreen({ sessionExpired }) {
       )
     ) : null
   ) : (
-    <div className="min-h-screen flex flex-col bg-gray-200">
+    <div
+      className="min-h-screen flex flex-col"
+      style={{ backgroundImage: `url(${VVA.src})`, backgroundSize: "cover" }}
+    >
       <TimetableHeader loggedIn={false} />
       {sessionExpired && (
         <div
