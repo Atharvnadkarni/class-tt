@@ -1,0 +1,10 @@
+[build]
+  # This tells Netlify to treat 'app/backend' as the base directory
+  # for all commands and file lookups.
+  base = "backend"
+  functions = "netlify/functions"
+
+[[redirects]]
+  from = "/*"
+  to = "/.netlify/functions/api"
+  status = 200
