@@ -11,7 +11,6 @@
   
   # The directory containing static assets to publish. If your backend doesn't serve
   # any static files, you can omit this or point it to a non-existent folder.
-  publish = "public"
 
 [[redirects]]
   # This rule redirects all incoming requests to your serverless function.
