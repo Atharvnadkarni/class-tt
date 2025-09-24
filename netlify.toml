@@ -1,6 +1,6 @@
 [build]
   # The base directory where your package.json and node_modules are located.
-  base = "app/backend"
+  base = "backend"
   
   # The directory where your serverless functions are located, relative to the base.
   functions = "netlify/functions"
