@@ -20,8 +20,11 @@ mongoose
   .then(() => console.log("Successfully connected to MongoDB"))
   .catch((err) => console.error("Could not connect to MongoDB:", err));
 
-  
 // --- Middleware ---
+app.use((req, res, next) => {
+  console.log(`Received ${req.method} request for ${req.url}`);
+  next();
+});
 app.use(express.json());
 app.use(cors());
 
