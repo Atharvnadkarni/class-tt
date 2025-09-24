@@ -420,7 +420,7 @@ function _WeeklyTimetable({
             <thead>
               <tr className="bg-gray-50 border-b border-gray-200">
                 <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-r border-gray-200 w-24 sticky left-0 bg-[#efd584] z-10">
-                  Class/Period
+                  Day/Period
                 </th>
                 {periods.map((period) => (
                   <th
