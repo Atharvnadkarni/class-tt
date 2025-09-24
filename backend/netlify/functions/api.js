@@ -10,6 +10,8 @@ const router = require("../../routes/routes"); // Make sure this path is correct
 require("dotenv").config();
 
 const app = express();
+app.use(express.json());
+app.use(cors());
 
 // --- Database Connection ---
 // It's a good practice to connect to the database outside of the handler
@@ -19,8 +21,6 @@ mongoose
   .connect(MONGO_URI)
   .then(() => {
     console.log("Successfully connected to MongoDB");
-    app.use(express.json());
-    app.use(cors());
 
     // --- Routes ---
     // We mount the router at the base path. The /api part is handled by
