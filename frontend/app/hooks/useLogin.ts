@@ -14,7 +14,7 @@ export const useLogin = () => {
 
     try {
       const response = await axios.post(
-        "schedulr-backend.netlify.app/api/teacher/login",
+        "https://schedulr-backend.netlify.app/api/teacher/login",
         {
           username,
           password,
