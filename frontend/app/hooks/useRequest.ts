@@ -11,7 +11,7 @@ import { useState, useCallback } from "react";
 import { useDispatch } from "react-redux";
 
 export const useRequest = (options: UseRequestOptions = {}) => {
-  const baseURL = options.baseURL || "schedulr-backend.netlify.appapi";
+  const baseURL = options.baseURL || "schedulr-backend.netlify.app/api";
   let token = "";
   if (typeof window !== "undefined") {
     const userStr = window.localStorage.getItem("user");
