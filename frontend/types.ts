@@ -1,7 +1,8 @@
 export enum Tier {
-  ADMIN = "Admin",
+  PRINCIPAL = "Principal",
+  VP = "Vice-Principal",
   COORDINATOR = "Coordinator",
-  TEACHER = "Teacher",
+  TEACHER = "Teacher"
 }
 
 export enum ReportRange {
