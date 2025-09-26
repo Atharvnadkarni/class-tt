@@ -1,7 +1,7 @@
 import { subjectList, subjectToDisplayName, trSubjectList } from "@/subjects";
 import { useRequest } from "@/app/hooks/useRequest";
 import { Plus, X } from "lucide-react";
-import { useEffect, useState, useTransition } from "react";
+import { use, useEffect, useState, useTransition } from "react";
 import bcrypt from "bcryptjs";
 import { useSelector } from "react-redux";
 import { Tier } from "@/types";
@@ -80,7 +80,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       username,
       password,
       tier,
-      editableClasses
+      editableClasses,
     }).catch((err) => console.error(err.message));
     const newTeachers = await request("get", "/teacher");
     setMode(null);
@@ -124,7 +124,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       displayName,
       ...(password != "-------" && { password }),
       tier,
-      editableClasses
+      editableClasses,
     });
     const newTeachers = await request("get", "/teacher");
     setMode(null);
@@ -140,14 +140,24 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       setDisplayName(mode.teacher.displayName);
       setUsername(mode.teacher.username);
       setPassword("-------");
-      setEditableClasses(mode.teacher.editableClasses)
+      setTier(mode.teacher.tier);
+      if (mode.teacher.editableClasses[0]) {
+        setEditableClasses(mode.teacher.editableClasses);
+      } else {
+        if (tier == Tier.PRINCIPAL) {
+          setEditableClasses([1, 12]);
+        } else if (tier == Tier.VP) {
+          setEditableClasses([1, 5]);
+        }
+      }
       console.log(mode.teacher.subjects);
     } else {
       setTeacherName("");
       setDisplayName("");
       setUsername("");
       setPassword("");
-      setEditableClasses([0,0])
+      setTier(Tier.TEACHER);
+      setEditableClasses([0, 0]);
     }
     const subs = mode?.teacher?.subjects;
     if (subs) {
@@ -161,6 +171,15 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
 
     setSubs(subs ?? []);
   }, [mode?.mode]);
+  useEffect(() => {
+    if (mode?.mode != "edit" || !mode?.teacher.editableClasses[0]) {
+      if (tier == Tier.PRINCIPAL) {
+        setEditableClasses([1, 12]);
+      } else if (tier == Tier.VP) {
+        setEditableClasses([1, 5]);
+      }
+    }
+  }, [tier]);
   useEffect(() => {
     if (mode?.mode == "edit") {
       setTier(mode?.teacher?.tier);
