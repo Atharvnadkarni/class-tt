@@ -324,7 +324,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                       setTier(e.target.value);
                     }}
                   >
-                    <option value={Tier.ADMIN}>Administrator</option>
+                    <option value={Tier.PRINCIPAL}>Principal</option>
+                    <option value={Tier.VP}>Vice-Principal</option>
                     <option value={Tier.COORDINATOR}>Coordinator</option>
                     <option value={Tier.TEACHER}>Teacher</option>
                   </select>
