@@ -383,7 +383,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   <input
                     type="number"
                     id="teacherName"
-                    value={editableClasses[0]}
+                    value={editableClasses[0] || 0}
                     onChange={(e) => {
                       setEditableClasses((oec) => [
                         e.target.value,
@@ -401,7 +401,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   <input
                     type="number"
                     id="teacherName"
-                    value={editableClasses[1]}
+                    value={editableClasses[1] || 0}
                     onChange={(e) => {
                       setEditableClasses((oec) => [
                         ...oec.slice(0, -1),
