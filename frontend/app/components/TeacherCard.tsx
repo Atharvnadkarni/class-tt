@@ -24,7 +24,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
       key={teacher.name}
       className="flex items-center justify-between p-4 border border-gray-200 bg-[#b8defc] rounded-lg hover:bg-[#a6d7ff] transition-colors relative"
     >
-      {(tier == Tier.ADMIN || tier == Tier.COORDINATOR) && (
+      {(tier != Tier.TEACHER) && (
         <div className="flex absolute top-2 right-2 gap-2">
           <BookCopy
             className="w-4 h-4"

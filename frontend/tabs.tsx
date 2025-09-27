@@ -57,7 +57,7 @@ const Tabs = ({ activeTab }) => {
               Teacher Details
             </button>
           </Link>
-          {teacherTier.current == Tier.COORDINATOR && (
+          {teacherTier.current != Tier.TEACHER && (
             <Link href="/substitutions">
               <button
                 onClick={() => {

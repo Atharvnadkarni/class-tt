@@ -89,8 +89,7 @@ export default function TeacherPage() {
               <h3 className="text-xl font-semibold text-gray-800">
                 Available Teachers
               </h3>
-              {(teacherTier.current == Tier.ADMIN || teacherTier.current) ==
-                Tier.COORDINATOR && (
+              {teacherTier.current != Tier.TEACHER && (
                 <button
                   className="px-4 py-2 bg-secondary text-black text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => setMode({ mode: "add", teacher: null })}
