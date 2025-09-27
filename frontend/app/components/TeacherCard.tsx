@@ -12,7 +12,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
   const user = useSelector((state) => state.user);
   const [workloadVisible, setWorkloadVisible] = useState(false);
   const [deleteModalId, setDeleteModalId] = useState(null);
-  const {request, isLoading, error} = useRequest()
+  const { request, isLoading, error } = useRequest();
   const deleteTeacher = async (_id: string) => {
     if (!user) return;
     await request("delete", `/teacher/${_id}`);
@@ -82,7 +82,9 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
                 })}
           </p>
           <p className="text-xs/[15px] md:text-sm/[18px] text-gray-600">
-            {teacher.tier ?? Tier.TEACHER}
+            {teacher.tier ?? Tier.TEACHER}{" "}
+            {teacher.editableClasses.length > 0 &&
+              `for Classes ${teacher.editableClasses.join("-")}`}
           </p>
         </div>
       </div>
