@@ -76,11 +76,11 @@ const Tabs = ({ activeTab }) => {
             </Link>
           )}
           {teacherTier.current == Tier.PRINCIPAL || teacherTier.current == Tier.VP && (
-            <Link href="/substitutions">
+            <Link href="/attendance">
               <button
                 onClick={() => {
                   if (typeof window !== "undefined") {
-                    window.localStorage.setItem("currentTab", "substitutions");
+                    window.localStorage.setItem("currentTab", "attendance");
                   }
                 }}
                 className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
