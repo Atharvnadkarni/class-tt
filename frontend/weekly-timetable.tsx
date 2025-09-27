@@ -58,37 +58,52 @@ function _WeeklyTimetable({
 }: WeeklyTimetableProps) {
   const classSplit = [parseInt(selectedClass.slice(0, -1)), selectedClass[-1]];
   const teacherTier = useRef(Tier.TEACHER);
+  const teacherEditableClasses = useRef([0, 0]);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [teacherMode, setTeacherMode] = useState(false);
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const { tier } = JSON.parse(
+      const { tier = Tier.TEACHER, editableClasses = [0, 0] } = JSON.parse(
         window.localStorage.getItem("user") ??
-          JSON.stringify({ tier: Tier.TEACHER })
+          JSON.stringify({ tier: Tier.TEACHER, editableClasses: [0, 0] })
       );
       teacherTier.current = tier;
+      teacherEditableClasses.current = editableClasses;
     }
   }, []);
   useEffect(() => {
-    switch (teacherTier.current) {
-      case Tier.ADMIN:
-        setIsReadOnly(true);
-        setTeacherMode(false);
-        break;
-      case Tier.COORDINATOR:
-        setIsReadOnly(false);
-        setTeacherMode(false);
-        break;
-      case Tier.TEACHER:
-        setIsReadOnly(true);
-        setTeacherMode(true);
-        break;
-      default:
-        setIsReadOnly(true);
-        setTeacherMode(true);
+    if (teacherTier.current != Tier.TEACHER) {
+      console.log(
+        67,
+        teacherEditableClasses.current[0],
+        teacherEditableClasses.current[1],
+      );
+      setIsReadOnly(
+        !(
+          classSplit[0] >= teacherEditableClasses.current[0] &&
+          classSplit[0] <= teacherEditableClasses.current[1]
+        )
+      );
     }
-    setIsReadOnly(oldro => oldro || viewingOwnTt)
-  }, [teacherTier]);
+    // switch (teacherTier.current) {
+    //   case Tier.PRIN:
+    //     setIsReadOnly(true);
+    //     setTeacherMode(false);
+    //     break;
+    //   case Tier.COORDINATOR:
+    //     setIsReadOnly(false);
+    //     setTeacherMode(false);
+    //     break;
+    //   case Tier.TEACHER:
+    //     setIsReadOnly(true);
+    //     setTeacherMode(true);
+    //     break;
+    //   default:
+    //     setIsReadOnly(true);
+    //     setTeacherMode(true);
+    // }
+    setIsReadOnly((oldro) => oldro || viewingOwnTt);
+  }, [teacherTier, selectedClass]);
   const periods1to4 = [
     { name: "1", time: "7:35-8:15" },
     { name: "2", time: "8:15-8:55" },
@@ -120,16 +135,17 @@ function _WeeklyTimetable({
     days.push("Saturday");
   }
   // Get current class timetable data or teacher's schedule
-  
-    
-  const [timetableData, setTimetableData] = useState({})
+
+  const [timetableData, setTimetableData] = useState({});
   useEffect(() => {
-    console.log(127, viewingOwnTt, classTimetables, selectedClass)
-    setTimetableData(viewingOwnTt
-      ? getTeacherSchedule()
-      : classTimetables[selectedClass] || { })
-  }, [viewingOwnTt, classTimetables, selectedClass])
-  useEffect(() => {console.log(timetableData)}, [timetableData])
+    console.log(127, viewingOwnTt, classTimetables, selectedClass);
+    setTimetableData(
+      viewingOwnTt ? getTeacherSchedule() : classTimetables[selectedClass] || {}
+    );
+  }, [viewingOwnTt, classTimetables, selectedClass]);
+  useEffect(() => {
+    console.log(timetableData);
+  }, [timetableData]);
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
