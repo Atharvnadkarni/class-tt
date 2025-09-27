@@ -99,6 +99,7 @@ const loginTeacher = async (req, res) => {
       tier: teacher.tier,
       name: teacher.name,
       displayName: teacher.displayName,
+      editableClasses: teacher.editableClasses
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
