@@ -409,6 +409,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                         ...oec.slice(1),
                       ]);
                     }}
+                    disabled={tier == Tier.PRINCIPAL}
                     placeholder="Class"
                     className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
@@ -427,6 +428,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                         e.target.value,
                       ]);
                     }}
+                    disabled={tier == Tier.PRINCIPAL}
                     placeholder="Class"
                     className="w-[80px] px-3 py-2 mb-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                   />
