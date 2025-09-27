@@ -2,7 +2,7 @@ import { useRequest } from "@/app/hooks/useRequest";
 import { classes, subjects, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, Save, X } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
@@ -41,7 +41,17 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
       setFormData(mode.sub);
     }
   }, [mode?.mode]);
-  const { request, isLoading, error:reqError } = useRequest();
+  const { request, isLoading, error: reqError } = useRequest();
+  const teacherEditableClasses = useRef([]);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const { editableClasses = [0, 0] } = JSON.parse(
+        window.localStorage.getItem("user") ??
+          JSON.stringify({ editableClasses: [0, 0] })
+      );
+      teacherEditableClasses.current = editableClasses;
+    }
+  }, []);
   const handleAddSave = async (e) => {
     if (!user) {
       setError("Must be logged in");
@@ -115,9 +125,15 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               >
                 <option value="">No class</option>
-                {classes.map((classe) => (
-                  <option value={classe.join("")}>{classe}</option>
-                ))}
+                {classes
+                  .filter(
+                    (classe) =>
+                      classe[0] >= teacherEditableClasses.current[0] &&
+                      classe[0] <= teacherEditableClasses.current[1]
+                  )
+                  .map((classe) => (
+                    <option value={classe.join("")}>{classe}</option>
+                  ))}
               </select>
             </div>
 
