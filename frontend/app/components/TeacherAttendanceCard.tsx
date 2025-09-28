@@ -53,7 +53,11 @@ const TeacherAttendanceCard = ({
                 : "bg-green-300"
             }`}
             onClick={() => {
-              setAttendanceRecord((oar) => ({ ...oar, [teacher.name]: true }));
+              if (mode == "editing")
+                setAttendanceRecord((oar) => ({
+                  ...oar,
+                  [teacher.name]: true,
+                }));
             }}
           >
             Present
@@ -73,7 +77,11 @@ const TeacherAttendanceCard = ({
                 : "bg-red-300"
             }`}
             onClick={() => {
-              setAttendanceRecord((oar) => ({ ...oar, [teacher.name]: false }));
+              if (mode == "editing")
+                setAttendanceRecord((oar) => ({
+                  ...oar,
+                  [teacher.name]: false,
+                }));
             }}
           >
             Absent
