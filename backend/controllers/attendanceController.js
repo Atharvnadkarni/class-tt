@@ -4,11 +4,17 @@ const getAttendance = async (req, res) => {
   try {
     const attendance = await redisClient.get("attendance");
     const jsonAttendance = JSON.parse(attendance);
-    if (jsonAttendance.date != new Date().toISOString()) {
+    const attendanceDate = new Date(jsonAttendance.date);
+    const today = new Date();
+    if (
+      attendanceDate.getFullYear() !== today.getFullYear() ||
+      attendanceDate.getMonth() !== today.getMonth() ||
+      attendanceDate.getDate() !== today.getDate()
+    ) {
       await redisClient.set(
         "attendance",
         JSON.stringify({
-          date: new Date().toISOString(),
+          date: today.toISOString(),
           attendance: Object.fromEntries(
             Object.entries(jsonAttendance.attendance).map(([key, value]) => [
               key,
@@ -20,11 +26,11 @@ const getAttendance = async (req, res) => {
       return res.status(200).json({
         message: "Attendance record fetched successfully",
         attendance: JSON.stringify({
-          date: new Date().toISOString(),
+          date: today.toISOString(),
           attendance: Object.fromEntries(
             Object.entries(jsonAttendance.attendance).map(([key, value]) => [
               key,
-              0,
+              null,
             ])
           ),
         }),
