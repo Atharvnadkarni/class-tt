@@ -53,10 +53,6 @@ const TeacherAttendanceCard = ({
                 : "bg-green-300"
             }`}
             onClick={() => {
-              console.log(teacher, {
-                ...attendanceRecord,
-                [teacher.name]: true,
-              });
               setAttendanceRecord((oar) => ({ ...oar, [teacher.name]: true }));
             }}
           >
@@ -76,6 +72,9 @@ const TeacherAttendanceCard = ({
                 ? "bg-gray-400"
                 : "bg-red-300"
             }`}
+            onClick={() => {
+              setAttendanceRecord((oar) => ({ ...oar, [teacher.name]: false }));
+            }}
           >
             Absent
           </button>
