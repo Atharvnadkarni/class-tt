@@ -10,7 +10,7 @@ import { Edit, Save } from "lucide-react";
 const SubstitutionPage = () => {
   const [teachers, setTeachers] = useState([]);
   const [attendanceRecord, setAttendanceRecord] = useState({});
-  const [currentMode, setCurrentMode] = useState("editing");
+  const [currentMode, setCurrentMode] = useState("saved");
   const { request, error: reqError, isLoading: reqLoading } = useRequest();
   useEffect(() => {
     (async () => {
