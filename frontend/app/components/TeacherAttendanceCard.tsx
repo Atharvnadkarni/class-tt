@@ -20,19 +20,38 @@ const TeacherAttendanceCard = ({
         <div className="flex items-center">{children}</div>
         <div className="flex gap-2">
           <button
-            className={`bg-green-500 text-white px-4 py-1 rounded-full transition ${
+            className={`text-white px-4 py-1 rounded-full transition ${
               mode == "saved"
                 ? "cursor-default"
                 : "hover:bg-green-600 cursor-pointer"
+            } ${
+              mode == "editing"
+                ? "bg-green-500"
+                : attendanceRecord[children] == null
+                ? "bg-gray-400"
+                : attendanceRecord[children] == true
+                
+                ? "bg-blue-800"
+                : "bg-green-300"
             }`}
           >
             Present
           </button>
-          <button className={`bg-red-500 text-white px-4 py-1 rounded-full transition ${
+          <button
+            className={` text-white px-4 py-1 rounded-full transition ${
               mode == "saved"
                 ? "cursor-default"
                 : "hover:bg-red-600 cursor-pointer"
-            }`}>
+            } ${
+              mode == "editing"
+                ? "bg-red-500"
+                : attendanceRecord[children] == null
+                ? "bg-gray-400"
+                : attendanceRecord[children] == false
+                ? "bg-blue-800"
+                : "bg-red-300"
+            }`}
+          >
             Absent
           </button>
         </div>
