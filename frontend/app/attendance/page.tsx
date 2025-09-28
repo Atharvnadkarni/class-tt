@@ -24,6 +24,9 @@ const SubstitutionPage = () => {
       setAttendanceRecord(attendanceObj);
     })();
   }, []);
+  const saveAttendanceRecord = async () => {
+    await request("patch", "/attendance", attendanceRecord);
+  };
   return (
     <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
@@ -50,6 +53,7 @@ const SubstitutionPage = () => {
                 <button
                   className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => {
+                    saveAttendanceRecord();
                     setCurrentMode("saved");
                   }}
                 >
