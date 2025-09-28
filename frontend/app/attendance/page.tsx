@@ -17,11 +17,10 @@ const SubstitutionPage = () => {
       const res = await request("get", "/teacher");
       const teacherData = res.data.teacher;
       setTeachers(teacherData);
-      const attendanceObj = {};
-      teacherData.forEach((teacher: { name: string }) => {
-        attendanceObj[teacher.name] = null;
-      });
-      setAttendanceRecord(attendanceObj);
+      const attendanceObj = (await request("get", "/attendance")).data
+        .attendance.attendance;
+      console.log(attendanceObj);
+      setAttendanceRecord(attendanceObj ?? {});
     })();
   }, []);
   const saveAttendanceRecord = async () => {
