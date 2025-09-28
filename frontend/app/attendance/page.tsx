@@ -22,7 +22,15 @@ const SubstitutionPage = () => {
         (await request("get", "/attendance")).data.attendance
       ).attendance;
       console.log(attendanceObj);
-      setAttendanceRecord(attendanceObj ?? {});
+      const allPresentRecord = {};
+      teacherData.forEach((teacher: { name: string }) => {
+        allPresentRecord[teacher.name] = true;
+      });
+      setAttendanceRecord(
+        Object.assign({}, allPresentRecord, attendanceObj) ??
+          allPresentRecord
+      );
+      // allPresentRecord now contains every teacher's name as key and true as value
     })();
   }, []);
   const saveAttendanceRecord = async () => {

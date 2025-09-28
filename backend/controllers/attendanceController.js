@@ -18,7 +18,7 @@ const getAttendance = async (req, res) => {
           attendance: Object.fromEntries(
             Object.entries(jsonAttendance.attendance).map(([key, value]) => [
               key,
-              0,
+              true,
             ])
           ),
         })
@@ -30,7 +30,7 @@ const getAttendance = async (req, res) => {
           attendance: Object.fromEntries(
             Object.entries(jsonAttendance.attendance).map(([key, value]) => [
               key,
-              null,
+              true,
             ])
           ),
         }),
