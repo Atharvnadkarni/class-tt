@@ -17,8 +17,9 @@ const SubstitutionPage = () => {
       const res = await request("get", "/teacher");
       const teacherData = res.data.teacher;
       setTeachers(teacherData);
-      const attendanceObj = (await request("get", "/attendance")).data
-        .attendance.attendance;
+      const attendanceObj = JSON.parse(
+        (await request("get", "/attendance")).data.attendance
+      ).attendance;
       console.log(attendanceObj);
       setAttendanceRecord(attendanceObj ?? {});
     })();
