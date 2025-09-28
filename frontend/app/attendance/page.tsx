@@ -5,7 +5,8 @@ import TimetableHeader from "@/app/components/Header";
 import { useEffect, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
 import TeacherAttendanceCard from "../components/TeacherAttendanceCard";
-import { Edit, Save } from "lucide-react";
+import { Edit, Save, X } from "lucide-react";
+import { Cancel } from "@radix-ui/react-alert-dialog";
 
 const SubstitutionPage = () => {
   const [teachers, setTeachers] = useState([]);
@@ -50,16 +51,27 @@ const SubstitutionPage = () => {
                 </button>
               )}
               {currentMode == "editing" && (
-                <button
-                  className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                  onClick={() => {
-                    saveAttendanceRecord();
-                    setCurrentMode("saved");
-                  }}
-                >
-                  <Save className="h-4 w-4" />
-                  Save
-                </button>
+                <>
+                  <button
+                    className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                    onClick={() => {
+                      setCurrentMode("saved");
+                    }}
+                  >
+                    <X className="h-4 w-4" />
+                    Cancel
+                  </button>
+                  <button
+                    className="px-4 py-2 bg-primary text-white hover:bg-primary text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                    onClick={() => {
+                      saveAttendanceRecord();
+                      setCurrentMode("saved");
+                    }}
+                  >
+                    <Save className="h-4 w-4" />
+                    Save
+                  </button>
+                </>
               )}
             </div>
           </div>
@@ -88,15 +100,27 @@ const SubstitutionPage = () => {
               </button>
             )}
             {currentMode == "editing" && (
-              <button
-                className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                onClick={() => {
-                  setCurrentMode("saved");
-                }}
-              >
-                <Save className="h-4 w-4" />
-                Save
-              </button>
+              <>
+                <button
+                  className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    setCurrentMode("saved");
+                  }}
+                >
+                  <X className="h-4 w-4" />
+                  Cancel
+                </button>
+                <button
+                  className="px-4 py-2 bg-primary text-white hover:bg-primary text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    saveAttendanceRecord();
+                    setCurrentMode("saved");
+                  }}
+                >
+                  <Save className="h-4 w-4" />
+                  Save
+                </button>
+              </>
             )}
           </div>
         </div>
