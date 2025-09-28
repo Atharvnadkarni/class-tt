@@ -106,7 +106,7 @@ const SubstitutionPage = () => {
                   className="px-4 py-2 text-sm font-semibold text-black bg-gray-300 text-black text-black  text-sm font-small rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => setDropdownOpen(true)}
                 >
-                  <ArrowDownWideNarrow />
+                  <ArrowDownWideNarrow className="h-6 w-6" />
                   Filter
                 </button>
                 {dropdownOpen && (
