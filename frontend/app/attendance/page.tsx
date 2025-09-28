@@ -17,9 +17,11 @@ const SubstitutionPage = () => {
       const res = await request("get", "/teacher");
       const teacherData = res.data.teacher;
       setTeachers(teacherData);
-      setAttendanceRecord(
-        teacherData.map((teacher) => ({ [teacher.name]: null }))
-      );
+      const attendanceObj = {};
+      teacherData.forEach((teacher: { name: string }) => {
+        attendanceObj[teacher.name] = null;
+      });
+      setAttendanceRecord(attendanceObj);
     })();
   }, []);
   return (
@@ -61,33 +63,12 @@ const SubstitutionPage = () => {
             {teachers.map((teacher: { name: string }) => (
               <TeacherAttendanceCard
                 {...{
+                  teacher: teacher,
                   mode: currentMode,
                   attendanceRecord,
                   setAttendanceRecord,
                 }}
-              >
-                {teacher.name.includes(teacher.displayName) ? (
-                  <h3>
-                    {teacher.name.slice(
-                      0,
-                      teacher.name.indexOf(teacher.displayName)
-                    )}
-                    <span className="font-bold">
-                      {teacher.name.slice(
-                        teacher.name.indexOf(teacher.displayName),
-                        teacher.name.indexOf(teacher.displayName) +
-                          teacher.displayName.length
-                      )}
-                    </span>
-                    {teacher.name.slice(
-                      teacher.name.indexOf(teacher.displayName) +
-                        teacher.displayName.length
-                    )}
-                  </h3>
-                ) : (
-                  <h3>{teacher.name}</h3>
-                )}
-              </TeacherAttendanceCard>
+              />
             ))}
           </div>
           <div className="flex justify-end items-center mt-4 gap-2 mr-4">
