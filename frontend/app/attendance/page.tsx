@@ -10,7 +10,7 @@ import { Edit, Save } from "lucide-react";
 const SubstitutionPage = () => {
   const [teachers, setTeachers] = useState([]);
   const [attendanceRecord, setAttendanceRecord] = useState({});
-  const [currentMode, setCurrentMode] = useState("edit");
+  const [currentMode, setCurrentMode] = useState("editing");
   const { request, error: reqError, isLoading: reqLoading } = useRequest();
   useEffect(() => {
     (async () => {
@@ -33,22 +33,22 @@ const SubstitutionPage = () => {
               Attendance List
             </h1>
             <div className="flex gap-2">
-              {currentMode == "edit" && (
+              {currentMode == "saved" && (
                 <button
                   className="px-4 py-2 text-sm font-semibold text-black bg-gray-300 text-black text-black  text-sm font-small rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => {
-                    setCurrentMode("save");
+                    setCurrentMode("editing");
                   }}
                 >
                   <Edit className="h-4 w-4" />
                   Edit
                 </button>
               )}
-              {currentMode == "save" && (
+              {currentMode == "editing" && (
                 <button
                   className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => {
-                    setCurrentMode("save");
+                    setCurrentMode("saved");
                   }}
                 >
                   <Save className="h-4 w-4" />
@@ -85,14 +85,24 @@ const SubstitutionPage = () => {
             ))}
           </div>
           <div className="flex justify-end items-center mt-4 gap-2 mr-4">
-            {currentMode == "edit" && (
-              <button className="px-4 py-2 bg-gray-300 text-black hover:bg-gray-300 text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+            {currentMode == "saved" && (
+              <button
+                className="px-4 py-2 bg-gray-300 text-black hover:bg-gray-300 text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => {
+                  setCurrentMode("editing");
+                }}
+              >
                 <Edit className="h-4 w-4" />
                 Edit
               </button>
             )}
-            {currentMode == "save" && (
-              <button className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2">
+            {currentMode == "editing" && (
+              <button
+                className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => {
+                  setCurrentMode("saved");
+                }}
+              >
                 <Save className="h-4 w-4" />
                 Save
               </button>
