@@ -59,7 +59,13 @@ const SubstitutionPage = () => {
           </div>
           <div className="flex flex-col gap-2">
             {teachers.map((teacher: { name: string }) => (
-              <TeacherAttendanceCard>
+              <TeacherAttendanceCard
+                {...{
+                  mode: currentMode,
+                  attendanceRecord,
+                  setAttendanceRecord,
+                }}
+              >
                 {teacher.name.includes(teacher.displayName) ? (
                   <h3>
                     {teacher.name.slice(
