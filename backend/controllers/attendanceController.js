@@ -52,7 +52,7 @@ const saveAttendance = async (req, res) => {
     await redisClient.set("attendance", JSON.stringify(finalAttendanceData));
     res.status(200).json({
       message: "Attendance record saved successfully",
-      attendance: JSON.stringify(body),
+      attendance: JSON.stringify(finalAttendanceData),
     });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
