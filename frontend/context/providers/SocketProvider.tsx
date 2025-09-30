@@ -12,9 +12,10 @@ export default function SocketProvider({
   children: React.ReactNode;
 }) {
   useEffect(() => {
-    socket.on("connect", () => {
-      console.log("CONNECTED");
-    });
+    socket.on("attendance", (...args) => {
+        console.log(args)
+    })
+    return () => socket.off("attendance");
   }, []);
 
   return <>{children}</>; // render children normally
