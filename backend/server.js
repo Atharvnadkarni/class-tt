@@ -2,6 +2,7 @@ const express = require("express");
 const mongoose = require("mongoose");
 const router = require("./routes/routes");
 const cors = require("cors");
+const { http } = require("./socket");
 
 require("dotenv").config();
 
@@ -15,8 +16,12 @@ app.use((req, res, next) => {
 app.use(cors());
 app.use("/api", router);
 
-mongoose.connect(process.env.MONGO_CONNECTION_URI).then((res) =>
+mongoose.connect(process.env.MONGO_CONNECTION_URI).then((res) => {
   app.listen(process.env.PORT || 4000, () => {
     console.log("Connected to mongoose");
-  })
-);
+  });
+
+  http.listen(4000, () => {
+    console.log("Socket server listening");
+  });
+});

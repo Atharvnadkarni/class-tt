@@ -1,5 +1,6 @@
 require("dotenv").config();
 const redis = require("redis");
+const {http, io} = require("./socket")
 
 const redisClient = redis.createClient({
   username: "default",
@@ -9,6 +10,11 @@ const redisClient = redis.createClient({
     port: 11131,
   },
 });
+const subscriberClient = redisClient.duplicate()
+
+subscriberClient.subscribe("save_attendance", (newAttendanceRecord) => {
+  io.emit("attendance", newAttendanceRecord)
+})
 
 redisClient.on("error", (err) => console.error("Redis error:", err));
 
