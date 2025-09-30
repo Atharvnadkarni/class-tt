@@ -2,7 +2,7 @@
 
 import Tabs from "@/tabs";
 import TimetableHeader from "@/app/components/Header";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useRequest } from "../hooks/useRequest";
 import TeacherAttendanceCard from "../components/TeacherAttendanceCard";
 import { Edit, Save, X } from "lucide-react";
@@ -11,6 +11,7 @@ import { Cancel } from "@radix-ui/react-alert-dialog";
 const SubstitutionPage = () => {
   const [teachers, setTeachers] = useState([]);
   const [attendanceRecord, setAttendanceRecord] = useState({});
+  const oldAttendanceRecord = useRef({});
   const [currentMode, setCurrentMode] = useState("saved");
   const { request, error: reqError, isLoading: reqLoading } = useRequest();
   useEffect(() => {
@@ -27,12 +28,12 @@ const SubstitutionPage = () => {
         allPresentRecord[teacher.name] = true;
       });
       setAttendanceRecord(
-        Object.assign({}, allPresentRecord, attendanceObj) ??
-          allPresentRecord
+        Object.assign({}, allPresentRecord, attendanceObj) ?? allPresentRecord
       );
       // allPresentRecord now contains every teacher's name as key and true as value
     })();
   }, []);
+
   const saveAttendanceRecord = async () => {
     await request("patch", "/attendance", attendanceRecord);
   };
@@ -52,6 +53,7 @@ const SubstitutionPage = () => {
                   className="px-4 py-2 text-sm font-semibold text-black bg-gray-300 text-black text-black  text-sm font-small rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => {
                     setCurrentMode("editing");
+                    oldAttendanceRecord.current = attendanceRecord;
                   }}
                 >
                   <Edit className="h-4 w-4" />
@@ -64,6 +66,7 @@ const SubstitutionPage = () => {
                     className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                     onClick={() => {
                       setCurrentMode("saved");
+                      setAttendanceRecord(oldAttendanceRecord.current)
                     }}
                   >
                     <X className="h-4 w-4" />
