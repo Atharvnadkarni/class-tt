@@ -11,12 +11,23 @@ export default function SocketProvider({
 }: {
   children: React.ReactNode;
 }) {
-  useEffect(() => {
-    socket.on("attendance", (...args) => {
-        console.log(args)
-    })
-    return () => socket.off("attendance");
-  }, []);
+useEffect(() => {
+    const onConnect = () => {
+        console.log("[Socket] connected");
+    };
+
+    const onAnyEvent = (event: string, ...args: any[]) => {
+        console.log(`[Socket] event: ${event}`, ...args);
+    };
+
+    socket.on("connect", onConnect);
+    socket.onAny(onAnyEvent);
+
+    return () => {
+        socket.off("connect", onConnect);
+        socket.offAny(onAnyEvent);
+    };
+}, []);
 
   return <>{children}</>; // render children normally
 }
