@@ -1,6 +1,5 @@
 require("dotenv").config();
 const { createClient } = require("redis");
-const { http, io } = require("./socket");
 
 const redisClient = createClient({
   username: "default",
@@ -12,13 +11,12 @@ const redisClient = createClient({
 });
 const subscriberClient = redisClient.duplicate();
 
-
-
-
 redisClient.on("error", (err) => console.error("Redis error:", err));
 subscriberClient.on("error", (err) => console.error("Redis error:", err));
 
-(async () => {
+let isConnected = false;
+
+const connectRedis = async (io) => {
   try {
     console.log("Connecting to Redis at:", process.env.REDIS_URI);
     await redisClient.connect();
@@ -26,12 +24,13 @@ subscriberClient.on("error", (err) => console.error("Redis error:", err));
     await subscriberClient.connect();
     console.log("✅ Connected to Sub client!");
     subscriberClient.subscribe("save_attendance", (newAttendanceRecord) => {
-  io.emit("attendance", newAttendanceRecord);
-});
+      io.emit("attendance", newAttendanceRecord);
+    });
     console.log("✅ Subscribing");
+    
   } catch (err) {
     console.error("❌ Redis connection failed:", err);
   }
-})();
+};
 
-module.exports = {redisClient};
+module.exports = { redisClient,connectRedis, subscriberClient };

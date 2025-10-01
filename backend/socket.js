@@ -1,6 +1,6 @@
 const { Server } = require("socket.io");
 const http = require("http");
-const redisClient = require("./redis");
+const {redisClient, subscriberClient} = require("./redis");
 const createSocketFromApp = (app) => {
   const socketListener = http.createServer(app);
   const socketServer = new Server(socketListener, {

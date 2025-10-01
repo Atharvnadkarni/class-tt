@@ -3,11 +3,15 @@ const mongoose = require("mongoose");
 const router = require("./routes/routes");
 const cors = require("cors");
 const createSocketFromApp = require("./socket");
+const { connectRedis, subscriberClient } = require("./redis");
 
 require("dotenv").config();
 
 const app = express();
-const {server, io} = createSocketFromApp(app)
+const { server, io } = createSocketFromApp(app);
+
+(async () => await connectRedis(io))();
+
 
 app.use(express.json());
 app.use((req, res, next) => {
@@ -18,8 +22,6 @@ app.use(cors());
 app.use("/api", router);
 
 mongoose.connect(process.env.MONGO_CONNECTION_URI).then((res) => {
-  
-
   server.listen(process.env.PORT || 4000, () => {
     console.log("App server listening");
   });
