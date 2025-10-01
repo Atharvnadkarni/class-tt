@@ -2,7 +2,7 @@ const Teacher = require("../models/Teacher");
 const Substitution = require("../models/Substitution");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const redisClient = require("../redis");
+const { redisClient } = require("../redis");
 
 const createToken = (_id) => {
   return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "3d" });
@@ -99,7 +99,7 @@ const loginTeacher = async (req, res) => {
       tier: teacher.tier,
       name: teacher.name,
       displayName: teacher.displayName,
-      editableClasses: teacher.editableClasses
+      editableClasses: teacher.editableClasses,
     });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -269,15 +269,15 @@ const getTeacherWorkload = async (req, res) => {
     allotted: 0,
     taken: teacherSubsIn,
   });
-  let workloadSum = {allotted:0, taken:0};
+  let workloadSum = { allotted: 0, taken: 0 };
   workload.forEach((subject) => {
     workloadSum.allotted += subject.allotted;
     workloadSum.taken += subject.taken;
   });
   workload.push({
     subject: "Total",
-    ...workloadSum
-  })
+    ...workloadSum,
+  });
 
   // return allotted
   return res.json({

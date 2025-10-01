@@ -1,4 +1,4 @@
-const redisClient = require("../redis");
+const { redisClient } = require("../redis");
 
 const getTimetable = async (req, res) => {
   try {
@@ -13,14 +13,17 @@ const getTimetable = async (req, res) => {
 
 const saveTimetable = async (req, res) => {
   try {
-    const {body} = req
-    await redisClient.set('timetable', JSON.stringify(body))
+    const { body } = req;
+    await redisClient.set("timetable", JSON.stringify(body));
     res
       .status(200)
-      .json({ message: "Timetable saved successfully", timetable: JSON.stringify(body) });
+      .json({
+        message: "Timetable saved successfully",
+        timetable: JSON.stringify(body),
+      });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
 };
 
-module.exports = {getTimetable, saveTimetable}
+module.exports = { getTimetable, saveTimetable };

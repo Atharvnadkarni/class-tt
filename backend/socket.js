@@ -9,6 +9,7 @@ const createSocketFromApp = (app) => {
   socketServer.on("connection", (client) => {
     console.log("User connected", client.id);
     client.on("save_attendance", async (record) => {
+      console.log("Save Attendance received")
       await redisClient.publish("save_attendance", record);
     });
     client.on("disconnect", () => {
