@@ -7,6 +7,9 @@ import { useRequest } from "../hooks/useRequest";
 import TeacherAttendanceCard from "../components/TeacherAttendanceCard";
 import { Edit, Save, X } from "lucide-react";
 import { Cancel } from "@radix-ui/react-alert-dialog";
+import { io } from "socket.io-client";
+
+const socket = io("http://localhost:4000");
 
 const SubstitutionPage = () => {
   const [teachers, setTeachers] = useState([]);
@@ -36,6 +39,7 @@ const SubstitutionPage = () => {
 
   const saveAttendanceRecord = async () => {
     await request("patch", "/attendance", attendanceRecord);
+    socket.emit("save_attendance", JSON.stringify(attendanceRecord));
   };
   return (
     <div className="min-h-screen bg-neutral">
@@ -66,7 +70,7 @@ const SubstitutionPage = () => {
                     className="px-4 py-2 bg-secondary text-black hover:bg-secondary text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                     onClick={() => {
                       setCurrentMode("saved");
-                      setAttendanceRecord(oldAttendanceRecord.current)
+                      setAttendanceRecord(oldAttendanceRecord.current);
                     }}
                   >
                     <X className="h-4 w-4" />
