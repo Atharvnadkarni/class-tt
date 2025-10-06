@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 
 const socket = io("http://localhost:4000");
 
-const SubstitutionPage = () => {
+const AttendancePage = () => {
   const [teachers, setTeachers] = useState([]);
   const [attendanceRecord, setAttendanceRecord] = useState({});
   const oldAttendanceRecord = useRef({});
@@ -143,4 +143,4 @@ const SubstitutionPage = () => {
     </div>
   );
 };
-export default SubstitutionPage;
+export default AttendancePage;
