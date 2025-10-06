@@ -1,14 +1,14 @@
 const { redisClient } = require("../redis");
 
 const getTimetable = async (req, res) => {
-  const options = req.params
+  const {teacher} = req.query
   try {
     const timetable = await redisClient.get("timetable");
     const parsedTimetable = JSON.parse(timetable);
     let filteredTimetable = {};
 
-    if (options.teacher) {
-      // Loop through each class
+    if (teacher) {
+      // Loop through each  class
       for (const className in parsedTimetable) {
       const classTimetable = parsedTimetable[className];
       // Loop through each period in the class
@@ -28,7 +28,7 @@ const getTimetable = async (req, res) => {
     }
     res
       .status(200)
-      .json({ message: "Timetable fetched successfully", JSON.stringify(filteredTimetable) });
+      .json({ message: "Timetable fetched successfully", timetable: JSON.stringify(filteredTimetable) });
   } catch (err) {
     res.status(500).json({ message: "Server error", error: err.message });
   }
