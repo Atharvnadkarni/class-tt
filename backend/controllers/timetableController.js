@@ -17,7 +17,7 @@ const getTimetable = async (req, res) => {
         if (!periodData || !periodData.teachers) continue;
         // Check if any teacher matches
         const teacherLists = Object.values(periodData.teachers);
-        if (teacherLists.some(list => list.includes(options.teacher))) {
+        if (teacherLists.some(list => list.includes(teacher))) {
         if (!filteredTimetable[className]) filteredTimetable[className] = {};
         filteredTimetable[className][period] = periodData;
         }
