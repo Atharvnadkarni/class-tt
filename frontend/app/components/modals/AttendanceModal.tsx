@@ -43,36 +43,61 @@ const AttendanceModal = ({
         const parsedTrFilteredTimetable = JSON.parse(trFilteredTimetable);
         // parsedTrFilteredTimetable is an object like { "7B": { "Monday-3": {...}, ... } }
         const todaySubjects: Record<string, any> = {};
-        Object.entries(parsedTrFilteredTimetable).forEach(([className, classObj]: [string, any]) => {
-          Object.entries(classObj).forEach(([periodKey, periodValue]: [string, any]) => {
-            const currentDay = new Date().toLocaleString("en-US", { weekday: "long" });
-            if (periodKey.toLowerCase().startsWith(currentDay.toLowerCase())) {
-              if (!todaySubjects[className]) todaySubjects[className] = {};
-              todaySubjects[className][periodKey] = periodValue;
-            }
-          });
-        });
+        Object.entries(parsedTrFilteredTimetable).forEach(
+          ([className, classObj]: [string, any]) => {
+            Object.entries(classObj).forEach(
+              ([periodKey, periodValue]: [string, any]) => {
+                const currentDay = new Date().toLocaleString("en-US", {
+                  weekday: "long",
+                });
+                if (
+                  periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
+                ) {
+                  if (!todaySubjects[className]) todaySubjects[className] = {};
+                  todaySubjects[className][periodKey] = periodValue;
+                }
+              }
+            );
+          }
+        );
         // Transform todaySubjects into desired format: {7C: Wednesday-7: "ATL/WE"}
         const formattedSubjects: Record<string, Record<string, string>> = {};
         Object.entries(todaySubjects).forEach(([className, periods]) => {
           formattedSubjects[className] = {};
-          Object.entries(periods).forEach(([periodKey, periodValue]: [string, any]) => {
-            const subjectObj = periodValue.subject;
-            // Join all subject values with "/"
-            const subjectStr = Object.values(subjectObj).join("/");
-            formattedSubjects[className][periodKey] = subjectStr;
-          });
+          Object.entries(periods).forEach(
+            ([periodKey, periodValue]: [string, any]) => {
+              const subjectObj = periodValue.subject;
+              // Join all subject values with "/"
+              const subjectStr = Object.values(subjectObj).join("/");
+              formattedSubjects[className][periodKey] = subjectStr;
+            }
+          );
         });
         // You can now use formattedSubjects as needed
         const oldTrTimetables = absentTeacherTimetables.current;
-        console.log(teacher, formattedSubjects, absentTeacherTimetables.current);
-        absentTeacherTimetables.current = [
-          ...oldTrTimetables,
+        console.log(
+          teacher,
           formattedSubjects,
-        ];
+          absentTeacherTimetables.current
+        );
+        if (
+          !absentTeacherTimetables.current.some(
+            (t) => JSON.stringify(t) == JSON.stringify(formattedSubjects)
+          )
+        ) {
+          absentTeacherTimetables.current = [
+            ...oldTrTimetables,
+            formattedSubjects,
+          ];
+        }
       }
-      console.log(74, absentTeacherTimetables.current.filter(tt => Object.keys(tt).length))
-      absentTeacherTimetables.current = absentTeacherTimetables.current.filter(tt => Object.keys(tt).length > 0)
+      console.log(
+        74,
+        absentTeacherTimetables.current.filter((tt) => Object.keys(tt).length)
+      );
+      absentTeacherTimetables.current = absentTeacherTimetables.current.filter(
+        (tt) => Object.keys(tt).length > 0
+      );
       // absentTeacherTimetables.current = 0;
     })();
   }, []);
@@ -95,12 +120,14 @@ const AttendanceModal = ({
         </div>
         <div className="flex items-center justify-between p-6 pt-2 border-gray-200">
           <div className="w-full">
-            {absentTeachers.map((tr) => (
-              <>
-                <p>{tr} is absent</p>
-                <p>{JSON.stringify(absentTeacherTimetables.current)}</p>
-              </>
-            ))}
+            {absentTeachers.map((tr, i) => {
+              return (
+                <>
+                  <p>{tr} is absent</p>
+                  <p>{JSON.stringify(absentTeacherTimetables.current[i])}</p>
+                </>
+              );
+            })}
           </div>
         </div>
       </div>
