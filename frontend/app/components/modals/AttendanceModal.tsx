@@ -29,6 +29,7 @@ const AttendanceModal = ({
     (key) => attendanceRecord[key] == false
   );
   const absentTeacherTimetables = useRef([]);
+  const [currentTab, setCurrentTab] = useState(0);
   const [workload] = useState<WorkloadItem[]>([]);
   useEffect(() => {
     (async () => {
@@ -120,14 +121,79 @@ const AttendanceModal = ({
         </div>
         <div className="flex items-center justify-between p-6 pt-2 border-gray-200">
           <div className="w-full">
-            {absentTeachers.map((tr, i) => {
-              return (
-                <>
-                  <p>{tr} is absent</p>
-                  <p>{JSON.stringify(absentTeacherTimetables.current[i])}</p>
-                </>
-              );
-            })}
+            <div className="sm:flex gap-2">
+              <button
+                className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => {
+                  console.log(
+                    Object.entries(attendanceRecord).filter(([a, b]) => !b)
+                  );
+                  setCurrentTab((oldct) => (oldct == 0 ? oldct : oldct - 1));
+                }}
+              >
+                <ChevronLeft />
+              </button>
+
+              <button
+                onClick={() => {
+                  setCurrentTab((oldct) =>
+                    oldct ==
+                    Object.entries(attendanceRecord).filter(([a, b]) => !b)
+                      .length -
+                      1
+                      ? oldct
+                      : oldct + 1
+                  );
+                }}
+                className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+              >
+                <ChevronRight />
+              </button>
+            </div>
+            <>
+              <h2 style={{ fontSize: 20 }}>
+                <b>{absentTeachers[currentTab]}</b> is absent
+              </h2>
+
+              <p>
+                {
+                  // Get the current absent teacher's timetable object
+                  absentTeacherTimetables.current[currentTab] ? (
+                    <ul>
+                      {Object.entries(
+                        absentTeacherTimetables.current[currentTab]
+                      ).map(([className, periods]) =>
+                        Object.entries(periods).map(([periodKey, subject]) => {
+                          // Extract period number from "Friday-1" etc.
+                          const periodNum = periodKey.split("-")[1];
+                          return (
+                            <li
+                              key={`${className}-${periodKey}`}
+                              style={{ fontSize: 17 }}
+                            >
+                              <span>
+                                {className} - Period {periodNum} ({subject})
+                              </span>
+                              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                {Object.keys(attendanceRecord)
+                                  .filter(
+                                    (tr) => !absentTeachers.includes(tr)
+                                  )
+                                  .map((tr) => (
+                                    <option value={tr}>{tr}</option>
+                                  ))}
+                              </select>
+                            </li>
+                          );
+                        })
+                      )}
+                    </ul>
+                  ) : (
+                    <span>No timetable found.</span>
+                  )
+                }
+              </p>
+            </>
           </div>
         </div>
       </div>
