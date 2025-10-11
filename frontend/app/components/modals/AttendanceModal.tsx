@@ -104,100 +104,119 @@ const AttendanceModal = ({
   }, []);
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-      <div className="bg-white rounded-lg shadow-xl w-3/4 h-3/4">
-        {/* Modal Header */}
-        <div className="flex items-center justify-between p-6 pb-2 border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-800">
-            {/* Removed teacher.name due to unfound variable */}
-            Absentees
-          </h3>
-          <button
-            onClick={() => setVisibility(false)}
-            className="text-gray-400 hover:text-gray-600 transition-colors"
-          >
-            <X className="h-5 w-5" />
-          </button>
-        </div>
-        <div className="flex items-center justify-between p-6 pt-2 border-gray-200">
-          <div className="w-full">
-            <div className="sm:flex gap-2">
-              <button
-                className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
-                onClick={() => {
-                  console.log(
-                    Object.entries(attendanceRecord).filter(([a, b]) => !b)
-                  );
-                  setCurrentTab((oldct) => (oldct == 0 ? oldct : oldct - 1));
-                }}
-              >
-                <ChevronLeft />
-              </button>
+    <>
+      <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+        <div className="bg-white rounded-lg shadow-xl w-full max-w-md">
+          {/* Modal Header */}
+          <div className="flex items-center justify-between p-6 pb-2 border-gray-200">
+            <h3 className="text-lg font-semibold text-gray-800">
+              {/* Removed teacher.name due to unfound variable */}
+              Absentees
+            </h3>
+            <button
+              onClick={() => setVisibility(false)}
+              className="text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <X className="h-5 w-5" />
+            </button>
+          </div>
 
-              <button
-                onClick={() => {
-                  setCurrentTab((oldct) =>
-                    oldct ==
-                    Object.entries(attendanceRecord).filter(([a, b]) => !b)
-                      .length -
-                      1
-                      ? oldct
-                      : oldct + 1
-                  );
-                }}
-                className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
-              >
-                <ChevronRight />
-              </button>
+          {/* Modal Body */}
+          <div className="p-6 space-y-4">
+            <div className="w-full">
+              <div className="sm:flex gap-2">
+                <button
+                  className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                  onClick={() => {
+                    console.log(
+                      Object.entries(attendanceRecord).filter(([a, b]) => !b)
+                    );
+                    setCurrentTab((oldct) => (oldct == 0 ? oldct : oldct - 1));
+                  }}
+                >
+                  <ChevronLeft />
+                </button>
+
+                <button
+                  onClick={() => {
+                    setCurrentTab((oldct) =>
+                      oldct ==
+                      Object.entries(attendanceRecord).filter(([a, b]) => !b)
+                        .length -
+                        1
+                        ? oldct
+                        : oldct + 1
+                    );
+                  }}
+                  className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                >
+                  <ChevronRight />
+                </button>
+              </div>
+              <div className="overflow-y-auto">
+                <h2 style={{ fontSize: 20 }}>
+                  <b>{absentTeachers[currentTab]}</b> is absent
+                </h2>
+
+                <p>
+                  {
+                    // Get the current absent teacher's timetable object
+                    absentTeacherTimetables.current[currentTab] ? (
+                      <ul>
+                        {Object.entries(
+                          absentTeacherTimetables.current[currentTab]
+                        ).map(([className, periods]) =>
+                          Object.entries(periods).map(
+                            ([periodKey, subject]) => {
+                              // Extract period number from "Friday-1" etc.
+                              const periodNum = periodKey.split("-")[1];
+                              return (
+                                <li
+                                  key={`${className}-${periodKey}`}
+                                  style={{ fontSize: 17 }}
+                                >
+                                  <span>
+                                    {className} - Period {periodNum} ({subject})
+                                  </span>
+                                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    {Object.keys(attendanceRecord)
+                                      .filter(
+                                        (tr) => !absentTeachers.includes(tr)
+                                      )
+                                      .map((tr) => (
+                                        <option value={tr}>{tr}</option>
+                                      ))}
+                                  </select>
+                                </li>
+                              );
+                            }
+                          )
+                        )}
+                      </ul>
+                    ) : (
+                      <span>No timetable found.</span>
+                    )
+                  }
+                </p>
+              </div>
             </div>
-            <>
-              <h2 style={{ fontSize: 20 }}>
-                <b>{absentTeachers[currentTab]}</b> is absent
-              </h2>
+          </div>
 
-              <p>
-                {
-                  // Get the current absent teacher's timetable object
-                  absentTeacherTimetables.current[currentTab] ? (
-                    <ul>
-                      {Object.entries(
-                        absentTeacherTimetables.current[currentTab]
-                      ).map(([className, periods]) =>
-                        Object.entries(periods).map(([periodKey, subject]) => {
-                          // Extract period number from "Friday-1" etc.
-                          const periodNum = periodKey.split("-")[1];
-                          return (
-                            <li
-                              key={`${className}-${periodKey}`}
-                              style={{ fontSize: 17 }}
-                            >
-                              <span>
-                                {className} - Period {periodNum} ({subject})
-                              </span>
-                              <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                {Object.keys(attendanceRecord)
-                                  .filter(
-                                    (tr) => !absentTeachers.includes(tr)
-                                  )
-                                  .map((tr) => (
-                                    <option value={tr}>{tr}</option>
-                                  ))}
-                              </select>
-                            </li>
-                          );
-                        })
-                      )}
-                    </ul>
-                  ) : (
-                    <span>No timetable found.</span>
-                  )
-                }
-              </p>
-            </>
+          {/* Modal Footer */}
+          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
+            <button
+              className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
+              onClick={() => setVisibility(false)}
+            >
+              Cancel
+            </button>
+            <button className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2">
+              Finish Substitution
+            </button>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 export default AttendanceModal;
