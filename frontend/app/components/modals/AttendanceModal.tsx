@@ -1,5 +1,5 @@
 import { useRequest } from "@/app/hooks/useRequest";
-import { X } from "lucide-react";
+import { ArrowLeftRight, X } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
@@ -48,7 +48,7 @@ const AttendanceModal = ({
           ([className, classObj]: [string, any]) => {
             Object.entries(classObj).forEach(
               ([periodKey, periodValue]: [string, any]) => {
-                const currentDay = "Friday"
+                const currentDay = "Friday";
                 if (
                   periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
                 ) {
@@ -120,7 +120,10 @@ const AttendanceModal = ({
           </div>
 
           {/* Modal Body */}
-          <div className="p-6 space-y-4 overflow-y-auto" style={{height: "calc(100% - 150px)"}}>
+          <div
+            className="p-6 space-y-4 overflow-y-auto"
+            // style={{ height: "calc(100% - 150px)" }}
+          >
             <div className="w-full">
               <div className="sm:flex gap-2">
                 <button
@@ -177,15 +180,22 @@ const AttendanceModal = ({
                                   <span>
                                     {className} - Period {periodNum} ({subject})
                                   </span>
-                                  <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
-                                    {Object.keys(attendanceRecord)
-                                      .filter(
-                                        (tr) => !absentTeachers.includes(tr)
-                                      )
-                                      .map((tr) => (
-                                        <option value={tr}>{tr}</option>
-                                      ))}
-                                  </select>
+                                  <div className="flex gap-2 p-1">
+                                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                      {Object.keys(attendanceRecord)
+                                        .filter(
+                                          (tr) => !absentTeachers.includes(tr)
+                                        )
+                                        .map((tr) => (
+                                          <>
+                                            <option value={tr}>{tr}</option>
+                                          </>
+                                        ))}
+                                    </select>
+                                    <button className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2">
+                                      <ArrowLeftRight /> Substitute
+                                    </button>
+                                  </div>
                                 </li>
                               );
                             }
@@ -202,17 +212,15 @@ const AttendanceModal = ({
           </div>
 
           {/* Modal Footer */}
-          <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 absolute bottom-0 w-full">
+          {/* <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200 absolute bottom-0 w-full">
             <button
               className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg transition-colors"
               onClick={() => setVisibility(false)}
             >
               Cancel
             </button>
-            <button className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2">
-              Finish Substitution
-            </button>
-          </div>
+            
+          </div> */}
         </div>
       </div>
     </>
