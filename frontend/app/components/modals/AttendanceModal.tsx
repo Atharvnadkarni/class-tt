@@ -48,7 +48,9 @@ const AttendanceModal = ({
           ([className, classObj]: [string, any]) => {
             Object.entries(classObj).forEach(
               ([periodKey, periodValue]: [string, any]) => {
-                const currentDay = "Friday";
+                const currentDay = new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                });
                 if (
                   periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
                 ) {
@@ -100,7 +102,16 @@ const AttendanceModal = ({
       // absentTeacherTimetables.current = 0;
     })();
   }, []);
-
+  const handleSubstitute = async (classe, period, teacher) => {
+    const today = new Date();
+    await request("post", "/substitution", {
+      class: classe,
+      period,
+      teacher,
+      date: today,
+    });
+  };
+  const [teacherSubs, setTeacherSubs] = useState({ 0: { 0: "" } });
   return (
     <>
       <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
@@ -168,7 +179,7 @@ const AttendanceModal = ({
                           absentTeacherTimetables.current[currentTab]
                         ).map(([className, periods]) =>
                           Object.entries(periods).map(
-                            ([periodKey, subject]) => {
+                            ([periodKey, subject], currentTabPeriod) => {
                               // Extract period number from "Friday-1" etc.
                               const periodNum = periodKey.split("-")[1];
                               return (
@@ -181,18 +192,53 @@ const AttendanceModal = ({
                                     {className} - Period {periodNum} ({subject})
                                   </span>
                                   <div className="flex gap-2 p-1">
-                                    <select className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                                    <select
+                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                      value={
+                                        (teacherSubs[currentTab] ?? [])[
+                                          currentTabPeriod
+                                        ] ??
+                                        Object.keys(attendanceRecord).filter(
+                                          (tr) => !absentTeachers.includes(tr)
+                                        )[0]
+                                      }
+                                      onChange={(e) => {
+                                        console.log(
+                                          teacherSubs,
+                                          currentTab,
+                                          currentTabPeriod
+                                        );
+                                        setTeacherSubs((ots) => ({
+                                          ...ots,
+                                          [currentTab]: {
+                                            ...ots[currentTab],
+                                            [currentTabPeriod]: e.target.value,
+                                          },
+                                        }));
+                                      }}
+                                    >
                                       {Object.keys(attendanceRecord)
                                         .filter(
                                           (tr) => !absentTeachers.includes(tr)
                                         )
-                                        .map((tr) => (
+                                        .map((tr, i) => (
                                           <>
                                             <option value={tr}>{tr}</option>
                                           </>
                                         ))}
                                     </select>
-                                    <button className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2">
+                                    <button
+                                      className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
+                                      onClick={() => {
+                                        handleSubstitute(
+                                          className,
+                                          periodNum,
+                                          teacherSubs[currentTab][
+                                            currentTabPeriod
+                                          ]
+                                        );
+                                      }}
+                                    >
                                       <ArrowLeftRight /> Substitute
                                     </button>
                                   </div>
