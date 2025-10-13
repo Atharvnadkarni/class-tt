@@ -168,7 +168,7 @@ const AttendanceModal = ({
           {/* Modal Body */}
           <div
             className="p-6 space-y-4 overflow-y-auto"
-            // style={{ height: "calc(100% - 150px)" }}
+            style={{ height: "calc(100% - 60px)" }}
           >
             <div className="w-full">
               <div className="sm:flex gap-2">
