@@ -77,21 +77,57 @@ const AttendanceModal = ({
             }
           );
         });
+
+        const classPeriods: Record<string, number[]> = {};
+        Object.entries(formattedSubjects).forEach(([className, periods]) => {
+          classPeriods[className] = Object.keys(periods).map((periodKey) => {
+            const periodNum = parseInt(periodKey.split("-")[1], 10);
+            return periodNum;
+          });
+        });
+        let filteredFormattedSubjects = formattedSubjects;
+        console.log(74, "Class periods:", classPeriods);
+        for (
+          let index = 0;
+          index < Object.entries(classPeriods).length;
+          index++
+        ) {
+          const [classe, periods] = Object.entries(classPeriods)[index];
+          for (const period of periods) {
+            const substitutionRes = await request(
+              "get",
+              `/substitution?class=${classe}&period=${period}`
+            );
+            const todayDateStr = new Date().toISOString().slice(0, 10);
+            const substitution = substitutionRes.data.substitutions.filter(
+              (t) => t.date && t.date.slice(0, 10) === todayDateStr
+            );
+            // Find the periodKey for this period
+            const periodKey = Object.keys(formattedSubjects[classe]).find(
+              (pk) => parseInt(pk.split("-")[1], 10) === period
+            );
+            console.log(74, periodKey, substitution)
+            if (substitution.length > 0 && periodKey) {
+              // No substitution, set subject to null
+              filteredFormattedSubjects[classe][periodKey] = null;
+            }
+          }
+        }
         // You can now use formattedSubjects as needed
-        const oldTrTimetables = absentTeacherTimetables.current;
+        if (
+          !absentTeacherTimetables.current.some((t) => t.teacher == teacher)
+        ) {
+          const oldTrTimetables = absentTeacherTimetables.current;
+          absentTeacherTimetables.current = [
+            ...oldTrTimetables,
+            { teacher, subjects: filteredFormattedSubjects },
+          ];
+        }
         console.log(
           teacher,
           formattedSubjects,
           absentTeacherTimetables.current
         );
-        if (
-          !absentTeacherTimetables.current.some((t) => t.teacher == teacher)
-        ) {
-          absentTeacherTimetables.current = [
-            ...oldTrTimetables,
-            { teacher, subjects: formattedSubjects },
-          ];
-        }
       }
       console.log(74, absentTeacherTimetables.current);
       // absentTeacherTimetables.current = absentTeacherTimetables.current.filter(
@@ -109,7 +145,7 @@ const AttendanceModal = ({
       date: today,
     });
   };
-  
+
   const [teacherSubs, setTeacherSubs] = useState({ 0: { 0: "" } });
   return (
     <>
@@ -188,73 +224,81 @@ const AttendanceModal = ({
                             ([periodKey, subject], currentTabPeriod) => {
                               // Extract period number from "Friday-1" etc.
                               const periodNum = periodKey.split("-")[1];
-                              return (
-                                <li
-                                  key={`${className}-${periodKey}`}
-                                  className="my-2"
-                                  style={{ fontSize: 17 }}
-                                >
-                                  <span>
-                                    {className} - Period {periodNum} ({subject})
-                                  </span>
-                                  <div className="flex gap-2 p-1">
-                                    <select
-                                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                                      value={
-                                        (teacherSubs[currentTab] ?? [])[
-                                          currentTabPeriod
-                                        ] ??
-                                        Object.keys(attendanceRecord).filter(
-                                          (tr) => !absentTeachers.includes(tr)
-                                        )[0]
-                                      }
-                                      onChange={(e) => {
-                                        console.log(
-                                          teacherSubs,
-                                          currentTab,
-                                          currentTabPeriod
-                                        );
-                                        setTeacherSubs((ots) => ({
-                                          ...ots,
-                                          [currentTab]: {
-                                            ...ots[currentTab],
-                                            [currentTabPeriod]: e.target.value,
-                                          },
-                                        }));
-                                      }}
-                                    >
-                                      {Object.keys(attendanceRecord)
-                                        .filter(
-                                          (tr) => !absentTeachers.includes(tr)
-                                        )
-                                        .map((tr, i) => (
-                                          <>
-                                            <option value={tr}>{tr}</option>
-                                          </>
-                                        ))}
-                                    </select>
-                                    <button
-                                      className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
-                                      onClick={() => {
-                                        handleSubstitute(
-                                          className,
-                                          periodNum,
-                                          teacherSubs[currentTab][
+                              if (subject) {
+                                return (
+                                  <li
+                                    key={`${className}-${periodKey}`}
+                                    className="my-2"
+                                    style={{ fontSize: 17 }}
+                                  >
+                                    <span>
+                                      {className} - Period {periodNum} (
+                                      {subject})
+                                    </span>
+                                    <div className="flex gap-2 p-1">
+                                      <select
+                                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        value={
+                                          (teacherSubs[currentTab] ?? [])[
                                             currentTabPeriod
-                                          ] ? teacherSubs[currentTab][
+                                          ] ??
+                                          Object.keys(attendanceRecord).filter(
+                                            (tr) => !absentTeachers.includes(tr)
+                                          )[0]
+                                        }
+                                        onChange={(e) => {
+                                          console.log(
+                                            teacherSubs,
+                                            currentTab,
                                             currentTabPeriod
-                                          ] : Object.keys(attendanceRecord)
-                                        .filter(
-                                          (tr) => !absentTeachers.includes(tr)
-                                        )[0]
-                                        );
-                                      }}
-                                    >
-                                      <ArrowLeftRight /> Substitute
-                                    </button>
-                                  </div>
-                                </li>
-                              );
+                                          );
+                                          setTeacherSubs((ots) => ({
+                                            ...ots,
+                                            [currentTab]: {
+                                              ...ots[currentTab],
+                                              [currentTabPeriod]:
+                                                e.target.value,
+                                            },
+                                          }));
+                                        }}
+                                      >
+                                        {Object.keys(attendanceRecord)
+                                          .filter(
+                                            (tr) => !absentTeachers.includes(tr)
+                                          )
+                                          .map((tr, i) => (
+                                            <>
+                                              <option value={tr}>{tr}</option>
+                                            </>
+                                          ))}
+                                      </select>
+                                      <button
+                                        className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
+                                        onClick={() => {
+                                          handleSubstitute(
+                                            className,
+                                            periodNum,
+                                            teacherSubs[currentTab][
+                                              currentTabPeriod
+                                            ]
+                                              ? teacherSubs[currentTab][
+                                                  currentTabPeriod
+                                                ]
+                                              : Object.keys(
+                                                  attendanceRecord
+                                                ).filter(
+                                                  (tr) =>
+                                                    !absentTeachers.includes(tr)
+                                                )[0]
+                                          );
+                                        }}
+                                      >
+                                        <ArrowLeftRight /> Substitute
+                                      </button>
+                                    </div>
+                                  </li>
+                                );
+                              }
                             }
                           )
                         )}
