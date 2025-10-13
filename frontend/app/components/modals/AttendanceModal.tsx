@@ -109,6 +109,7 @@ const AttendanceModal = ({
       date: today,
     });
   };
+  
   const [teacherSubs, setTeacherSubs] = useState({ 0: { 0: "" } });
   return (
     <>
@@ -240,7 +241,12 @@ const AttendanceModal = ({
                                           periodNum,
                                           teacherSubs[currentTab][
                                             currentTabPeriod
-                                          ]
+                                          ] ? teacherSubs[currentTab][
+                                            currentTabPeriod
+                                          ] : Object.keys(attendanceRecord)
+                                        .filter(
+                                          (tr) => !absentTeachers.includes(tr)
+                                        )[0]
                                         );
                                       }}
                                     >
