@@ -33,11 +33,11 @@ const createSubstitution = async (req, res) => {
   const { body } = req;
   let missingFields = []
   try {
-    const fixedDate = body.date ?? new Date();
+    const fixedDate = new Date(body.date) ?? new Date();
     fixedDate.setHours(0);
     fixedDate.setMinutes(0);
     fixedDate.setSeconds(0);
-    const newSubstitution = await Substitution.create({...body, date: fixedDate});
+    const newSubstitution = await Substitution.create({...body, date:fixedDate});
     res.status(201).json({
       message: "Substitution created successfully",
       substitution: newSubstitution,
@@ -47,7 +47,7 @@ const createSubstitution = async (req, res) => {
     if (!body.period) missingFields.push("period")
     if (!body.date) missingFields.push("date")
     if (!body.teacher) missingFields.push("teacher")
-    if (missingFields) {
+    if (missingFields.length > 0) {
       res.status(400).json({message: 'Bad request', error: `${missingFields.join(", ")} missing.`.slice(0,1).toUpperCase() + `${missingFields.join(", ")} missing.`.slice(1)})
     }
     res.status(500).json({ message: "Server error", error: err.message });
