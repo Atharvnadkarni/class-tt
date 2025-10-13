@@ -171,9 +171,14 @@ const AttendanceModal = ({
                 <p>
                   {
                     // Get the current absent teacher's timetable object
-                    Object.keys(
-                      (absentTeacherTimetables.current[currentTab]?.subjects) ?? {}
-                    ).length ? (
+                    reqLoading ? (
+                      <span>Loading...</span>
+                    ) : Object.keys(
+                        absentTeacherTimetables.current[currentTab]?.subjects ??
+                          {}
+                      ).length == 0 ? (
+                      <span>No timetable found.</span>
+                    ) : (
                       <ul>
                         {Object.entries(
                           absentTeacherTimetables.current[currentTab].subjects
@@ -248,8 +253,6 @@ const AttendanceModal = ({
                           )
                         )}
                       </ul>
-                    ) : (
-                      <span>No timetable found.</span>
                     )
                   }
                 </p>
