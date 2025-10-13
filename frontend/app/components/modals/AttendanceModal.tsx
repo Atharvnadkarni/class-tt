@@ -291,6 +291,8 @@ const AttendanceModal = ({
                                                     !absentTeachers.includes(tr)
                                                 )[0]
                                           );
+                                          const todayDay = new Date().toLocaleDateString("en-US", { weekday: "long" });
+                                          absentTeacherTimetables.current[currentTab].subjects[className][`${todayDay}-${periodNum}`] = null;
                                         }}
                                       >
                                         <ArrowLeftRight /> Substitute
