@@ -2,8 +2,9 @@ const Teacher = require("../models/Teacher");
 const Substitution = require("../models/Substitution");
 
 const getSubstitutions = async (req, res) => {
+  const criteria = req.query
   try {
-    const substitutions = await Substitution.find().sort({ date: -1 });
+    const substitutions = await Substitution.find(criteria).sort({ date: -1 });
     res
       .status(200)
       .json({ message: "Substitutions fetched successfully", substitutions });
