@@ -34,9 +34,7 @@ const createSubstitution = async (req, res) => {
   let missingFields = []
   try {
     const fixedDate = new Date(body.date) ?? new Date();
-    fixedDate.setHours(0);
-    fixedDate.setMinutes(0);
-    fixedDate.setSeconds(0);
+    fixedDate.setUTCHours(0, 0, 0, 0)
     const newSubstitution = await Substitution.create({...body, date:fixedDate});
     res.status(201).json({
       message: "Substitution created successfully",
