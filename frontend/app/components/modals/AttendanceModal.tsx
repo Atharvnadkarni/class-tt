@@ -48,9 +48,10 @@ const AttendanceModal = ({
           ([className, classObj]: [string, any]) => {
             Object.entries(classObj).forEach(
               ([periodKey, periodValue]: [string, any]) => {
-                const currentDay = new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                });
+                // const currentDay = new Date().toLocaleDateString("en-US", {
+                //   weekday: "long",
+                // });
+                const currentDay = "Friday";
                 if (
                   periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
                 ) {
@@ -61,6 +62,8 @@ const AttendanceModal = ({
             );
           }
         );
+        console.log(74, teacher, todaySubjects);
+
         // Transform todaySubjects into desired format: {7C: Wednesday-7: "ATL/WE"}
         const formattedSubjects: Record<string, Record<string, string>> = {};
         Object.entries(todaySubjects).forEach(([className, periods]) => {
@@ -82,23 +85,18 @@ const AttendanceModal = ({
           absentTeacherTimetables.current
         );
         if (
-          !absentTeacherTimetables.current.some(
-            (t) => JSON.stringify(t) == JSON.stringify(formattedSubjects)
-          )
+          !absentTeacherTimetables.current.some((t) => t.teacher == teacher)
         ) {
           absentTeacherTimetables.current = [
             ...oldTrTimetables,
-            formattedSubjects,
+            { teacher, subjects: formattedSubjects },
           ];
         }
       }
-      console.log(
-        74,
-        absentTeacherTimetables.current.filter((tt) => Object.keys(tt).length)
-      );
-      absentTeacherTimetables.current = absentTeacherTimetables.current.filter(
-        (tt) => Object.keys(tt).length > 0
-      );
+      console.log(74, absentTeacherTimetables.current);
+      // absentTeacherTimetables.current = absentTeacherTimetables.current.filter(
+      //   (tt) => Object.keys(tt).length > 0
+      // );
       // absentTeacherTimetables.current = 0;
     })();
   }, []);
@@ -173,10 +171,12 @@ const AttendanceModal = ({
                 <p>
                   {
                     // Get the current absent teacher's timetable object
-                    absentTeacherTimetables.current[currentTab] ? (
+                    Object.keys(
+                      (absentTeacherTimetables.current[currentTab]?.subjects) ?? {}
+                    ).length ? (
                       <ul>
                         {Object.entries(
-                          absentTeacherTimetables.current[currentTab]
+                          absentTeacherTimetables.current[currentTab].subjects
                         ).map(([className, periods]) =>
                           Object.entries(periods).map(
                             ([periodKey, subject], currentTabPeriod) => {
