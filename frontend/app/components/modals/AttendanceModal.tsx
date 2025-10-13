@@ -48,10 +48,10 @@ const AttendanceModal = ({
           ([className, classObj]: [string, any]) => {
             Object.entries(classObj).forEach(
               ([periodKey, periodValue]: [string, any]) => {
-                // const currentDay = new Date().toLocaleDateString("en-US", {
-                //   weekday: "long",
-                // });
-                const currentDay = "Friday";
+                const currentDay = new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                });
+                // const currentDay = "Friday";
                 if (
                   periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
                 ) {
