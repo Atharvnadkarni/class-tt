@@ -98,7 +98,11 @@ const AttendanceModal = ({
               "get",
               `/substitution?class=${classe}&period=${period}`
             );
-            const todayDateStr = new Date().toISOString().slice(0, 10);
+            // Use local date (YYYY-MM-DD) to match local weekday calculations and avoid UTC offset issues
+            const today = new Date();
+            const todayDateStr = `${today.getFullYear()}-${String(
+              today.getMonth() + 1
+            ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
             const substitution = substitutionRes.data.substitutions.filter(
               (t) => t.date && t.date.slice(0, 10) === todayDateStr
             );
@@ -106,7 +110,7 @@ const AttendanceModal = ({
             const periodKey = Object.keys(formattedSubjects[classe]).find(
               (pk) => parseInt(pk.split("-")[1], 10) === period
             );
-            console.log(74, periodKey, substitution)
+            console.log(74, periodKey, substitution);
             if (substitution.length > 0 && periodKey) {
               // No substitution, set subject to null
               filteredFormattedSubjects[classe][periodKey] = null;
@@ -138,11 +142,15 @@ const AttendanceModal = ({
   }, []);
   const handleSubstitute = async (classe, period, teacher) => {
     const today = new Date();
+    // Use local date (YYYY-MM-DD) to avoid JSON.stringify converting it to UTC midnight
+    const localDateStr = `${today.getFullYear()}-${String(
+      today.getMonth() + 1
+    ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
     await request("post", "/substitution", {
       class: classe,
       period,
       teacher,
-      date: today,
+      date: localDateStr,
     });
   };
 
@@ -275,12 +283,18 @@ const AttendanceModal = ({
                                       <button
                                         className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
                                         onClick={() => {
+                                          const todayDay = new Date().toLocaleDateString("en-IN", {
+                                            weekday: "long",
+                                            timeZone: "Asia/Kolkata",
+                                          });
+                                          console.log(295);
                                           handleSubstitute(
                                             className,
                                             periodNum,
-                                            teacherSubs[currentTab][
-                                              currentTabPeriod
-                                            ]
+                                            teacherSubs[currentTab] &&
+                                              teacherSubs[currentTab][
+                                                currentTabPeriod
+                                              ]
                                               ? teacherSubs[currentTab][
                                                   currentTabPeriod
                                                 ]
@@ -291,8 +305,12 @@ const AttendanceModal = ({
                                                     !absentTeachers.includes(tr)
                                                 )[0]
                                           );
-                                          const todayDay = new Date().toLocaleDateString("en-US", { weekday: "long" });
-                                          absentTeacherTimetables.current[currentTab].subjects[className][`${todayDay}-${periodNum}`] = null;
+
+                                          absentTeacherTimetables.current[
+                                            currentTab
+                                          ].subjects[className][
+                                            `${todayDay}-${periodNum}`
+                                          ] = null;
                                         }}
                                       >
                                         <ArrowLeftRight /> Substitute
