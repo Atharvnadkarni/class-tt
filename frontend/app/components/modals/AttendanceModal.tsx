@@ -146,12 +146,21 @@ const AttendanceModal = ({
     const localDateStr = `${today.getFullYear()}-${String(
       today.getMonth() + 1
     ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-    await request("post", "/substitution", {
-      class: classe,
-      period,
-      teacher,
-      date: localDateStr,
-    });
+    await request(
+      "post",
+      "/substitution",
+      {
+        class: classe,
+        period,
+        teacher,
+        date: localDateStr,
+      },
+      {
+        headers: {
+          "X-Request-Origin": "Modal",
+        },
+      }
+    );
   };
 
   const [teacherSubs, setTeacherSubs] = useState({ 0: { 0: "" } });
@@ -222,7 +231,9 @@ const AttendanceModal = ({
                         absentTeacherTimetables.current[currentTab]?.subjects ??
                           {}
                       ).length == 0 ? (
-                      <span>Does not have any periods today in your classes.</span>
+                      <span>
+                        Does not have any periods today in your classes.
+                      </span>
                     ) : Object.values(
                         absentTeacherTimetables.current[currentTab]?.subjects ??
                           {}
