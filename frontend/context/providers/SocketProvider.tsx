@@ -24,7 +24,7 @@ export default function SocketProvider({
 
     return () => {
       socket.off("connect", () => {
-        console.log("[Socket] connected");
+        console.log("[Socket] disconnected");
       });
     };
   }, []);
