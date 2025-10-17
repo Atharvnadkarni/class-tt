@@ -44,8 +44,8 @@ export const useRequest = (options: UseRequestOptions = {}) => {
           method,
           url: `${baseURL}${url}`,
           data,
-          headers: { ...getAuthHeaders(), ...(config?.headers || {}) },
           ...config,
+          headers: { ...getAuthHeaders(), ...(config?.headers || {}) },
         });
         return res;
       } catch (err: any) {
