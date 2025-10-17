@@ -35,6 +35,8 @@ const createSubstitution = async (req, res) => {
   const io = getSocket();
   const requestOrigin =
     req.headers?.["x-request-origin"] || req.get?.("X-Request-Origin");
+  const periodValues =
+    req.headers?.["x-period-values"] || req.get?.("X-Period-Values");
   let missingFields = [];
   try {
     const fixedDate = new Date(body.date) ?? new Date();
@@ -48,7 +50,7 @@ const createSubstitution = async (req, res) => {
       substitution: newSubstitution,
     });
     if (requestOrigin == "Modal") {
-      io.emit("update_periods")
+      io.emit("update_periods", periodValues);
     }
   } catch (err) {
     if (!body.class) missingFields.push("class");
