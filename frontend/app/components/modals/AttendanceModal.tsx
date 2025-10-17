@@ -212,7 +212,7 @@ const AttendanceModal = ({
                 <h2 style={{ fontSize: 20 }}>
                   <b>{absentTeachers[currentTab]}</b> is absent
                 </h2>
-
+                {console.log(absentTeacherTimetables.current, currentTab)}
                 <p>
                   {
                     // Get the current absent teacher's timetable object
@@ -222,7 +222,16 @@ const AttendanceModal = ({
                         absentTeacherTimetables.current[currentTab]?.subjects ??
                           {}
                       ).length == 0 ? (
-                      <span>No timetable found.</span>
+                      <span>Does not have any periods today in your classes.</span>
+                    ) : Object.values(
+                        absentTeacherTimetables.current[currentTab]?.subjects ??
+                          {}
+                      )
+                        .map((sub) =>
+                          Object.values(sub ?? {}).filter((a) => a)
+                        )[0]
+                        .filter((a) => a).length == 0 ? (
+                      <span>All periods are substituted.</span>
                     ) : (
                       <ul>
                         {Object.entries(
@@ -283,10 +292,14 @@ const AttendanceModal = ({
                                       <button
                                         className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
                                         onClick={() => {
-                                          const todayDay = new Date().toLocaleDateString("en-IN", {
-                                            weekday: "long",
-                                            timeZone: "Asia/Kolkata",
-                                          });
+                                          const todayDay =
+                                            new Date().toLocaleDateString(
+                                              "en-IN",
+                                              {
+                                                weekday: "long",
+                                                timeZone: "Asia/Kolkata",
+                                              }
+                                            );
                                           console.log(295);
                                           handleSubstitute(
                                             className,
