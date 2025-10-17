@@ -158,6 +158,7 @@ const AttendanceModal = ({
       {
         headers: {
           "X-Request-Origin": "Modal",
+          "X-Period-Values": JSON.stringify(absentTeacherTimetables.current),
         },
       }
     );
