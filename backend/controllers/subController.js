@@ -1,8 +1,9 @@
 const Teacher = require("../models/Teacher");
 const Substitution = require("../models/Substitution");
+const { getSocket } = require("../utils/socketManager");
 
 const getSubstitutions = async (req, res) => {
-  const criteria = req.query
+  const criteria = req.query;
   try {
     const substitutions = await Substitution.find(criteria).sort({ date: -1 });
     res
@@ -31,22 +32,36 @@ const getSubstitution = async (req, res) => {
 
 const createSubstitution = async (req, res) => {
   const { body } = req;
-  let missingFields = []
+  const io = getSocket();
+  const requestOrigin =
+    req.headers?.["x-request-origin"] || req.get?.("X-Request-Origin");
+  let missingFields = [];
   try {
     const fixedDate = new Date(body.date) ?? new Date();
-    fixedDate.setUTCHours(0, 0, 0, 0)
-    const newSubstitution = await Substitution.create({...body, date:fixedDate});
+    fixedDate.setUTCHours(0, 0, 0, 0);
+    const newSubstitution = await Substitution.create({
+      ...body,
+      date: fixedDate,
+    });
     res.status(201).json({
       message: "Substitution created successfully",
       substitution: newSubstitution,
     });
+    if (requestOrigin == "Modal") {
+      io.emit("update_periods")
+    }
   } catch (err) {
-    if (!body.class) missingFields.push("class")
-    if (!body.period) missingFields.push("period")
-    if (!body.date) missingFields.push("date")
-    if (!body.teacher) missingFields.push("teacher")
+    if (!body.class) missingFields.push("class");
+    if (!body.period) missingFields.push("period");
+    if (!body.date) missingFields.push("date");
+    if (!body.teacher) missingFields.push("teacher");
     if (missingFields.length > 0) {
-      res.status(400).json({message: 'Bad request', error: `${missingFields.join(", ")} missing.`.slice(0,1).toUpperCase() + `${missingFields.join(", ")} missing.`.slice(1)})
+      res.status(400).json({
+        message: "Bad request",
+        error:
+          `${missingFields.join(", ")} missing.`.slice(0, 1).toUpperCase() +
+          `${missingFields.join(", ")} missing.`.slice(1),
+      });
     }
     res.status(500).json({ message: "Server error", error: err.message });
   }

@@ -4,14 +4,15 @@ const router = require("./routes/routes");
 const cors = require("cors");
 const createSocketFromApp = require("./socket");
 const { connectRedis, subscriberClient } = require("./redis");
+const { initSocket } = require("./utils/socketManager");
 
 require("dotenv").config();
 
 const app = express();
 const { server, io } = createSocketFromApp(app);
+initSocket(io);
 
 (async () => await connectRedis(io))();
-
 
 app.use(express.json());
 app.use((req, res, next) => {
