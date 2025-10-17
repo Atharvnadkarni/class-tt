@@ -13,6 +13,7 @@ export default function SocketProvider({
   children: React.ReactNode;
 }) {
   const [attendanceRecord, setAttendanceRecord] = useState();
+  const [periodValues, setPeriodValues] = useState([]);
   useEffect(() => {
     socket.on("connect", () => {
       console.log("[Socket] connected");
@@ -20,6 +21,10 @@ export default function SocketProvider({
     socket.on("attendance", (attendanceRecord) => {
       console.log(`[Socket] Attendance ${attendanceRecord}`);
       setAttendanceRecord(JSON.parse(attendanceRecord));
+    });
+    socket.on("update_periods", (periodValues) => {
+      console.log('[Socket] Period Values sent')
+      setPeriodValues(JSON.parse(periodValues));
     });
 
     return () => {
@@ -34,8 +39,10 @@ export default function SocketProvider({
       {children}
       {attendanceRecord && (
         <AttendanceModal
+          key={JSON.stringify(periodValues)}
           setVisibility={setAttendanceRecord}
           attendanceRecord={attendanceRecord}
+          periodValues={periodValues}
         />
       )}
     </>
