@@ -52,9 +52,10 @@ const AttendanceModal = ({
             ([className, classObj]: [string, any]) => {
               Object.entries(classObj).forEach(
                 ([periodKey, periodValue]: [string, any]) => {
-                  const currentDay = new Date().toLocaleDateString("en-US", {
+                  let currentDay = new Date().toLocaleDateString("en-US", {
                     weekday: "long",
                   });
+                  currentDay = currentDay == "Sunday" ? "Saturday": currentDay
                   // const currentDay = "Friday";
                   if (
                     periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
@@ -310,7 +311,7 @@ const AttendanceModal = ({
                                       <button
                                         className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
                                         onClick={() => {
-                                          const todayDay =
+                                          let todayDay =
                                             new Date().toLocaleDateString(
                                               "en-IN",
                                               {
@@ -318,6 +319,7 @@ const AttendanceModal = ({
                                                 timeZone: "Asia/Kolkata",
                                               }
                                             );
+                                          todayDay = todayDay == "Sunday" ? "Saturday":  "Sunday"
                                           console.log(295);
 
                                           absentTeacherTimetables.current[
