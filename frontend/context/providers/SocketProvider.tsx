@@ -39,7 +39,6 @@ export default function SocketProvider({
       {children}
       {attendanceRecord && (
         <AttendanceModal
-          key={JSON.stringify(periodValues)}
           setVisibility={setAttendanceRecord}
           attendanceRecord={attendanceRecord}
           periodValues={periodValues}
