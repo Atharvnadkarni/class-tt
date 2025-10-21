@@ -268,9 +268,8 @@ const AttendanceModal = ({
                         Does not have any periods today in your classes.
                       </span>
                     ) : Object.values(trTts[currentTab]?.subjects ?? {})
-                        .map((sub) =>
-                          Object.values(sub ?? {}).filter((a) => a)
-                        )[0]
+                        .map((sub) => Object.values(sub ?? {}).filter((a) => a))
+                        .flat()
                         .filter((a) => a).length == 0 ? (
                       <span>All periods are substituted.</span>
                     ) : (
