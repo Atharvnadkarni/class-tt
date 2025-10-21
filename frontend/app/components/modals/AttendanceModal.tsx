@@ -35,6 +35,94 @@ const AttendanceModal = ({
   const [workload] = useState<WorkloadItem[]>([]);
   const determinePeriodValues = async () => {
     for (const teacher of absentTeachers) {
+
+      const teacherObject = await (
+        await request("get", `/teacher?name=${teacher}`)
+      ).data.teacher[0];
+      const teacherDisplayName = teacherObject.displayName;
+      const trFilteredTimetable = await (
+        await request("get", `/timetable?teacher=${teacherDisplayName}`)
+      ).data.timetable;
+      const parsedTrFilteredTimetable = JSON.parse(trFilteredTimetable);
+      // parsedTrFilteredTimetable is an object like { "7B": { "Monday-3": {...}, ... } }
+      const todaySubjects: Record<string, any> = {};
+      Object.entries(parsedTrFilteredTimetable).forEach(
+        ([className, classObj]: [string, any]) => {
+          Object.entries(classObj).forEach(
+            ([periodKey, periodValue]: [string, any]) => {
+              let currentDay = new Date().toLocaleDateString("en-US", {
+                weekday: "long",
+              });
+              currentDay = currentDay == "Sunday" ? "Saturday" : currentDay;
+              // const currentDay = "Friday";
+              if (
+                periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
+              ) {
+                if (!todaySubjects[className]) todaySubjects[className] = {};
+                todaySubjects[className][periodKey] = periodValue;
+              }
+            }
+          );
+        }
+      );
+      console.log(74, teacher, todaySubjects);
+
+      // Transform todaySubjects into desired format: {7C: Wednesday-7: "ATL/WE"}
+      const formattedSubjects: Record<string, Record<string, string>> = {};
+      Object.entries(todaySubjects).forEach(([className, periods]) => {
+        formattedSubjects[className] = {};
+        Object.entries(periods).forEach(
+          ([periodKey, periodValue]: [string, any]) => {
+            const subjectObj = periodValue.subject;
+            // Join all subject values with "/"
+            const subjectStr = Object.values(subjectObj).join("/");
+            formattedSubjects[className][periodKey] = subjectStr;
+          }
+        );
+      });
+
+      const classPeriods: Record<string, number[]> = {};
+      Object.entries(formattedSubjects).forEach(([className, periods]) => {
+        classPeriods[className] = Object.keys(periods).map((periodKey) => {
+          const periodNum = parseInt(periodKey.split("-")[1], 10);
+          return periodNum;
+        });
+      });
+      let filteredFormattedSubjects = structuredClone(formattedSubjects);
+      console.log(74, "Class periods:", classPeriods);
+      for (
+        let index = 0;
+        index < Object.entries(classPeriods).length;
+        index++
+      ) {
+        const [classe, periods] = Object.entries(classPeriods)[index];
+        for (const period of periods) {
+          const substitutionRes = await request(
+            "get",
+            `/substitution?class=${classe}&period=${period}`
+          );
+          // Use local date (YYYY-MM-DD) to match local weekday calculations and avoid UTC offset issues
+          const today = new Date();
+          const todayDateStr = `${today.getFullYear()}-${String(
+            today.getMonth() + 1
+          ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
+          const substitution = substitutionRes.data.substitutions.filter(
+            (t) => t.date && t.date.slice(0, 10) === todayDateStr
+          );
+          // Find the periodKey for this period
+          const periodKey = Object.keys(formattedSubjects[classe]).find(
+            (pk) => parseInt(pk.split("-")[1], 10) === period
+          );
+          console.log(74, classe, periodKey, substitution);
+          if (substitution.length > 0 && periodKey) {
+            console.log(74, "HAHA", teacher, classe, periodKey, filteredFormattedSubjects, substitution)
+            console.log(74, "HAHA", teacher, classe, periodKey, filteredFormattedSubjects, filteredFormattedSubjects[classe][periodKey])
+            // No substitution, set subject to null
+            filteredFormattedSubjects[classe][periodKey] = null;
+            console.log(74, "HAHA", teacher, classe, periodKey, filteredFormattedSubjects, filteredFormattedSubjects[classe][periodKey])
+          }
+        }
+      }
       const pvMatch =
         Array.isArray(periodValues) &&
         periodValues.find((pv) => {
@@ -43,123 +131,33 @@ const AttendanceModal = ({
           if (!s) return false;
           return Array.isArray(s) ? s.length > 0 : Object.keys(s).length > 0;
         });
-      console.log(pvMatch, 99);
-      if (!pvMatch) {
-        const teacherObject = await (
-          await request("get", `/teacher?name=${teacher}`)
-        ).data.teacher[0];
-        const teacherDisplayName = teacherObject.displayName;
-        const trFilteredTimetable = await (
-          await request("get", `/timetable?teacher=${teacherDisplayName}`)
-        ).data.timetable;
-        const parsedTrFilteredTimetable = JSON.parse(trFilteredTimetable);
-        // parsedTrFilteredTimetable is an object like { "7B": { "Monday-3": {...}, ... } }
-        const todaySubjects: Record<string, any> = {};
-        Object.entries(parsedTrFilteredTimetable).forEach(
-          ([className, classObj]: [string, any]) => {
-            Object.entries(classObj).forEach(
-              ([periodKey, periodValue]: [string, any]) => {
-                let currentDay = new Date().toLocaleDateString("en-US", {
-                  weekday: "long",
-                });
-                currentDay = currentDay == "Sunday" ? "Saturday" : currentDay;
-                // const currentDay = "Friday";
-                if (
-                  periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
-                ) {
-                  if (!todaySubjects[className]) todaySubjects[className] = {};
-                  todaySubjects[className][periodKey] = periodValue;
-                }
-              }
-            );
-          }
-        );
-        console.log(74, teacher, todaySubjects);
-
-        // Transform todaySubjects into desired format: {7C: Wednesday-7: "ATL/WE"}
-        const formattedSubjects: Record<string, Record<string, string>> = {};
-        Object.entries(todaySubjects).forEach(([className, periods]) => {
-          formattedSubjects[className] = {};
-          Object.entries(periods).forEach(
-            ([periodKey, periodValue]: [string, any]) => {
-              const subjectObj = periodValue.subject;
-              // Join all subject values with "/"
-              const subjectStr = Object.values(subjectObj).join("/");
-              formattedSubjects[className][periodKey] = subjectStr;
-            }
-          );
-        });
-
-        const classPeriods: Record<string, number[]> = {};
-        Object.entries(formattedSubjects).forEach(([className, periods]) => {
-          classPeriods[className] = Object.keys(periods).map((periodKey) => {
-            const periodNum = parseInt(periodKey.split("-")[1], 10);
-            return periodNum;
-          });
-        });
-        let filteredFormattedSubjects = formattedSubjects;
-        console.log(74, "Class periods:", classPeriods);
-        for (
-          let index = 0;
-          index < Object.entries(classPeriods).length;
-          index++
-        ) {
-          const [classe, periods] = Object.entries(classPeriods)[index];
-          for (const period of periods) {
-            const substitutionRes = await request(
-              "get",
-              `/substitution?class=${classe}&period=${period}`
-            );
-            // Use local date (YYYY-MM-DD) to match local weekday calculations and avoid UTC offset issues
-            const today = new Date();
-            const todayDateStr = `${today.getFullYear()}-${String(
-              today.getMonth() + 1
-            ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-            const substitution = substitutionRes.data.substitutions.filter(
-              (t) => t.date && t.date.slice(0, 10) === todayDateStr
-            );
-            // Find the periodKey for this period
-            const periodKey = Object.keys(formattedSubjects[classe]).find(
-              (pk) => parseInt(pk.split("-")[1], 10) === period
-            );
-            console.log(74, periodKey, substitution);
-            if (substitution.length > 0 && periodKey) {
-              // No substitution, set subject to null
-              filteredFormattedSubjects[classe][periodKey] = null;
-            }
-          }
-        }
-        // You can now use formattedSubjects as needed
-        if (
-          !absentTeacherTimetables.current.some((t) => t.teacher == teacher)
-        ) {
-          const oldTrTimetables = absentTeacherTimetables.current;
-          absentTeacherTimetables.current = [
-            ...oldTrTimetables,
-            { teacher, subjects: filteredFormattedSubjects },
-          ];
-        }
-        console.log(
-          teacher,
-          formattedSubjects,
-          absentTeacherTimetables.current
-        );
+      console.log(teacher, pvMatch);
+      // You can now use formattedSubjects as needed
+      if (!absentTeacherTimetables.current.some((t) => t.teacher == teacher)) {
+        const oldTrTimetables = absentTeacherTimetables.current;
+        absentTeacherTimetables.current = [
+          ...oldTrTimetables,
+          { teacher, subjects: filteredFormattedSubjects },
+        ];
       }
+      console.log("90 INSIDE LOOP", teacher, formattedSubjects, absentTeacherTimetables.current);
     }
-    console.log(74, absentTeacherTimetables.current);
+    console.log("90 AFTER LOOP", absentTeacherTimetables.current);
     // absentTeacherTimetables.current = absentTeacherTimetables.current.filter(
     //   (tt) => Object.keys(tt).length > 0
     // );
     // absentTeacherTimetables.current = 0;
   };
   useEffect(() => {
-    console.log(currentTab, 126)
-  }, [currentTab])
+    console.log(currentTab, 126);
+  }, [currentTab]);
   useEffect(() => {
-    console.log(periodValues, 977);
+    console.log(periodValues, 163);
     determinePeriodValues();
+    console.log(absentTeacherTimetables, 163);
   }, [periodValues]);
   const handleSubstitute = async (classe, period, teacher) => {
+    console.log(absentTeacherTimetables, 163);
     const today = new Date();
     // Use local date (YYYY-MM-DD) to avoid JSON.stringify converting it to UTC midnight
     const localDateStr = `${today.getFullYear()}-${String(
@@ -334,7 +332,7 @@ const AttendanceModal = ({
                                           todayDay =
                                             todayDay == "Sunday"
                                               ? "Saturday"
-                                              : "Sunday";
+                                              : todayDay;
                                           console.log(295);
 
                                           absentTeacherTimetables.current[
