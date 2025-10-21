@@ -147,15 +147,7 @@ const AttendanceModal = ({
           }
         }
       }
-      const pvMatch =
-        Array.isArray(periodValues) &&
-        periodValues.find((pv) => {
-          if (!pv || pv.teacher !== teacher) return false;
-          const s = pv.subjects;
-          if (!s) return false;
-          return Array.isArray(s) ? s.length > 0 : Object.keys(s).length > 0;
-        });
-      console.log(teacher, pvMatch);
+
       // You can now use formattedSubjects as needed
       if (!trTts.some((t) => t.teacher == teacher)) {
         const oldTrTimetables = trTts;
@@ -164,12 +156,7 @@ const AttendanceModal = ({
           { teacher, subjects: filteredFormattedSubjects },
         ];
       }
-      console.log(
-        "90 INSIDE LOOP",
-        teacher,
-        formattedSubjects,
-        trTts
-      );
+      console.log("90 INSIDE LOOP", teacher, formattedSubjects, trTts);
     }
     setTrTts(trTts);
     console.log("90 AFTER LOOP", trTts);
