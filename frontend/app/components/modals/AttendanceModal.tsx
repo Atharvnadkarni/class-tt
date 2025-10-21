@@ -183,7 +183,12 @@ const AttendanceModal = ({
           { teacher, subjects: filteredFormattedSubjects },
         ];
       }
-      console.log("90 INSIDE LOOP", teacher, formattedSubjects, absentTeacherTimetables);
+      console.log(
+        "90 INSIDE LOOP",
+        teacher,
+        formattedSubjects,
+        absentTeacherTimetables
+      );
       console.log(
         "90 ✅ FINISHED teacher",
         teacher,
@@ -199,12 +204,13 @@ const AttendanceModal = ({
     // trTts = 0;
   };
   useEffect(() => {
-    console.log(currentTab, 126);
-  }, [currentTab]);
-  useEffect(() => {
-    console.log(periodValues, 163);
     determinePeriodValues();
-    console.log(trTts, 163);
+  }, []);
+  useEffect(() => {
+    console.log(periodValues, 900)
+    if (!Array.isArray(periodValues)) return; // invalid shape, ignore
+    if (periodValues.length === 0) return;
+    setTrTts(periodValues);
   }, [periodValues]);
   const handleSubstitute = async (classe, period, teacher) => {
     console.log(trTts, 163);
