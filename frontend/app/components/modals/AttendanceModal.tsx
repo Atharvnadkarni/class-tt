@@ -34,7 +34,7 @@ const AttendanceModal = ({
   const [currentTab, setCurrentTab] = useState(0);
   const [workload] = useState<WorkloadItem[]>([]);
   const determinePeriodValues = async () => {
-    let trTts = periodValues || [];
+    let absentTeacherTimetables = [];
     for (const teacher of absentTeachers) {
       const teacherObject = await (
         await request("get", `/teacher?name=${teacher}`)
@@ -106,14 +106,44 @@ const AttendanceModal = ({
           const todayDateStr = `${today.getFullYear()}-${String(
             today.getMonth() + 1
           ).padStart(2, "0")}-${String(today.getDate()).padStart(2, "0")}`;
-          const substitution = substitutionRes.data.substitutions.filter(
+          const a = substitutionRes.data.substitutions;
+
+          const substitution = a.filter(
             (t) => t.date && t.date.slice(0, 10) === todayDateStr
           );
+          console.log("90 SUB FETCH", {
+            classe,
+            period,
+            totalFetched: a.length,
+            todayOnly: substitution.length,
+          });
+          if (a.length > 0) {
+            console.log(
+              "90 → Substitution data (a):",
+              a.map((s) => ({
+                id: s._id,
+                date: s.date,
+                deleted: s.deleted, // or whatever your deletion flag is
+              }))
+            );
+          }
+          if (a.length > 0 && substitution.length === 0) {
+            console.warn(
+              "90 ⚠️ Non-today substitution(s) still exist, may cause unwanted nullification!"
+            );
+          }
+
           // Find the periodKey for this period
           const periodKey = Object.keys(formattedSubjects[classe]).find(
             (pk) => parseInt(pk.split("-")[1], 10) === period
           );
-          console.log(74, classe, periodKey, substitution);
+          console.log(
+            "90 FILTERED SUBJECTS BEFORE NULL",
+            classe,
+            periodKey,
+            JSON.stringify(filteredFormattedSubjects[classe], null, 2)
+          );
+
           if (substitution.length > 0 && periodKey) {
             console.log(
               74,
@@ -136,30 +166,33 @@ const AttendanceModal = ({
             // No substitution, set subject to null
             filteredFormattedSubjects[classe][periodKey] = null;
             console.log(
-              74,
-              "HAHA",
-              teacher,
+              "90 FILTERED SUBJECTS AFTER NULL",
               classe,
               periodKey,
-              filteredFormattedSubjects,
-              filteredFormattedSubjects[classe][periodKey]
+              JSON.stringify(filteredFormattedSubjects[classe], null, 2)
             );
           }
         }
       }
 
       // You can now use formattedSubjects as needed
-      if (!trTts.some((t) => t.teacher == teacher)) {
-        const oldTrTimetables = trTts;
-        trTts = [
+      if (!absentTeacherTimetables.some((t) => t.teacher == teacher)) {
+        const oldTrTimetables = absentTeacherTimetables;
+        absentTeacherTimetables = [
           ...oldTrTimetables,
           { teacher, subjects: filteredFormattedSubjects },
         ];
       }
-      console.log("90 INSIDE LOOP", teacher, formattedSubjects, trTts);
+      console.log("90 INSIDE LOOP", teacher, formattedSubjects, absentTeacherTimetables);
+      console.log(
+        "90 ✅ FINISHED teacher",
+        teacher,
+        "=>",
+        JSON.stringify(absentTeacherTimetables, null, 2)
+      );
     }
-    setTrTts(trTts);
-    console.log("90 AFTER LOOP", trTts);
+    setTrTts(absentTeacherTimetables);
+    console.log("90 AFTER LOOP", absentTeacherTimetables);
     // trTts = trTts.filter(
     //   (tt) => Object.keys(tt).length > 0
     // );
@@ -258,6 +291,9 @@ const AttendanceModal = ({
                 </h2>
                 {console.log(trTts, currentTab)}
                 <p>
+                  {console.log(
+                    Object.values(trTts[currentTab]?.subjects ?? {})
+                  )}
                   {
                     // Get the current absent teacher's timetable object
                     reqLoading ? (
