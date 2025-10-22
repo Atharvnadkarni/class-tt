@@ -1,26 +1,10 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-
-export interface AttendanceState {
-  record: { [key: string]: boolean };
-}
-
-export interface AttendanceRecord {
-  record: { [key: string]: boolean };
-}
-
-// Define the initial state using that type
-const initialState: AttendanceState = {
-  record: {},
-};
+import { createSlice } from "@reduxjs/toolkit";
 
 export const attendanceSlice = createSlice({
   name: "attendance",
-  initialState,
+  initialState: { record: {} },
   reducers: {
-    setAttendanceRecord: (
-      state,
-      { payload: { record } }: PayloadAction<AttendanceRecord>
-    ) => {
+    setAttendanceRecord: (state, { payload: record }) => {
       state.record = record;
     },
   },
