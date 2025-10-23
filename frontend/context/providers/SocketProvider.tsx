@@ -32,7 +32,6 @@ export default function SocketProvider({
     socket.on("attendance", (attendanceRecord) => {
       console.log(`[Socket] Attendance ${attendanceRecord}`);
       setAttendanceRecord(JSON.parse(attendanceRecord));
-      setModalVisible(true);
       dispatch(setAttendance(JSON.parse(attendanceRecord)));
       setModalKey((k) => k + 1);
     });
