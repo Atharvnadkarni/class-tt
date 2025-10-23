@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { Tier } from "@/types";
 import { useRequest } from "../hooks/useRequest";
 import { useAppSelector } from "@/context/contextHooks";
+import Dashboard from "../components/Dashboard";
 
 interface Teacher {
   name: String;
@@ -63,7 +64,7 @@ export default function TeacherPage() {
     <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
-        <Tabs activeTab="teachers" />
+        <Dashboard activeTab="teachers" />
         <div className="space-y-6">
           {/* Overview Stats */}
           {/* <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">

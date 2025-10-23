@@ -19,6 +19,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useRequest } from "../hooks/useRequest";
 import { useAppSelector } from "@/context/contextHooks";
+import Dashboard from "../components/Dashboard";
 
 interface Sub {
   class: string;
@@ -86,7 +87,7 @@ const SubstitutionPage = () => {
     <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
-        <Tabs activeTab="subs" />
+        <Dashboard activeTab="subs" />
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex justify-between items-center">
             <h1 className="text-xl font-semibold text-gray-800">

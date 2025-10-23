@@ -29,6 +29,7 @@ import axios from "axios";
 import { useRequest } from "../hooks/useRequest";
 import { Tier } from "@/types";
 import { useAppSelector } from "@/context/contextHooks";
+import Dashboard from "../components/Dashboard";
 
 export default function TimetablePage(props) {
   return (
@@ -158,7 +159,7 @@ function _TimetablePage() {
         </div>
       </div> */}
       <main className="px-4 py-8">
-        <Tabs activeTab="schedule" />
+        <Dashboard activeTab="schedule" />
         <div className="flex items-center justify-between mb-4">
           <TimeSystem />
           <div className="flex items-center gap-4">

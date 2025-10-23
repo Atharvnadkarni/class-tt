@@ -8,6 +8,7 @@ import TeacherAttendanceCard from "../components/TeacherAttendanceCard";
 import { Edit, Save, X } from "lucide-react";
 import { Cancel } from "@radix-ui/react-alert-dialog";
 import { io } from "socket.io-client";
+import Dashboard from "../components/Dashboard";
 
 const socket = io("http://localhost:4000");
 
@@ -45,7 +46,7 @@ const AttendancePage = () => {
     <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
       <main className="px-4 py-8">
-        <Tabs activeTab="attendance" />
+        <Dashboard activeTab="attendance" />
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
           <div className="flex items-center justify-between mb-4 gap-2 mr-4">
             <h1 className="text-xl font-semibold text-gray-800">
