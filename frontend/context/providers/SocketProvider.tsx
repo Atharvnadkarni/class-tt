@@ -2,12 +2,18 @@
 "use client";
 
 import AttendanceModal from "@/app/components/modals/AttendanceModal";
-import { useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useAppDispatch } from "../contextHooks";
 import { setAttendance } from "../attendanceSlice";
 
 const socket = io("http://localhost:4000");
+
+const AttendanceContext = createContext<{
+  setModalVisible?: (val: boolean | undefined) => void;
+}>({});
+
+export const useAttendanceContext = () => useContext(AttendanceContext);
 
 export default function SocketProvider({
   children,
@@ -43,7 +49,7 @@ export default function SocketProvider({
   }, []);
 
   return (
-    <>
+    <AttendanceContext.Provider value={{ setModalVisible }}>
       {children}
       {modalVisible && (
         <AttendanceModal
@@ -53,6 +59,6 @@ export default function SocketProvider({
           periodValues={periodValues}
         />
       )}
-    </>
+    </AttendanceContext.Provider>
   ); // render children normally
 }
