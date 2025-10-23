@@ -1,17 +1,25 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Book, User, Settings, LogOut, ChevronDown, Calendar } from "lucide-react";
+import {
+  Book,
+  User,
+  Settings,
+  LogOut,
+  ChevronDown,
+  Calendar,
+} from "lucide-react";
 import Link from "next/link";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import { logout } from "@/context/userSlice";
-import Icon from "../../images/icon.jpeg"
+import Icon from "../../images/icon.jpeg";
+import { useAppSelector, useAppDispatch } from "@/context/contextHooks";
 
 export default function TimetableHeader() {
   const [currentTime] = useState(new Date(2024, 0, 1, 9, 45, 0)); // Demo time: 9:45 AM
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
-  const dispatch = useDispatch()
+  const dispatch = useAppDispatch();
 
   const formatTime = (date: Date) => {
     return date.toLocaleTimeString("en-US", {
@@ -51,14 +59,14 @@ export default function TimetableHeader() {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("user")
-    dispatch(logout())
+    localStorage.removeItem("user");
+    dispatch(logout());
   };
 
   const today = new Date();
   const dayName = getDayName(today);
   const showTodayIndicator = isSchoolDay(today);
-  const user = useSelector(state => state.user);
+  const user = useAppSelector((state) => state.user.user);
 
   return (
     <header className="bg-primary px-[60px] shadow-lg relative text-white">
@@ -90,10 +98,7 @@ export default function TimetableHeader() {
 
           {/* Teacher Greeting with Menu */}
           {user && (
-            <div
-              className="top-1/2 right-4"
-              ref={menuRef}
-            >
+            <div className="top-1/2 right-4" ref={menuRef}>
               <button
                 onClick={handleMenuToggle}
                 className="flex items-center gap-1 text-sm font-medium  transition-colors focus:outline-none"

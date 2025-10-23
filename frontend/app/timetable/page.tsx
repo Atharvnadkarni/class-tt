@@ -28,6 +28,7 @@ import AddEditSubstitution from "../components/modals/AddEditSubstitution";
 import axios from "axios";
 import { useRequest } from "../hooks/useRequest";
 import { Tier } from "@/types";
+import { useAppSelector } from "@/context/contextHooks";
 
 export default function TimetablePage(props) {
   return (
@@ -118,7 +119,7 @@ function _TimetablePage() {
   const params = useSearchParams();
   const classe = params.get("class");
   const router = useRouter();
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const [mode, setMode] = useState<{
     mode: null | "add" | "edit";
     sub: null;

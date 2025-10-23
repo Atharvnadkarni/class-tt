@@ -8,7 +8,7 @@ export interface UseRequestOptions {
 }
 
 import { useState, useCallback } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/context/contextHooks";
 
 export const useRequest = (options: UseRequestOptions = {}) => {
   const baseURL = options.baseURL || "http://localhost:4000/api";
@@ -27,7 +27,7 @@ export const useRequest = (options: UseRequestOptions = {}) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
   // Helper for requests
   const request = useCallback(

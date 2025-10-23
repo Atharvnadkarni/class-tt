@@ -2,12 +2,12 @@ import { login } from "@/context/userSlice";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useAppDispatch } from "@/context/contextHooks";
 
 export const useLogin = () => {
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const logIn = async (username, password) => {
     setIsLoading(true);
     setError(null);

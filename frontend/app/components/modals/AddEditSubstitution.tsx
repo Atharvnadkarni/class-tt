@@ -1,4 +1,5 @@
 import { useRequest } from "@/app/hooks/useRequest";
+import { useAppSelector } from "@/context/contextHooks";
 import { classes, subjects, subjectToDisplayName } from "@/subjects";
 import axios from "axios";
 import { Plus, Save, X } from "lucide-react";
@@ -6,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 
 const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const [error, setError] = useState(null);
 
   const [formData, setFormData] = useState({

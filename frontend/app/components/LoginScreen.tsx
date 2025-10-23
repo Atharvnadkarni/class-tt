@@ -8,15 +8,16 @@ import { useRouter } from "next/navigation";
 import TimetableHeader from "./Header";
 import Link from "next/link";
 import axios from "axios";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useLogin } from "../hooks/useLogin";
 import VVA from "../../images/vva.jpeg";
+import { useAppSelector, useAppDispatch } from "@/context/contextHooks";
 
 export default function LoginScreen({ sessionExpired }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const { logIn, isLoading, error } = useLogin();
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const router = useRouter();
 
   const handleSubmit = async (e: React.FormEvent) => {

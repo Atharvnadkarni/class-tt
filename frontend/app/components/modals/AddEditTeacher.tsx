@@ -5,6 +5,7 @@ import { use, useEffect, useState, useTransition } from "react";
 import bcrypt from "bcryptjs";
 import { useSelector } from "react-redux";
 import { Tier } from "@/types";
+import { useAppSelector } from "@/context/contextHooks";
 
 const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
   const [formData, setFormData] = useState({
@@ -30,7 +31,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     mode && mode.mode == "edit" ? "-------" : ""
   );
   const [error, setError] = useState(null);
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const {
     request,
     isLoading,

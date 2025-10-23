@@ -7,9 +7,10 @@ import { useState } from "react";
 import { Tier } from "@/types";
 import WorkloadModal from "./modals/WorkloadModal";
 import { useRequest } from "../hooks/useRequest";
+import { useAppSelector } from "@/context/contextHooks";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const [workloadVisible, setWorkloadVisible] = useState(false);
   const [deleteModalId, setDeleteModalId] = useState(null);
   const { request, isLoading, error } = useRequest();

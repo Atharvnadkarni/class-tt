@@ -14,7 +14,6 @@ import {
 import { useSearchParams } from "next/navigation";
 import axios from "axios";
 import { subjectList, subjects, subjectToDisplayName } from "./subjects";
-import { useSelector } from "react-redux";
 import { Tier } from "./types";
 import { useRequest } from "./app/hooks/useRequest";
 
@@ -412,7 +411,6 @@ function _WeeklyTimetable({
   };
 
   const [teacherList, setTeacherList] = useState([]);
-  const user = useSelector((state) => state.user);
   const [batches, setBatches] = useState(1);
   const [currentBatch, setCurrentBatch] = useState(1);
   const { request, isLoading, error } = useRequest();

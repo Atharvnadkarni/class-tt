@@ -11,6 +11,7 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { Tier } from "@/types";
 import { useRequest } from "../hooks/useRequest";
+import { useAppSelector } from "@/context/contextHooks";
 
 interface Teacher {
   name: String;
@@ -44,7 +45,7 @@ export default function TeacherPage() {
   }, []);
 
   const [allTeachers, setAllTeachers] = useState([]);
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const { request, isLoading, error } = useRequest();
 
   useEffect(() => {

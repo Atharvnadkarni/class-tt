@@ -3,8 +3,8 @@ import React, { useEffect, useState } from "react";
 import { X, Save } from "lucide-react";
 import axios from "axios";
 import AddEditSubstitution from "./components/modals/AddEditSubstitution";
-import { useSelector } from "react-redux";
 import { useRequest } from "./hooks/useRequest";
+import { useAppSelector } from "@/context/contextHooks";
 interface SelectedCell {
   day: string;
   period: {
@@ -36,7 +36,7 @@ const SubstituteButton = ({ currentClass }) => {
     };
     fetchTeachers();
   }, []);
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const handleSave = async () => {
     const newSub = await (
       await request(

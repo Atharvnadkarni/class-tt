@@ -18,6 +18,7 @@ import DeleteModal from "../components/modals/DeleteModal";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useRequest } from "../hooks/useRequest";
+import { useAppSelector } from "@/context/contextHooks";
 
 interface Sub {
   class: string;
@@ -40,7 +41,7 @@ const SubstitutionPage = () => {
     date: null,
   });
   const [currentClass, setCurrentClass] = useState("");
-  const user = useSelector((state) => state.user);
+  const user = useAppSelector((state) => state.user.user);
   const [deleteModalId, setDeleteModalId] = useState(null);
   function formatDate(date) {
     var d = new Date(date),
