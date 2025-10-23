@@ -9,6 +9,8 @@ import { Edit, Save, X } from "lucide-react";
 import { Cancel } from "@radix-ui/react-alert-dialog";
 import { io } from "socket.io-client";
 import Dashboard from "../components/Dashboard";
+import { useAppDispatch } from "@/context/contextHooks";
+import { setAttendance } from "@/context/attendanceSlice";
 
 const socket = io("http://localhost:4000");
 
@@ -41,7 +43,9 @@ const AttendancePage = () => {
   const saveAttendanceRecord = async () => {
     await request("patch", "/attendance", attendanceRecord);
     socket.emit("save_attendance", JSON.stringify(attendanceRecord));
+    dispatch(setAttendance(attendanceRecord))
   };
+  const dispatch = useAppDispatch()
   return (
     <div className="min-h-screen bg-neutral">
       <TimetableHeader loggedIn={true} />
