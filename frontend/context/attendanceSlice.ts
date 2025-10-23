@@ -17,7 +17,7 @@ export const attendanceSlice = createSlice({
   name: "attendance",
   initialState,
   reducers: {
-    setAttendanceRecord: (
+    setAttendance: (
       state,
       { payload: { record } }: PayloadAction<AttendanceRecord>
     ) => {
@@ -26,6 +26,6 @@ export const attendanceSlice = createSlice({
   },
 });
 
-export const { setAttendanceRecord } = attendanceSlice.actions;
+export const { setAttendance } = attendanceSlice.actions;
 
 export default attendanceSlice.reducer;
