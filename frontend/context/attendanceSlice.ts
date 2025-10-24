@@ -5,7 +5,7 @@ export interface AttendanceState {
 }
 
 export interface AttendanceRecord {
-  record: { [key: string]: boolean };
+  [key: string]: boolean;
 }
 
 // Define the initial state using that type
