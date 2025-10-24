@@ -27,7 +27,6 @@ const AttendanceModal = ({
     new Date(),
     new Date(),
   ]);
-  console.log(30, attendanceRecord)
   const absentTeachers = Object.keys(attendanceRecord).filter(
     (key) => attendanceRecord[key] == false
   );

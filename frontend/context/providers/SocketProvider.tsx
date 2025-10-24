@@ -2,18 +2,12 @@
 "use client";
 
 import AttendanceModal from "@/app/components/modals/AttendanceModal";
-import { createContext, useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 import { useAppDispatch } from "../contextHooks";
 import { setAttendance } from "../attendanceSlice";
 
 const socket = io("http://localhost:4000");
-
-const AttendanceContext = createContext<{
-  setModalVisible?: (val: boolean | undefined) => void;
-}>({});
-
-export const useAttendanceContext = () => useContext(AttendanceContext);
 
 export default function SocketProvider({
   children,
@@ -21,7 +15,6 @@ export default function SocketProvider({
   children: React.ReactNode;
 }) {
   const [attendanceRecord, setAttendanceRecord] = useState();
-  const [modalVisible, setModalVisible] = useState(false);
   const [periodValues, setPeriodValues] = useState([]);
   const [modalKey, setModalKey] = useState(0);
   const dispatch = useAppDispatch();
@@ -48,16 +41,16 @@ export default function SocketProvider({
   }, []);
 
   return (
-    <AttendanceContext.Provider value={{ setModalVisible }}>
+    <>
       {children}
-      {modalVisible && (
+      {attendanceRecord && (
         <AttendanceModal
           key={modalKey}
-          setVisibility={setModalVisible}
+          setVisibility={setAttendanceRecord}
           attendanceRecord={attendanceRecord}
           periodValues={periodValues}
         />
       )}
-    </AttendanceContext.Provider>
+    </>
   ); // render children normally
 }
