@@ -16,6 +16,7 @@ export default function SocketProvider({
 }) {
   const [attendanceRecord, setAttendanceRecord] = useState();
   const [periodValues, setPeriodValues] = useState([]);
+  const [modalVisible, setModalVisible] = useState(false);
   const [modalKey, setModalKey] = useState(0);
   const dispatch = useAppDispatch();
   useEffect(() => {
@@ -26,6 +27,7 @@ export default function SocketProvider({
       console.log(`[Socket] Attendance ${attendanceRecord}`);
       setAttendanceRecord(JSON.parse(attendanceRecord));
       dispatch(setAttendance(JSON.parse(attendanceRecord)));
+      setModalVisible(true)
       setModalKey((k) => k + 1);
     });
     socket.on("update_periods", (periodValues) => {
@@ -43,10 +45,10 @@ export default function SocketProvider({
   return (
     <>
       {children}
-      {attendanceRecord && (
+      {modalVisible && (
         <AttendanceModal
           key={modalKey}
-          setVisibility={setAttendanceRecord}
+          setVisibility={setModalVisible}
           attendanceRecord={attendanceRecord}
           periodValues={periodValues}
         />

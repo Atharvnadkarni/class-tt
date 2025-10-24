@@ -10,11 +10,11 @@ const Dashboard = (props) => {
   const attendanceRecord: AttendanceRecord = useAppSelector(
     (state) => state.attendance.record
   );
-  const allPresent = Object.values(attendanceRecord).every((a) => a);
+  // const allPresent = Object.values(attendanceRecord).every((a) => a);
   return (
     <div className="w-full -mx-4">
       <Tabs activeTab={props.activeTab} />
-      {allPresent && <AttendanceAlert />}
+      <AttendanceAlert />
     </div>
   );
 };
