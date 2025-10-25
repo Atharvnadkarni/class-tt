@@ -33,6 +33,8 @@ export default function SocketProvider({
       if (!allPresent) {
         setModalVisible(true);
         setModalKey((k) => k + 1);
+      } else {
+        setModalVisible(false);
       }
     });
     socket.on("update_periods", (periodValues) => {
