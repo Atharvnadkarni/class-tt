@@ -1,4 +1,5 @@
 import { useRequest } from "@/app/hooks/useRequest";
+import { useAppSelector } from "@/context/contextHooks";
 import { ArrowLeftRight, X } from "lucide-react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -33,6 +34,7 @@ const AttendanceModal = ({
   const [trTts, setTrTts] = useState(periodValues || []);
   const [currentTab, setCurrentTab] = useState(0);
   const [workload] = useState<WorkloadItem[]>([]);
+  const user = useAppSelector((state) => state.user.user);
   const determinePeriodValues = async () => {
     let absentTeacherTimetables = [];
     for (const teacher of absentTeachers) {
@@ -53,7 +55,7 @@ const AttendanceModal = ({
               let currentDay = new Date().toLocaleDateString("en-US", {
                 weekday: "long",
               });
-              currentDay = currentDay == "Sunday" ? "Saturday" : currentDay;
+              currentDay = "Monday";
               // const currentDay = "Friday";
               if (
                 periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
@@ -96,6 +98,7 @@ const AttendanceModal = ({
         index++
       ) {
         const [classe, periods] = Object.entries(classPeriods)[index];
+
         for (const period of periods) {
           const substitutionRes = await request(
             "get",
@@ -197,6 +200,7 @@ const AttendanceModal = ({
       );
     }
     setTrTts(absentTeacherTimetables);
+
     console.log("90 AFTER LOOP", absentTeacherTimetables);
     // trTts = trTts.filter(
     //   (tt) => Object.keys(tt).length > 0
@@ -207,11 +211,46 @@ const AttendanceModal = ({
     determinePeriodValues();
   }, []);
   useEffect(() => {
-    console.log(periodValues, 900)
+    console.log(periodValues, 900);
     if (!Array.isArray(periodValues)) return; // invalid shape, ignore
     if (periodValues.length === 0) return;
     setTrTts(periodValues);
   }, [periodValues]);
+  useEffect(() => {
+    console.log(trTts);
+    let oldTts = [];
+    for (const { teacher, subjects } of trTts) {
+      let oldSubs = {};
+      const classes = Object.keys(subjects);
+      for (const classe of classes) {
+        const classNum = parseInt(classe.slice(0, -1));
+        const {
+          editableClasses: [lower, upper],
+        } = user;
+        if (lower <= classNum && classNum <= upper) {
+          oldSubs[classe] = subjects[classe];
+        }
+        console.log(233, lower, upper, classNum, oldSubs);
+      }
+      oldTts.push({ teacher, subjects: oldSubs });
+      console.log(233, oldTts);
+    }
+    console.log(oldTts, trTts, 233);
+    const same =
+      oldTts.length === trTts.length &&
+      oldTts.every((t, i) => {
+        const old = trTts[i];
+        return (
+          t.teacher === old.teacher &&
+          JSON.stringify(t.subjects) == old.subjects
+        );
+      });
+
+    if (!same) {
+      console.log("Updating");
+      setTrTts(oldTts);
+    }
+  }, [trTts]);
   const handleSubstitute = async (classe, period, teacher) => {
     console.log(trTts, 163);
     const today = new Date();
@@ -385,10 +424,7 @@ const AttendanceModal = ({
                                                   timeZone: "Asia/Kolkata",
                                                 }
                                               );
-                                            todayDay =
-                                              todayDay == "Sunday"
-                                                ? "Saturday"
-                                                : todayDay;
+                                            todayDay = "Monday";
                                             console.log(295);
 
                                             trTts[currentTab].subjects[
