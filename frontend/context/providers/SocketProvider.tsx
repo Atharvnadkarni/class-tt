@@ -27,8 +27,13 @@ export default function SocketProvider({
       console.log(`[Socket] Attendance ${attendanceRecord}`);
       setAttendanceRecord(JSON.parse(attendanceRecord));
       dispatch(setAttendance(JSON.parse(attendanceRecord)));
-      setModalVisible(true)
-      setModalKey((k) => k + 1);
+      const allPresent = Object.values(JSON.parse(attendanceRecord)).every(
+        (a) => a
+      );
+      if (!allPresent) {
+        setModalVisible(true);
+        setModalKey((k) => k + 1);
+      }
     });
     socket.on("update_periods", (periodValues) => {
       console.log("[Socket] Period Values sent");
