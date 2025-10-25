@@ -15,13 +15,13 @@ interface WorkloadItem {
 
 const AttendanceModal = ({
   setVisibility,
-  attendanceRecord,
   periodValues,
 }: {
   setVisibility: (v: boolean) => void;
   attendanceRecord: any;
   periodValues: any;
 }) => {
+  const attendanceRecord = useAppSelector(state => state.attendance.record)
   const { request, error: reqError, isLoading: reqLoading } = useRequest();
   // Dummy state for weekRange and workload to avoid errors
   const [weekRange, setWeekRange] = useState<[Date, Date]>([
