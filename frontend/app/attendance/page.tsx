@@ -9,6 +9,7 @@ import { Edit, Save, X } from "lucide-react";
 import { Cancel } from "@radix-ui/react-alert-dialog";
 import { io } from "socket.io-client";
 import Dashboard from "../components/Dashboard";
+import { useAppSelector } from "@/context/contextHooks";
 
 const socket = io("http://localhost:4000");
 
@@ -16,8 +17,12 @@ const AttendancePage = () => {
   const [teachers, setTeachers] = useState([]);
   const [attendanceRecord, setAttendanceRecord] = useState({});
   const oldAttendanceRecord = useRef({});
+  const attendanceSockets = useAppSelector(state => state.attendance.record)
   const [currentMode, setCurrentMode] = useState("saved");
   const { request, error: reqError, isLoading: reqLoading } = useRequest();
+  useEffect(() => {
+    setAttendanceRecord(attendanceSockets)
+  }, [attendanceSockets])
   useEffect(() => {
     (async () => {
       const res = await request("get", "/teacher");
