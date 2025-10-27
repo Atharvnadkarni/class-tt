@@ -7,7 +7,8 @@ import { io } from "socket.io-client";
 import { useAppDispatch } from "../contextHooks";
 import { setAttendance } from "../attendanceSlice";
 
-const socket = io("http://localhost:4000");
+const socket = io("https://class-tt-backend.onrender.com");
+
 
 const ModalContext = createContext({});
 export const useModalContext = () => useContext(ModalContext);
