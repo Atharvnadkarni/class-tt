@@ -168,12 +168,6 @@ const SubstitutionPage = () => {
           <ul>
             {subs
               .filter((sub) => {
-                console.log(
-                  sub,
-                  dropdownData,
-                  new Date(sub.date),
-                  dropdownData?.date
-                );
                 let dateCorrect = true;
                 let classCorrect = true;
                 if (dropdownData.date) {

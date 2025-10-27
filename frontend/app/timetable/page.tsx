@@ -137,11 +137,9 @@ function _TimetablePage() {
     };
     const teacher = JSON.parse(localStorage.getItem("user"));
     teacherTier.current = teacher.tier;
-    setViewingOwnTt(teacher.tier == Tier.TEACHER)
+    setViewingOwnTt(teacher.tier == Tier.TEACHER);
     fetchTeachers();
   }, []);
-  console.log(teachers);
-
   return !user ? (
     router.push("/login")
   ) : (
@@ -206,7 +204,10 @@ function _TimetablePage() {
           </div>
         </div>
         {}
-        <CurrentPeriodBanner classTimetables={classTimetables} selectedClass={params.get("class") || "1A"} />
+        <CurrentPeriodBanner
+          classTimetables={classTimetables}
+          selectedClass={params.get("class") || "1A"}
+        />
         <WeeklyTimetable
           selectedClass={params.get("class") || "1A"}
           classTimetables={classTimetables}

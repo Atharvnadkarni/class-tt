@@ -233,10 +233,8 @@ export default function CurrentPeriodBanner({
     const minute = demoTime.getMinutes();
 
     if (demoTime.getDay() == 0) {
-      console.log("sunday");
       setCurrentPeriod(null);
     } else if (Number(classSplit[0]) < 6 && demoTime.getDay() == 6) {
-      console.log("satday");
       setCurrentPeriod(null);
     } else {
       const currentPeriod =

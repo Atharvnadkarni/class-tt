@@ -16,14 +16,11 @@ initSocket(io);
 
 app.use(express.json());
 app.use((req, res, next) => {
-  console.log(req.method, req.url, req.body);
   next();
 });
 app.use(cors());
 app.use("/api", router);
 
 mongoose.connect(process.env.MONGO_CONNECTION_URI).then((res) => {
-  server.listen(process.env.PORT || 4000, () => {
-    console.log("App server listening");
-  });
+  server.listen(process.env.PORT || 4000, () => {});
 });

@@ -72,11 +72,6 @@ function _WeeklyTimetable({
   }, []);
   useEffect(() => {
     if (teacherTier.current != Tier.TEACHER) {
-      console.log(
-        67,
-        teacherEditableClasses.current[0],
-        teacherEditableClasses.current[1],
-      );
       setIsReadOnly(
         !(
           classSplit[0] >= teacherEditableClasses.current[0] &&
@@ -137,14 +132,11 @@ function _WeeklyTimetable({
 
   const [timetableData, setTimetableData] = useState({});
   useEffect(() => {
-    console.log(127, viewingOwnTt, classTimetables, selectedClass);
     setTimetableData(
       viewingOwnTt ? getTeacherSchedule() : classTimetables[selectedClass] || {}
     );
   }, [viewingOwnTt, classTimetables, selectedClass]);
-  useEffect(() => {
-    console.log(timetableData);
-  }, [timetableData]);
+  useEffect(() => {}, [timetableData]);
   //   const teachersFilter
   // const englishTeachers = allTeachers.filter((teacher: any) =>
   //   teacher.subjects.some((subj: any) =>
@@ -180,14 +172,11 @@ function _WeeklyTimetable({
     const teacherName = JSON.parse(
       localStorage.getItem("user") ?? JSON.stringify({ displayName: "" })
     ).displayName; // Current logged-in teacher
-    console.log(teacherName);
-
     // Go through all classes and find periods where this teacher is assigned
     Object.keys(classTimetables).forEach((className) => {
       const classTimetable = classTimetables[className];
       Object.keys(classTimetable).forEach((periodKey, index) => {
         const entry = classTimetable[periodKey];
-        console.log(entry, index, className, periodKey);
         if (entry?.teachers) {
           if (
             Object.values(entry?.teachers).flat().includes(teacherName) ||
@@ -333,7 +322,6 @@ function _WeeklyTimetable({
     }
 
     const cellKey = `${day}-${period.name}`;
-    console.log(12, timetableData[cellKey], cellKey);
     const data = timetableData[cellKey];
     if (
       viewingOwnTt
@@ -347,7 +335,7 @@ function _WeeklyTimetable({
               .map((batch) => subjectToDisplayName[batch] || batch)
               .join("/")}
           </div>
-          {console.log(data)}
+          {}
           <div className="text-gray-500">
             {viewingOwnTt
               ? Object.values(data.class)
@@ -598,22 +586,7 @@ function _WeeklyTimetable({
                               classTimetables[classe][classKey].subject &&
                               classTimetables[classe][classKey].teachers
                             ) {
-                              console.log(
-                                "clash",
-                                classe,
-                                classKey,
-                                classTimetables[classe][classKey]
-                              );
                               if (!e.target.value) {
-                                console.log(
-                                  e.target.value,
-                                  classTimetables[classe][classKey].subject[0]
-                                    .teacher,
-                                  classTimetables[classe][classKey].subject[1]
-                                    .teacher,
-                                  classe,
-                                  "is clash unset"
-                                );
                                 setIsClash({
                                   class: null,
                                   subject: null,
@@ -627,20 +600,6 @@ function _WeeklyTimetable({
                                   .includes(e.target.value) &&
                                 classe != selectedClass
                               ) {
-                                console.log(
-                                  e.target.value,
-                                  Object.values(
-                                    classTimetables[classe][classKey].teachers
-                                  ).flat(),
-                                  classe,
-                                  Object.values(
-                                    classTimetables[classe][classKey].teachers
-                                  )
-                                    .flat()
-                                    .includes(e.target.value) &&
-                                    classe != selectedClass,
-                                  "is clash set"
-                                );
                                 setIsClash({
                                   class: classe,
                                   subject: Object.values(
@@ -648,14 +607,6 @@ function _WeeklyTimetable({
                                   ).join("/"),
                                 });
                               } else if (classe != selectedClass) {
-                                console.log(
-                                  e.target.value,
-                                  Object.values(
-                                    classTimetables[classe][classKey].teachers
-                                  ).flat(),
-                                  classe,
-                                  "is clash unset"
-                                );
                                 setIsClash({ class: null, subject: null });
                               }
                             }
@@ -679,7 +630,6 @@ function _WeeklyTimetable({
                       </select>
                       <button
                         onClick={(e) => {
-                          console.log();
                           const lastTeacher = formData.teacher[currentBatch];
                           setTeachers((prevtrlist) => {
                             const currentTrList =

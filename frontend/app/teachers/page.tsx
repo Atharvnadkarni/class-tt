@@ -129,7 +129,7 @@ export default function TeacherPage() {
             )}
             <div className="grid grid-cols-2 gap-2 md:grid-cols-4">
               {/* {} */}
-              {console.log(127, allTeachers)}
+              {}
               {JSON.stringify(allTeachers) != "[]" &&
                 allTeachers.map((teacher) => (
                   <TeacherCard

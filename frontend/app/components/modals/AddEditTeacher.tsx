@@ -14,10 +14,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     classNo: null,
   });
   const [tier, setTier] = useState<string>(Tier.TEACHER);
-  console.log(
-    mode && mode.mode == "edit",
-    mode && mode.mode == "edit" ? mode.teacher.name : ""
-  );
   const [teacherName, setTeacherName] = useState(
     mode && mode.mode == "edit" ? mode.teacher.name : ""
   );
@@ -37,7 +33,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     isLoading,
     error: requestError,
   } = useRequest({ token: user?.token });
-  console.log(13, mode?.teacher?.subjects);
   const [subs, setSubs] = useState(
     mode?.mode == "edit" ? mode?.teacher?.subjects : []
   );
@@ -52,7 +47,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
       setError("Must be logged in");
       return;
     }
-    console.log(formData.classNo && formData.div && formData.subject);
     if (formData.classNo && formData.div && formData.subject) {
       const sub = JSON.parse(JSON.stringify(formData));
       delete sub.teacherName;
@@ -103,7 +97,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
         const key = curr.subject;
         const classNo = curr.classes ? curr.classes : Number(curr.classNo);
         const existing = acc.find((item) => item.subject === key);
-        console.log(JSON.stringify(acc), curr, key, classNo, existing);
         if (existing) {
           existing.classes.push(classNo);
         } else {
@@ -116,7 +109,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
         classes: [...new Set(sub.classes.flat())].toSorted((a, b) => a - b),
       }));
     };
-    console.log(subs, subs2SubGroup(subs));
     await request("patch", `/teacher/${_id}`, {
       name: teacherName,
       class: "",
@@ -151,7 +143,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
           setEditableClasses([1, 5]);
         }
       }
-      console.log(mode.teacher.subjects);
     } else {
       setTeacherName("");
       setDisplayName("");
@@ -498,7 +489,6 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
             <ul className="flex-1">
               {subs.map((sub) => {
                 {
-                  console.log(sub.classes);
                 }
 
                 return (

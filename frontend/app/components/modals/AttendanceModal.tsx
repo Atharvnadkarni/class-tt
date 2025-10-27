@@ -21,7 +21,7 @@ const AttendanceModal = ({
   attendanceRecord: any;
   periodValues: any;
 }) => {
-  const attendanceRecord = useAppSelector(state => state.attendance.record)
+  const attendanceRecord = useAppSelector((state) => state.attendance.record);
   const { request, error: reqError, isLoading: reqLoading } = useRequest();
   // Dummy state for weekRange and workload to avoid errors
   const [weekRange, setWeekRange] = useState<[Date, Date]>([
@@ -66,8 +66,6 @@ const AttendanceModal = ({
           );
         }
       );
-      console.log(74, teacher, todaySubjects);
-
       // Transform todaySubjects into desired format: {7C: Wednesday-7: "ATL/WE"}
       const formattedSubjects: Record<string, Record<string, string>> = {};
       Object.entries(todaySubjects).forEach(([className, periods]) => {
@@ -90,7 +88,6 @@ const AttendanceModal = ({
         });
       });
       let filteredFormattedSubjects = structuredClone(formattedSubjects);
-      console.log(74, "Class periods:", classPeriods);
       for (
         let index = 0;
         index < Object.entries(classPeriods).length;
@@ -113,12 +110,6 @@ const AttendanceModal = ({
           const substitution = a.filter(
             (t) => t.date && t.date.slice(0, 10) === todayDateStr
           );
-          console.log("90 SUB FETCH", {
-            classe,
-            period,
-            totalFetched: a.length,
-            todayOnly: substitution.length,
-          });
           if (a.length > 0) {
             console.log(
               "90 → Substitution data (a):",
@@ -139,40 +130,10 @@ const AttendanceModal = ({
           const periodKey = Object.keys(formattedSubjects[classe]).find(
             (pk) => parseInt(pk.split("-")[1], 10) === period
           );
-          console.log(
-            "90 FILTERED SUBJECTS BEFORE NULL",
-            classe,
-            periodKey,
-            JSON.stringify(filteredFormattedSubjects[classe], null, 2)
-          );
 
           if (substitution.length > 0 && periodKey) {
-            console.log(
-              74,
-              "HAHA",
-              teacher,
-              classe,
-              periodKey,
-              filteredFormattedSubjects,
-              substitution
-            );
-            console.log(
-              74,
-              "HAHA",
-              teacher,
-              classe,
-              periodKey,
-              filteredFormattedSubjects,
-              filteredFormattedSubjects[classe][periodKey]
-            );
             // No substitution, set subject to null
             filteredFormattedSubjects[classe][periodKey] = null;
-            console.log(
-              "90 FILTERED SUBJECTS AFTER NULL",
-              classe,
-              periodKey,
-              JSON.stringify(filteredFormattedSubjects[classe], null, 2)
-            );
           }
         }
       }
@@ -185,22 +146,8 @@ const AttendanceModal = ({
           { teacher, subjects: filteredFormattedSubjects },
         ];
       }
-      console.log(
-        "90 INSIDE LOOP",
-        teacher,
-        formattedSubjects,
-        absentTeacherTimetables
-      );
-      console.log(
-        "90 ✅ FINISHED teacher",
-        teacher,
-        "=>",
-        JSON.stringify(absentTeacherTimetables, null, 2)
-      );
     }
     setTrTts(absentTeacherTimetables);
-
-    console.log("90 AFTER LOOP", absentTeacherTimetables);
     // trTts = trTts.filter(
     //   (tt) => Object.keys(tt).length > 0
     // );
@@ -210,13 +157,11 @@ const AttendanceModal = ({
     determinePeriodValues();
   }, []);
   useEffect(() => {
-    console.log(periodValues, 900);
     if (!Array.isArray(periodValues)) return; // invalid shape, ignore
     if (periodValues.length === 0) return;
     setTrTts(periodValues);
   }, [periodValues]);
   useEffect(() => {
-    console.log(trTts);
     let oldTts = [];
     for (const { teacher, subjects } of trTts) {
       let oldSubs = {};
@@ -229,12 +174,9 @@ const AttendanceModal = ({
         if (lower <= classNum && classNum <= upper) {
           oldSubs[classe] = subjects[classe];
         }
-        console.log(233, lower, upper, classNum, oldSubs);
       }
       oldTts.push({ teacher, subjects: oldSubs });
-      console.log(233, oldTts);
     }
-    console.log(oldTts, trTts, 233);
     const same =
       oldTts.length === trTts.length &&
       oldTts.every((t, i) => {
@@ -246,12 +188,10 @@ const AttendanceModal = ({
       });
 
     if (!same) {
-      console.log("Updating");
       setTrTts(oldTts);
     }
   }, [trTts]);
   const handleSubstitute = async (classe, period, teacher) => {
-    console.log(trTts, 163);
     const today = new Date();
     // Use local date (YYYY-MM-DD) to avoid JSON.stringify converting it to UTC midnight
     const localDateStr = `${today.getFullYear()}-${String(
@@ -333,7 +273,7 @@ const AttendanceModal = ({
                 <h2 style={{ fontSize: 20 }}>
                   <b>{absentTeachers[currentTab]}</b> is absent
                 </h2>
-                {console.log(trTts, currentTab)}
+                {}
                 <p>
                   {console.log(
                     Object.values(trTts[currentTab]?.subjects ?? {})
@@ -386,11 +326,6 @@ const AttendanceModal = ({
                                             )[0]
                                           }
                                           onChange={(e) => {
-                                            console.log(
-                                              teacherSubs,
-                                              currentTab,
-                                              currentTabPeriod
-                                            );
                                             setTeacherSubs((ots) => ({
                                               ...ots,
                                               [currentTab]: {
@@ -423,13 +358,10 @@ const AttendanceModal = ({
                                                   timeZone: "Asia/Kolkata",
                                                 }
                                               );
-                                            console.log(295);
-
                                             trTts[currentTab].subjects[
                                               className
                                             ][`${todayDay}-${periodNum}`] =
                                               null;
-                                            console.log(trTts, 977);
                                             handleSubstitute(
                                               className,
                                               periodNum,

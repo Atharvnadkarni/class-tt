@@ -24,7 +24,6 @@ const Dashboard = (props) => {
     (state) => state.attendance.record
   );
   const allPresent = Object.values(attendanceRecord).every((a) => a);
-  console.log(Object.values(attendanceRecord), allPresent, 13);
   return (
     <div className="w-full -mx-4">
       <Tabs activeTab={props.activeTab} />

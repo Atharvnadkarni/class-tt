@@ -17,12 +17,12 @@ const AttendancePage = () => {
   const [teachers, setTeachers] = useState([]);
   const [attendanceRecord, setAttendanceRecord] = useState({});
   const oldAttendanceRecord = useRef({});
-  const attendanceSockets = useAppSelector(state => state.attendance.record)
+  const attendanceSockets = useAppSelector((state) => state.attendance.record);
   const [currentMode, setCurrentMode] = useState("saved");
   const { request, error: reqError, isLoading: reqLoading } = useRequest();
   useEffect(() => {
-    setAttendanceRecord(attendanceSockets)
-  }, [attendanceSockets])
+    setAttendanceRecord(attendanceSockets);
+  }, [attendanceSockets]);
   useEffect(() => {
     (async () => {
       const res = await request("get", "/teacher");
@@ -31,7 +31,6 @@ const AttendancePage = () => {
       const attendanceObj = JSON.parse(
         (await request("get", "/attendance")).data.attendance
       ).attendance;
-      console.log(attendanceObj);
       const allPresentRecord = {};
       teacherData.forEach((teacher: { name: string }) => {
         allPresentRecord[teacher.name] = true;

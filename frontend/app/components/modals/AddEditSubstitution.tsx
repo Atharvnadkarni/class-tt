@@ -25,7 +25,6 @@ const AddEditSubstitution = ({ mode, setMode, teachers, setSubstitutions }) => {
       teacher: "",
     });
   };
-  console.log(mode);
   function formatDate(date) {
     var d = new Date(date),
       month = "" + (d.getMonth() + 1),
