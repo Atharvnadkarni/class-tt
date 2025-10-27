@@ -55,7 +55,6 @@ const AttendanceModal = ({
               let currentDay = new Date().toLocaleDateString("en-US", {
                 weekday: "long",
               });
-              currentDay = "Monday";
               // const currentDay = "Friday";
               if (
                 periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
@@ -424,7 +423,6 @@ const AttendanceModal = ({
                                                   timeZone: "Asia/Kolkata",
                                                 }
                                               );
-                                            todayDay = "Monday";
                                             console.log(295);
 
                                             trTts[currentTab].subjects[
