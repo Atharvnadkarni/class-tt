@@ -34,18 +34,32 @@ const AttendanceModal = ({
   const [trTts, setTrTts] = useState(periodValues || []);
   const [currentTab, setCurrentTab] = useState(0);
   const [workload] = useState<WorkloadItem[]>([]);
+  const timetable = useRef({});
   const user = useAppSelector((state) => state.user.user);
   const determinePeriodValues = async () => {
     let absentTeacherTimetables = [];
+    console.log(timetable.current);
     for (const teacher of absentTeachers) {
       const teacherObject = await (
         await request("get", `/teacher?name=${teacher}`)
       ).data.teacher[0];
       const teacherDisplayName = teacherObject.displayName;
-      const trFilteredTimetable = await (
-        await request("get", `/timetable?teacher=${teacherDisplayName}`)
-      ).data.timetable;
-      const parsedTrFilteredTimetable = JSON.parse(trFilteredTimetable);
+      let parsedTrFilteredTimetable = {};
+      for (const className in timetable.current) {
+        const classTimetable = timetable.current[className];
+        // Loop through each period in the class
+        for (const period in classTimetable) {
+          const periodData = classTimetable[period];
+          if (!periodData || !periodData.teachers) continue;
+          // Check if any teacher matches
+          const teacherLists = Object.values(periodData.teachers);
+          if (teacherLists.some((list) => list.includes(teacherDisplayName))) {
+            if (!parsedTrFilteredTimetable[className])
+              parsedTrFilteredTimetable[className] = {};
+            parsedTrFilteredTimetable[className][period] = periodData;
+          }
+        }
+      }
       // parsedTrFilteredTimetable is an object like { "7B": { "Monday-3": {...}, ... } }
       const todaySubjects: Record<string, any> = {};
       Object.entries(parsedTrFilteredTimetable).forEach(
@@ -55,6 +69,7 @@ const AttendanceModal = ({
               let currentDay = new Date().toLocaleDateString("en-US", {
                 weekday: "long",
               });
+              currentDay = currentDay == "Sunday" ? "Saturday" : currentDay;
               // const currentDay = "Friday";
               if (
                 periodKey.toLowerCase().startsWith(currentDay.toLowerCase())
@@ -157,6 +172,12 @@ const AttendanceModal = ({
     determinePeriodValues();
   }, []);
   useEffect(() => {
+    (async () => {
+      const timetableData = (await request("get", "/timetable")).data.timetable;
+      timetable.current = JSON.parse(timetableData);
+    })();
+  }, []);
+  useEffect(() => {
     if (!Array.isArray(periodValues)) return; // invalid shape, ignore
     if (periodValues.length === 0) return;
     setTrTts(periodValues);
@@ -181,12 +202,21 @@ const AttendanceModal = ({
       oldTts.length === trTts.length &&
       oldTts.every((t, i) => {
         const old = trTts[i];
+        console.log(
+          i,
+          t,
+          old,
+          t.teacher,
+          old.teacher,
+          t.subjects,
+          old.subjects
+        );
         return (
           t.teacher === old.teacher &&
-          JSON.stringify(t.subjects) == old.subjects
+          JSON.stringify(t.subjects) == JSON.stringify(old.subjects)
         );
       });
-
+    console.log(oldTts, trTts, same);
     if (!same) {
       setTrTts(oldTts);
     }
@@ -275,9 +305,6 @@ const AttendanceModal = ({
                 </h2>
                 {}
                 <p>
-                  {console.log(
-                    Object.values(trTts[currentTab]?.subjects ?? {})
-                  )}
                   {
                     // Get the current absent teacher's timetable object
                     reqLoading ? (
@@ -341,11 +368,17 @@ const AttendanceModal = ({
                                               (tr) =>
                                                 !absentTeachers.includes(tr)
                                             )
-                                            .map((tr, i) => (
-                                              <>
-                                                <option value={tr}>{tr}</option>
-                                              </>
-                                            ))}
+                                            .map((tr, i) => {
+                                              console.log(tr, periodNum);
+                                              
+                                              return (
+                                                <>
+                                                  <option value={tr}>
+                                                    {tr}
+                                                  </option>
+                                                </>
+                                              );
+                                            })}
                                         </select>
                                         <button
                                           className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
@@ -358,6 +391,10 @@ const AttendanceModal = ({
                                                   timeZone: "Asia/Kolkata",
                                                 }
                                               );
+                                            todayDay =
+                                              todayDay == "Sunday"
+                                                ? "Saturday"
+                                                : todayDay;
                                             trTts[currentTab].subjects[
                                               className
                                             ][`${todayDay}-${periodNum}`] =
