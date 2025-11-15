@@ -50,7 +50,7 @@ const WorkloadModal = ({
           weekRange[0]
         )}&endDate=${formatDate(weekRange[1])}`
       );
-      setWorkload(workload.data.workload)
+      setWorkload(workload.data.workload);
     };
     fetchData();
   }, [weekRange]);
@@ -117,7 +117,9 @@ const WorkloadModal = ({
                 className="px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 // onChange={...}
               />
-              <span className="self-center text-gray-500 hidden sm:inline">to</span>
+              <span className="self-center text-gray-500 hidden sm:inline">
+                to
+              </span>
               <input
                 type="date"
                 value={formatDate(weekRange[1])}
@@ -141,65 +143,59 @@ const WorkloadModal = ({
             </div>
           </div>
         </div>
-        <div className="flex items-center justify-between p-6 pt-2 border-gray-200">
-          <div className="grid grid-cols-4 w-full">
-            <div className="column">
-              <p className="w-24 text-left">Subject</p>
-              {workload.map((subject) => (
-                <tr className="w-full">
+        <div className="overflow-x-auto p-6">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Subject
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Class
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Allotted
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Taken
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {workload.map((subject, idx) => (
+                <tr key={idx}>
                   <td
-                    className={`w-24 ${
-                      subject.subject == "Total" && "font-bold"
+                    className={`px-4 py-3 whitespace-nowrap text-sm text-gray-700 ${
+                      subject.subject === "Total" && "font-bold"
                     }`}
                   >
                     {subject.subject}
                   </td>
-                </tr>
-              ))}
-            </div>
-            <div className="column">
-              <p className="w-24 text-left">Class</p>
-              {workload.map((subject) => (
-                <tr className="w-full">
                   <td
-                    className={`w-24 ${
-                      subject.subject == "Total" && "font-bold"
+                    className={`px-4 py-3 whitespace-nowrap text-sm text-gray-700 ${
+                      subject.subject === "Total" && "font-bold"
                     }`}
                   >
                     {subject.class}
                   </td>
-                </tr>
-              ))}
-            </div>
-            <div className="column">
-              <p className="w-24 text-left">Allotted</p>
-              {workload.map((subject) => (
-                <tr className="w-full">
                   <td
-                    className={`w-24 ${
-                      subject.subject == "Total" && "font-bold"
+                    className={`px-4 py-3 whitespace-nowrap text-sm text-gray-700 ${
+                      subject.subject === "Total" && "font-bold"
                     }`}
                   >
                     {subject.allotted}
                   </td>
-                </tr>
-              ))}
-            </div>
-            <div className="column">
-              <p className="w-24 text-left">Taken</p>
-              {workload.map((subject) => (
-                <tr className="w-full">
                   <td
-                    className={`w-24 ${
-                      subject.subject == "Total" && "font-bold"
+                    className={`px-4 py-3 whitespace-nowrap text-sm text-gray-700 ${
+                      subject.subject === "Total" && "font-bold"
                     }`}
                   >
                     {subject.taken}
                   </td>
                 </tr>
               ))}
-            </div>
-          </div>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>

@@ -165,18 +165,39 @@ const SubstitutionPage = () => {
               teachers,
             }}
           />
-          <ul>
-            {subs
-              .filter((sub) => {
+            <div className="overflow-x-auto mt-4">
+            <table className="min-w-full divide-y divide-gray-200">
+              <thead className="bg-gray-50">
+              <tr>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Date
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Teacher
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Class
+                </th>
+                <th className="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Period
+                </th>
+                <th className="px-4 py-2 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Actions
+                </th>
+              </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-gray-200">
+              {subs
+                .filter((sub) => {
                 let dateCorrect = true;
                 let classCorrect = true;
                 if (dropdownData.date) {
                   const fixedSubDate = new Date(sub.date).setHours(0, 0, 0, 0);
                   const fixedDropdownDate = new Date(
-                    dropdownData.date
+                  dropdownData.date
                   ).setHours(0, 0, 0, 0);
                   dateCorrect =
-                    fixedSubDate.valueOf() == fixedDropdownDate.valueOf();
+                  fixedSubDate.valueOf() == fixedDropdownDate.valueOf();
                 }
                 if (dropdownData.class) {
                   classCorrect = sub.class == dropdownData.class;
@@ -186,30 +207,42 @@ const SubstitutionPage = () => {
                 if (!dropdownData.date) return classCorrect;
                 if (!dropdownData.class) return dateCorrect;
                 return dateCorrect && classCorrect;
-              })
-              .map((sub) => (
-                <li className="flex items-center gap-2">
-                  <div className="flex">
-                    <Pencil
-                      onClick={() => {
-                        setMode({ mode: "edit", sub });
-                      }}
-                      className="w-4 h-4 cursor-pointer"
-                    />
-                    <Trash2
-                      onClick={() => setDeleteModalId(sub._id)}
-                      className="w-4 h-4 cursor-pointer"
-                    />
-                  </div>
+                })
+                .map((sub, idx) => (
+                <tr key={sub._id ?? idx}>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
                   {new Date(sub.date).toLocaleDateString("en-IN", {
                     day: "2-digit",
                     month: "2-digit",
                     year: "numeric",
-                  })}{" "}
-                  - {sub.teacher} in {sub.class} during period {sub.period}
-                </li>
-              ))}
-          </ul>
+                  })}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                  {sub.teacher}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                  {sub.class}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-sm text-gray-700">
+                  {sub.period}
+                  </td>
+                  <td className="px-4 py-3 whitespace-nowrap text-right text-sm">
+                  <div className="inline-flex items-center gap-3">
+                    <Pencil
+                    onClick={() => setMode({ mode: "edit", sub })}
+                    className="w-4 h-4 cursor-pointer text-gray-600 hover:text-gray-800"
+                    />
+                    <Trash2
+                    onClick={() => setDeleteModalId(sub._id)}
+                    className="w-4 h-4 cursor-pointer text-red-600 hover:text-red-800"
+                    />
+                  </div>
+                  </td>
+                </tr>
+                ))}
+              </tbody>
+            </table>
+            </div>
         </div>
       </main>
       {deleteModalId && (
