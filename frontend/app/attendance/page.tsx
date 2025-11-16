@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 import Dashboard from "../components/Dashboard";
 import { useAppSelector } from "@/context/contextHooks";
 
-const socket = io("https://class-tt-backend.onrender.com");
+const socket = io("http://localhost:4000");
 
 const AttendancePage = () => {
   const [teachers, setTeachers] = useState([]);
