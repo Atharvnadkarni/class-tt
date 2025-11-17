@@ -221,6 +221,31 @@ const AttendanceModal = ({
       setTrTts(oldTts);
     }
   }, [trTts]);
+
+  useEffect(() => {
+    (async () => {
+      const teacherList = await (await request("get", "/teacher")).data.teacher;
+      let subjectTeachers = {};
+      trTts.forEach((tr, i) => {
+        for (const [classe, subBreakdown] of Object.entries(tr.subjects)) {
+          for (const [periodKey, period] of Object.entries(subBreakdown)) {
+            subjectTeachers = {
+              ...subjectTeachers,
+              [i]: {
+                ...subjectTeachers[i],
+                [classe]: {
+                ...subjectTeachers[i][classe],
+                [periodKey]: teacherList,
+              },
+              }
+              
+            };
+          }
+        }
+        console.log(998, tr, subjectTeachers, subjectTeachers[i]);
+      });
+    })();
+  }, [trTts]);
   const handleSubstitute = async (classe, period, teacher) => {
     const today = new Date();
     // Use local date (YYYY-MM-DD) to avoid JSON.stringify converting it to UTC midnight
@@ -322,12 +347,20 @@ const AttendanceModal = ({
                     ) : (
                       <ul>
                         {Object.entries(trTts[currentTab].subjects).map(
-                          ([className, periods]) =>
+                          ([className, periods], classIndex) =>
                             Object.entries(periods).map(
-                              ([periodKey, subject], currentTabPeriod) => {
+                              ([periodKey, subject]) => {
+                                const classesArray = Object.entries(trTts[currentTab]?.subjects ?? {});
+                                const periodsInPrev = classesArray
+                                  .slice(0, classIndex)
+                                  .reduce((acc, [, pr]) => acc + Object.keys(pr ?? {}).length, 0);
+                                const indexInClass = Object.keys(periods ?? {}).indexOf(periodKey);
+                                const currentTabPeriod = periodsInPrev + Math.max(0, indexInClass);
                                 // Extract period number from "Friday-1" etc.
                                 const periodNum = periodKey.split("-")[1];
                                 if (subject) {
+                                  console.log(667, Object.entries(trTts[currentTab].subjects))
+                                  console.log(776, teacherSubs, (teacherSubs[currentTab] ?? {[currentTabPeriod]: null})[currentTabPeriod], currentTabPeriod, className, periodNum, subject)
                                   return (
                                     <li
                                       key={`${className}-${periodKey}`}
@@ -370,7 +403,7 @@ const AttendanceModal = ({
                                             )
                                             .map((tr, i) => {
                                               console.log(tr, periodNum);
-                                              
+
                                               return (
                                                 <>
                                                   <option value={tr}>
