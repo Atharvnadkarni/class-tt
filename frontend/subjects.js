@@ -34,6 +34,11 @@ module.exports = {
     "LS",
     "H&W",
     "STEAM",
+    "JSL",
+    "EVS",
+    "Play",
+    "EP",
+    "BG"
   ],
   subjectToDisplayName: {
     CK: "Communicative Konkani",
@@ -55,7 +60,9 @@ module.exports = {
     PE: "Physical Education (PE)",
     CE: "Communicative English",
     MM: "Mental Math",
-    "Sci Lab": "Science Lab"
+    "Sci Lab": "Science Lab",
+    EP: "Edu-Park",
+    BG: "Board Games"
   },
   classes: [
     [1, "A"],
