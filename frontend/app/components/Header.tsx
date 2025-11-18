@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 import { logout } from "@/context/userSlice";
 import Icon from "../../images/icon.jpeg";
 import { useAppSelector, useAppDispatch } from "@/context/contextHooks";
+import { useRouter } from "next/navigation";
 
 export default function TimetableHeader() {
   const [currentTime] = useState(new Date(2024, 0, 1, 9, 45, 0)); // Demo time: 9:45 AM
@@ -40,6 +41,8 @@ export default function TimetableHeader() {
     return day >= 1 && day <= 6;
   };
 
+  const router = useRouter()
+
   // Close menu when clicking outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,6 +64,7 @@ export default function TimetableHeader() {
   const handleLogout = () => {
     localStorage.removeItem("user");
     dispatch(logout());
+    router.push("/login")
   };
 
   const today = new Date();
