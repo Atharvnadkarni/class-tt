@@ -222,28 +222,58 @@ const AttendanceModal = ({
     }
   }, [trTts]);
 
+  const teacherDropdowns = useRef({});
+
   useEffect(() => {
     (async () => {
       const teacherList = await (await request("get", "/teacher")).data.teacher;
       let subjectTeachers = {};
       trTts.forEach((tr, i) => {
+        console.log(9997, tr, i);
         for (const [classe, subBreakdown] of Object.entries(tr.subjects)) {
           for (const [periodKey, period] of Object.entries(subBreakdown)) {
+            if (period === null) continue;
+            const filteredTeacherList = teacherList
+              .filter((tr) => !absentTeachers.includes(tr.name))
+              .filter((tr) => {
+                for (const classeKey in timetable.current) {
+                  if (!Object.hasOwn(timetable.current, classeKey)) continue;
+
+                  const { [periodKey]: periodVal } =
+                    timetable.current[classeKey];
+                  const teacherPeriodList: { [key: number]: string } =
+                    periodVal?.teachers;
+                  // console.log(9997, 241, periodVal, classeKey)
+                  if (typeof teacherPeriodList === "object") {
+                    console.log(9997, "HaHa", teacherPeriodList, classeKey);
+                    if (
+                      Object.values(periodVal?.teachers)
+                        .flat()
+                        .includes(tr.displayName)
+                    ) {
+                      return false;
+                    } else {
+                      continue;
+                    }
+                  }
+                }
+                return true;
+              });
             subjectTeachers = {
               ...subjectTeachers,
               [i]: {
                 ...subjectTeachers[i],
                 [classe]: {
-                ...subjectTeachers[i][classe],
-                [periodKey]: teacherList,
+                  ...subjectTeachers[i]?.[classe],
+                  [periodKey]: filteredTeacherList,
+                },
               },
-              }
-              
             };
           }
         }
-        console.log(998, tr, subjectTeachers, subjectTeachers[i]);
+        console.log(9997, tr, subjectTeachers, subjectTeachers[i]);
       });
+      teacherDropdowns.current = subjectTeachers;
     })();
   }, [trTts]);
   const handleSubstitute = async (classe, period, teacher) => {
@@ -350,17 +380,39 @@ const AttendanceModal = ({
                           ([className, periods], classIndex) =>
                             Object.entries(periods).map(
                               ([periodKey, subject]) => {
-                                const classesArray = Object.entries(trTts[currentTab]?.subjects ?? {});
+                                const classesArray = Object.entries(
+                                  trTts[currentTab]?.subjects ?? {}
+                                );
                                 const periodsInPrev = classesArray
                                   .slice(0, classIndex)
-                                  .reduce((acc, [, pr]) => acc + Object.keys(pr ?? {}).length, 0);
-                                const indexInClass = Object.keys(periods ?? {}).indexOf(periodKey);
-                                const currentTabPeriod = periodsInPrev + Math.max(0, indexInClass);
+                                  .reduce(
+                                    (acc, [, pr]) =>
+                                      acc + Object.keys(pr ?? {}).length,
+                                    0
+                                  );
+                                const indexInClass = Object.keys(
+                                  periods ?? {}
+                                ).indexOf(periodKey);
+                                const currentTabPeriod =
+                                  periodsInPrev + Math.max(0, indexInClass);
                                 // Extract period number from "Friday-1" etc.
                                 const periodNum = periodKey.split("-")[1];
                                 if (subject) {
-                                  console.log(667, Object.entries(trTts[currentTab].subjects))
-                                  console.log(776, teacherSubs, (teacherSubs[currentTab] ?? {[currentTabPeriod]: null})[currentTabPeriod], currentTabPeriod, className, periodNum, subject)
+                                  console.log(
+                                    667,
+                                    Object.entries(trTts[currentTab].subjects)
+                                  );
+                                  console.log(
+                                    776,
+                                    teacherSubs,
+                                    (teacherSubs[currentTab] ?? {
+                                      [currentTabPeriod]: null,
+                                    })[currentTabPeriod],
+                                    currentTabPeriod,
+                                    className,
+                                    periodNum,
+                                    subject
+                                  );
                                   return (
                                     <li
                                       key={`${className}-${periodKey}`}
@@ -377,13 +429,7 @@ const AttendanceModal = ({
                                           value={
                                             (teacherSubs[currentTab] ?? [])[
                                               currentTabPeriod
-                                            ] ??
-                                            Object.keys(
-                                              attendanceRecord
-                                            ).filter(
-                                              (tr) =>
-                                                !absentTeachers.includes(tr)
-                                            )[0]
+                                            ] ?? teacherDropdowns.current?.[currentTab]?.[className]?.[periodKey]?.[0]?.name
                                           }
                                           onChange={(e) => {
                                             setTeacherSubs((ots) => ({
@@ -396,22 +442,19 @@ const AttendanceModal = ({
                                             }));
                                           }}
                                         >
-                                          {Object.keys(attendanceRecord)
-                                            .filter(
-                                              (tr) =>
-                                                !absentTeachers.includes(tr)
-                                            )
-                                            .map((tr, i) => {
+                                          {teacherDropdowns.current?.[currentTab]?.[className]?.[periodKey].map(
+                                            (tr, i) => {
                                               console.log(tr, periodNum);
 
                                               return (
                                                 <>
-                                                  <option value={tr}>
-                                                    {tr}
+                                                  <option value={tr.name}>
+                                                    {tr.name}
                                                   </option>
                                                 </>
                                               );
-                                            })}
+                                            }
+                                          )}
                                         </select>
                                         <button
                                           className="px-4 py-2 text-sm font-medium  bg-secondary text-black hover:bg-secondary text-black rounded-lg transition-colors flex items-center gap-2"
