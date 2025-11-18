@@ -325,7 +325,7 @@ const AttendanceModal = ({
             style={{ height: "calc(100% - 60px)" }}
           >
             <div className="w-full">
-              <div className="sm:flex gap-2">
+              <div className="sm:flex gap-2 bottom-5 absolute left-[50%] -translate-x-[50%]">
                 <button
                   className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => {
