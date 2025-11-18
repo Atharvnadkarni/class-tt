@@ -75,7 +75,7 @@ const Tabs = ({ activeTab }) => {
               </button>
             </Link>
           )}
-          {teacherTier.current == Tier.PRINCIPAL || teacherTier.current == Tier.VP && (
+          {(teacherTier.current == Tier.PRINCIPAL || teacherTier.current == Tier.VP) && (
             <Link href="/attendance">
               <button
                 onClick={() => {
