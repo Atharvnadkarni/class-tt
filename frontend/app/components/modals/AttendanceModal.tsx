@@ -226,13 +226,16 @@ const AttendanceModal = ({
 
   useEffect(() => {
     (async () => {
+      const todayDate = new Date().toISOString().slice(0, 10);
       const teacherList = await (await request("get", "/teacher")).data.teacher;
       let subjectTeachers = {};
-      trTts.forEach((tr, i) => {
+      trTts.forEach(async (tr, i) => {
         console.log(9997, tr, i);
         for (const [classe, subBreakdown] of Object.entries(tr.subjects)) {
           for (const [periodKey, period] of Object.entries(subBreakdown)) {
+            const periodNum = periodKey.split("-")[1];
             if (period === null) continue;
+
             const filteredTeacherList = teacherList
               .filter((tr) => !absentTeachers.includes(tr.name))
               .filter((tr) => {
@@ -259,23 +262,47 @@ const AttendanceModal = ({
                 }
                 return true;
               });
+
+            let biggeFiltere = [];
+            for (const tr of filteredTeacherList) {
+              const substitutionHistory = await (
+                await request(
+                  "get",
+                  "/substitution?teacher=" +
+                    tr.name +
+                    "&date=" +
+                    todayDate +
+                    "&period=" +
+                    periodNum
+                )
+              ).data.substitutions;
+              if (substitutionHistory.length == 0) {
+                console.log("FROME");
+                biggeFiltere.push(tr);
+              } else {
+                console.log(99987, "false", tr);
+              }
+            }
+            console.log(6868, biggeFiltere, classe, periodKey);
             subjectTeachers = {
               ...subjectTeachers,
               [i]: {
                 ...subjectTeachers[i],
                 [classe]: {
                   ...subjectTeachers[i]?.[classe],
-                  [periodKey]: filteredTeacherList,
+                  [periodKey]: biggeFiltere,
                 },
               },
             };
+            console.log(subjectTeachers, 6868)
           }
         }
         console.log(9997, tr, subjectTeachers, subjectTeachers[i]);
+        teacherDropdowns.current = subjectTeachers;
       });
-      teacherDropdowns.current = subjectTeachers;
     })();
   }, [trTts]);
+  
   const handleSubstitute = async (classe, period, teacher) => {
     const today = new Date();
     // Use local date (YYYY-MM-DD) to avoid JSON.stringify converting it to UTC midnight
@@ -326,33 +353,37 @@ const AttendanceModal = ({
           >
             <div className="w-full h-full">
               <div className="bottom-5 absolute left-[50%] -translate-x-[50%] w-full flex justify-center">
-                <div className="sm:flex gap-2"><button
-                  className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
-                  onClick={() => {
-                    console.log(
-                      Object.entries(attendanceRecord).filter(([a, b]) => !b)
-                    );
-                    setCurrentTab((oldct) => (oldct == 0 ? oldct : oldct - 1));
-                  }}
-                >
-                  <ChevronLeft />
-                </button>
+                <div className="sm:flex gap-2">
+                  <button
+                    className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                    onClick={() => {
+                      console.log(
+                        Object.entries(attendanceRecord).filter(([a, b]) => !b)
+                      );
+                      setCurrentTab((oldct) =>
+                        oldct == 0 ? oldct : oldct - 1
+                      );
+                    }}
+                  >
+                    <ChevronLeft />
+                  </button>
 
-                <button
-                  onClick={() => {
-                    setCurrentTab((oldct) =>
-                      oldct ==
-                      Object.entries(attendanceRecord).filter(([a, b]) => !b)
-                        .length -
-                        1
-                        ? oldct
-                        : oldct + 1
-                    );
-                  }}
-                  className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
-                >
-                  <ChevronRight />
-                </button></div>
+                  <button
+                    onClick={() => {
+                      setCurrentTab((oldct) =>
+                        oldct ==
+                        Object.entries(attendanceRecord).filter(([a, b]) => !b)
+                          .length -
+                          1
+                          ? oldct
+                          : oldct + 1
+                      );
+                    }}
+                    className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
+                  >
+                    <ChevronRight />
+                  </button>
+                </div>
               </div>
               <div className="overflow-y-auto h-[80%]">
                 <h2 style={{ fontSize: 20 }}>
@@ -423,13 +454,18 @@ const AttendanceModal = ({
                                         {className} - Period {periodNum} (
                                         {subject})
                                       </span>
+                                      {console.log(teacherDropdowns, 92928, teacherDropdowns)}
                                       <div className="flex gap-2 p-1">
                                         <select
                                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                           value={
                                             (teacherSubs[currentTab] ?? [])[
                                               currentTabPeriod
-                                            ] ?? teacherDropdowns.current?.[currentTab]?.[className]?.[periodKey]?.[0]?.name
+                                            ] ??
+                                            teacherDropdowns.current?.[
+                                              currentTab
+                                            ]?.[className]?.[periodKey]?.[0]
+                                              ?.name
                                           }
                                           onChange={(e) => {
                                             setTeacherSubs((ots) => ({
@@ -442,7 +478,9 @@ const AttendanceModal = ({
                                             }));
                                           }}
                                         >
-                                          {teacherDropdowns.current?.[currentTab]?.[className]?.[periodKey].map(
+                                          {teacherDropdowns.current?.[
+                                            currentTab
+                                          ]?.[className]?.[periodKey].map(
                                             (tr, i) => {
                                               console.log(tr, periodNum);
 
