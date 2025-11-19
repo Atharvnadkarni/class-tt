@@ -324,9 +324,9 @@ const AttendanceModal = ({
             className="p-6 space-y-4 overflow-y-auto"
             style={{ height: "calc(100% - 60px)" }}
           >
-            <div className="w-full">
-              <div className="sm:flex gap-2 bottom-5 absolute left-[50%] -translate-x-[50%]">
-                <button
+            <div className="w-full h-full">
+              <div className="bottom-5 absolute left-[50%] -translate-x-[50%] w-full flex justify-center">
+                <div className="sm:flex gap-2"><button
                   className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
                   onClick={() => {
                     console.log(
@@ -352,9 +352,9 @@ const AttendanceModal = ({
                   className="px-2 h-[45px] text-sm font-medium  bg-[lightgrey] text-black hover:bg-[darkgrey] text-black rounded-lg transition-colors flex items-center gap-2"
                 >
                   <ChevronRight />
-                </button>
+                </button></div>
               </div>
-              <div className="overflow-y-auto">
+              <div className="overflow-y-auto h-[80%]">
                 <h2 style={{ fontSize: 20 }}>
                   <b>{absentTeachers[currentTab]}</b> is absent
                 </h2>
