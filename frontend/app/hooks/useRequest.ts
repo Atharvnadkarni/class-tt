@@ -11,7 +11,8 @@ import { useState, useCallback } from "react";
 import { useAppDispatch } from "@/context/contextHooks";
 
 export const useRequest = (options: UseRequestOptions = {}) => {
-  const baseURL = options.baseURL || "http://localhost:4000/api";
+  const baseURL =
+    options.baseURL || "https://class-tt-backend.onrender.com/api";
   let token = "";
   if (typeof window !== "undefined") {
     const userStr = window.localStorage.getItem("user");
@@ -35,7 +36,7 @@ export const useRequest = (options: UseRequestOptions = {}) => {
       method: AxiosRequestConfig["method"],
       url: string,
       data?: any,
-      config?: AxiosRequestConfig
+      config?: AxiosRequestConfig,
     ) => {
       setIsLoading(true);
       setError(null);
@@ -62,7 +63,7 @@ export const useRequest = (options: UseRequestOptions = {}) => {
         setIsLoading(false);
       }
     },
-    [baseURL, token]
+    [baseURL, token],
   );
 
   // Teacher Requests

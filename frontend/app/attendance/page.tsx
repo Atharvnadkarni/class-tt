@@ -11,7 +11,7 @@ import { io } from "socket.io-client";
 import Dashboard from "../components/Dashboard";
 import { useAppSelector } from "@/context/contextHooks";
 
-const socket = io("http://localhost:4000");
+const socket = io("https://class-tt-backend.onrender.com");
 
 const AttendancePage = () => {
   const [teachers, setTeachers] = useState([]);
@@ -29,14 +29,14 @@ const AttendancePage = () => {
       const teacherData = res.data.teacher;
       setTeachers(teacherData);
       const attendanceObj = JSON.parse(
-        (await request("get", "/attendance")).data.attendance
+        (await request("get", "/attendance")).data.attendance,
       ).attendance;
       const allPresentRecord = {};
       teacherData.forEach((teacher: { name: string }) => {
         allPresentRecord[teacher.name] = true;
       });
       setAttendanceRecord(
-        Object.assign({}, allPresentRecord, attendanceObj) ?? allPresentRecord
+        Object.assign({}, allPresentRecord, attendanceObj) ?? allPresentRecord,
       );
       // allPresentRecord now contains every teacher's name as key and true as value
     })();
