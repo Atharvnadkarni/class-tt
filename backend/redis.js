@@ -6,7 +6,7 @@ const redisClient = createClient({
   password: process.env.REDIS_PASSWORD,
   socket: {
     host: process.env.REDIS_URI,
-    port: 11131,
+    port: 13242,
   },
 });
 const subscriberClient = redisClient.duplicate();
