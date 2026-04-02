@@ -3,7 +3,7 @@
 import type React from "react";
 
 import { useState } from "react";
-import { Book, CircleUser, LogIn } from "lucide-react";
+import { Book, CircleUser, Eye, EyeOff, LogIn } from "lucide-react";
 import { useRouter } from "next/navigation";
 import TimetableHeader from "./Header";
 import Link from "next/link";
@@ -16,6 +16,7 @@ import { useAppSelector, useAppDispatch } from "@/context/contextHooks";
 export default function LoginScreen({ sessionExpired }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const { logIn, isLoading, error } = useLogin();
   const user = useAppSelector((state) => state.user.user);
   const router = useRouter();
@@ -30,7 +31,7 @@ export default function LoginScreen({ sessionExpired }) {
     typeof window !== "undefined" ? (
       router.push(
         `/${window.localStorage.getItem("currentTab") ?? "timetable"}` ||
-          "/timetable"
+          "/timetable",
       )
     ) : null
   ) : (
@@ -83,15 +84,24 @@ export default function LoginScreen({ sessionExpired }) {
               >
                 Password
               </label>
-              <input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="Enter your password"
-                autoComplete="off"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  placeholder="Enter your password"
+                  autoComplete="off"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword((prev) => !prev)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-medium text-blue-500 hover:text-blue-700"
+                >
+                  {showPassword ? <EyeOff /> : <Eye />}
+                </button>
+              </div>
             </div>
 
             <button
