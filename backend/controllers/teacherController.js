@@ -9,7 +9,7 @@ const createToken = (_id) => {
 };
 
 const getTeachers = async (req, res) => {
-  const options = req.query
+  const options = req.query;
   try {
     const teacher = await Teacher.find(options);
     res.status(200).json({ message: "Teachers fetched successfully", teacher });
@@ -37,7 +37,7 @@ const createTeacher = async (req, res) => {
   const hashedPassword = await bcrypt.hash(body.password, 10);
   try {
     const newTeacher = await Teacher.create(
-      Object.assign({}, body, { password: hashedPassword })
+      Object.assign({}, body, { password: hashedPassword }),
     );
     res
       .status(201)
@@ -59,7 +59,7 @@ const updateTeacher = async (req, res) => {
       ? await Teacher.findByIdAndUpdate(
           id,
           Object.assign({}, body, { password: hashedPassword }),
-          { new: true }
+          { new: true },
         )
       : await Teacher.findByIdAndUpdate(id, body, { new: true });
     if (!newTeacher) {
@@ -164,7 +164,7 @@ const getTeacherWorkload = async (req, res) => {
         const teacherArray = Object.values(teacherBatches);
         const teacherIndex = findTeacherInBatchArray(
           teacher.displayName,
-          teacherArray
+          teacherArray,
         );
         if (teacherIndex.length > 1) {
           const subject = subjectArray[teacherIndex[0]];
@@ -182,7 +182,7 @@ const getTeacherWorkload = async (req, res) => {
       subject: subject.split(" | ")[0],
       class: subject.split(" | ")[1],
       allotted: allotted,
-    })
+    }),
   );
 
   const subjectOrder = [
@@ -244,7 +244,7 @@ const getTeacherWorkload = async (req, res) => {
         substitution.class == class_ &&
         findTeacherInBatchArray(
           teacher.displayName,
-          Object.values(timetablePeriod.teachers)
+          Object.values(timetablePeriod.teachers),
         )
       ) {
         if (!teacherSubsOut[i]) teacherSubsOut[i] = 0;
@@ -288,6 +288,154 @@ const getTeacherWorkload = async (req, res) => {
   });
 };
 
+// const getTeacherIndices = async (req, res) => {
+//   res.json({ message: "test working" });
+// };
+
+const getTeachersIndices = async (req, res) => {
+  const dateFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long" });
+  const totalPeriods = 10;
+  const options = req.query;
+  const { date: dateStr } = options;
+  // const { id: _id } = req.params;
+  const date = new Date(dateStr);
+
+  // let total;
+
+  const teachers = await Teacher.find({}).catch((err) =>
+    res.status(500).json({ message: "Server error", error: err.message }),
+  );
+  const timetableStr = await redisClient
+    .get("timetable")
+    .catch((err) =>
+      res.status(500).json({ message: "Server error", error: err.message }),
+    );
+
+  const timetable = JSON.parse(timetableStr);
+  let indices = [];
+  for (const teacher of teachers) {
+    const periods = {};
+    for (let i = 0; i < totalPeriods; i++) {
+      periods[i + 1] = null;
+    }
+
+    for (const classKey of Object.keys(timetable)) {
+      const classTimetable = timetable[classKey];
+      for (const slotKey of Object.keys(classTimetable)) {
+        const slotST = classTimetable[slotKey];
+        console.log(slotST);
+        console.log(slotKey, date, dateStr);
+        const todayWeekday = dateFormatter.format(date);
+        console.log(todayWeekday, teacher.displayName);
+        const [slotWeekDay, slotPeriod] = slotKey.split("-");
+        if (
+          todayWeekday == slotWeekDay &&
+          slotST &&
+          slotST.teachers &&
+          Object.values(slotST?.teachers).flat().includes(teacher.displayName)
+        ) {
+          let finalis = slotST;
+          // total.push() = slotST;
+          finalis.class = classKey;
+          periods[slotPeriod] = finalis;
+        }
+      }
+    }
+
+    const substitutions = await Substitution.find({
+      date: date,
+      teacher: teacher.name,
+    }).sort({ date: -1 });
+    console.log(substitutions);
+    for (const substitution of substitutions) {
+      periods[substitution.period] = {
+        subject: { 1: "Substitution" },
+        teachers: { 1: [teacher.name] },
+        class: substitution.class,
+      };
+    }
+
+    const index = Object.values(periods).filter((a) => a).length;
+    console.log(teacher)
+    const { password, username,subjects,tier, __v, ...noteacher } = teacher._doc;
+    
+    indices.push({...noteacher, index})
+
+    // console.log(index);
+  }
+  // const dayRegex = new RegExp(`^${day}-\\d+$`, "i");
+  res.status(200).json({ message: "Index fetched successfully", indices });
+};
+
+const getTeacherIndices = async (req, res) => {
+  const dateFormatter = new Intl.DateTimeFormat("en-US", { weekday: "long" });
+  const totalPeriods = 10;
+  const options = req.query;
+  const { date: dateStr } = options;
+  const { id: _id } = req.params;
+  const date = new Date(dateStr);
+
+  // let total;
+
+  const teacher = await Teacher.findById(_id).catch((err) =>
+    res.status(500).json({ message: "Server error", error: err.message }),
+  );
+  const timetableStr = await redisClient
+    .get("timetable")
+    .catch((err) =>
+      res.status(500).json({ message: "Server error", error: err.message }),
+    );
+
+  const timetable = JSON.parse(timetableStr);
+  // const dayRegex = new RegExp(`^${day}-\\d+$`, "i");
+  const periods = {};
+  for (let i = 0; i < totalPeriods; i++) {
+    periods[i + 1] = null;
+  }
+
+  for (const classKey of Object.keys(timetable)) {
+    const classTimetable = timetable[classKey];
+    for (const slotKey of Object.keys(classTimetable)) {
+      const slotST = classTimetable[slotKey];
+      console.log(slotST);
+      console.log(slotKey, date, dateStr);
+      const todayWeekday = dateFormatter.format(date);
+      console.log(todayWeekday, teacher.displayName);
+      const [slotWeekDay, slotPeriod] = slotKey.split("-");
+      if (
+        todayWeekday == slotWeekDay &&
+        slotST &&
+        slotST.teachers &&
+        Object.values(slotST?.teachers).flat().includes(teacher.displayName)
+      ) {
+        let finalis = slotST;
+        // total.push() = slotST;
+        finalis.class = classKey;
+        periods[slotPeriod] = finalis;
+      }
+    }
+  }
+
+  const substitutions = await Substitution.find({
+    date: date,
+    teacher: teacher.name,
+  }).sort({ date: -1 });
+  console.log(substitutions);
+  for (const substitution of substitutions) {
+    periods[substitution.period] = {
+      subject: { 1: "Substitution" },
+      teachers: { 1: [teacher.name] },
+      class: substitution.class,
+    };
+  }
+
+  const index = Object.values(periods).filter((a) => a).length;
+
+  // console.log(index);
+
+  res.status(200).json({ message: "Index fetched successfully", index });
+};
+
 module.exports = {
   getTeachers,
   getTeacher,
@@ -297,4 +445,6 @@ module.exports = {
   loginTeacher,
   signupTeacher,
   getTeacherWorkload,
+  getTeacherIndices,
+  getTeachersIndices,
 };
