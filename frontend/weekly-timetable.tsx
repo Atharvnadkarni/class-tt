@@ -49,6 +49,27 @@ export default function WeeklyTimetable(props) {
   );
 }
 
+const checkClash = (classTimetables, teacherValue, classKey) => {
+  if (!teacherValue) {
+    return { class: null, subject: null };
+  }
+
+  for (const classe in classTimetables) {
+    const slot = classTimetables[classe][classKey];
+
+    if (slot && slot.subject && slot.teachers && classe !== selectedClass) {
+      if (Object.values(slot.teachers).flat().includes(teacherValue)) {
+        return {
+          class: classe,
+          subject: Object.values(slot.subject).join("/"),
+        };
+      }
+    }
+  }
+
+  return { class: null, subject: null };
+};
+
 function _WeeklyTimetable({
   selectedClass = "1A",
   classTimetables = {},
@@ -64,7 +85,7 @@ function _WeeklyTimetable({
     if (typeof window !== "undefined") {
       const { tier = Tier.TEACHER, editableClasses = [0, 0] } = JSON.parse(
         window.localStorage.getItem("user") ??
-          JSON.stringify({ tier: Tier.TEACHER, editableClasses: [0, 0] })
+          JSON.stringify({ tier: Tier.TEACHER, editableClasses: [0, 0] }),
       );
       teacherTier.current = tier;
       teacherEditableClasses.current = editableClasses;
@@ -76,7 +97,7 @@ function _WeeklyTimetable({
         !(
           classSplit[0] >= teacherEditableClasses.current[0] &&
           classSplit[0] <= teacherEditableClasses.current[1]
-        )
+        ),
       );
     }
     // switch (teacherTier.current) {
@@ -133,7 +154,9 @@ function _WeeklyTimetable({
   const [timetableData, setTimetableData] = useState({});
   useEffect(() => {
     setTimetableData(
-      viewingOwnTt ? getTeacherSchedule() : classTimetables[selectedClass] || {}
+      viewingOwnTt
+        ? getTeacherSchedule()
+        : classTimetables[selectedClass] || {},
     );
   }, [viewingOwnTt, classTimetables, selectedClass]);
   useEffect(() => {}, [timetableData]);
@@ -170,7 +193,7 @@ function _WeeklyTimetable({
   function getTeacherSchedule() {
     const teacherSchedule: TimetableData = {};
     const teacherName = JSON.parse(
-      localStorage.getItem("user") ?? JSON.stringify({ displayName: "" })
+      localStorage.getItem("user") ?? JSON.stringify({ displayName: "" }),
     ).displayName; // Current logged-in teacher
     // Go through all classes and find periods where this teacher is assigned
     Object.keys(classTimetables).forEach((className) => {
@@ -282,7 +305,7 @@ function _WeeklyTimetable({
 
   const handleCellClick = (
     day: string,
-    period: { name: string; time: string }
+    period: { name: string; time: string },
   ) => {
     if (period.name === "Break" || isReadOnly || viewingOwnTt) return;
 
@@ -301,9 +324,9 @@ function _WeeklyTimetable({
     setBatches(
       Math.max(
         ...Object.keys(existingData?.subject || { 1: "" }).map((key) =>
-          parseInt(key)
-        )
-      )
+          parseInt(key),
+        ),
+      ),
     );
     setTeachers(existingData?.teachers || { [currentBatch]: [] });
     setIsModalOpen(true);
@@ -311,7 +334,7 @@ function _WeeklyTimetable({
 
   const getCellContent = (
     day: string,
-    period: { name: string; time: string }
+    period: { name: string; time: string },
   ) => {
     if (period.name === "Break") {
       return (
@@ -405,10 +428,20 @@ function _WeeklyTimetable({
   const incrementBatches = () => {
     setBatches((oldBatches) => (oldBatches += 1));
   };
+
+  const formatDate = (date: Date) => date && date.toISOString().slice(0, 10);
+
   useEffect(() => {
     const fetchTeachers = async () => {
-      const teachers = await request("get", "/teacher");
-      setTeacherList(teachers.data.teacher);
+      const todayDate = new Date();
+      const formattedDate = formatDate(todayDate);
+      const teachers = await request(
+        "get",
+        `/teacher/indices?date=${formattedDate}`,
+      );
+      setTeacherList(
+        teachers.data.indices.toSorted((a, b) => a.index - b.index),
+      );
     };
     fetchTeachers();
   }, []);
@@ -470,8 +503,8 @@ function _WeeklyTimetable({
                         period.name === "Break"
                           ? "bg-gray-200 border-gray-300 border-b"
                           : isReadOnly
-                          ? "border-r cursor-default"
-                          : "hover:bg-blue-50 cursor-pointer border-gray-200 border-r"
+                            ? "border-r cursor-default"
+                            : "hover:bg-blue-50 cursor-pointer border-gray-200 border-r"
                       }`}
                       onClick={() => handleCellClick(day, period)}
                     >
@@ -577,40 +610,14 @@ function _WeeklyTimetable({
                           let isBatch2Clash = false;
                           let isClash = false;
 
-                          for (const classe in classTimetables) {
-                            if (
-                              classTimetables[classe].hasOwnProperty(
-                                classKey
-                              ) &&
-                              classTimetables[classe][classKey] &&
-                              classTimetables[classe][classKey].subject &&
-                              classTimetables[classe][classKey].teachers
-                            ) {
-                              if (!e.target.value) {
-                                setIsClash({
-                                  class: null,
-                                  subject: null,
-                                });
-                              }
-                              if (
-                                Object.values(
-                                  classTimetables[classe][classKey].teachers
-                                )
-                                  .flat()
-                                  .includes(e.target.value) &&
-                                classe != selectedClass
-                              ) {
-                                setIsClash({
-                                  class: classe,
-                                  subject: Object.values(
-                                    classTimetables[classe][classKey].subject
-                                  ).join("/"),
-                                });
-                              } else if (classe != selectedClass) {
-                                setIsClash({ class: null, subject: null });
-                              }
-                            }
-                          }
+                          const clash = checkClash(
+                            classTimetables,
+                            e.target.value,
+                            classKey,
+                          );
+                          console.log(clash, 747, 6);
+                          setIsClash(clash);
+
                           setFormData((prev) => ({
                             ...prev,
                             teacher: {
@@ -622,7 +629,15 @@ function _WeeklyTimetable({
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                       >
                         <option value="">Select teacher</option>
-                        {teacherList.map((teacher) => (
+                        <option value=""></option>
+                        <option value="">------- BEST CHOICE -------</option>
+                        {teacherList.slice(0, 20).map((teacher) => (
+                          <option value={teacher.displayName}>
+                            {teacher.name}
+                          </option>
+                        ))}
+                        <option value="">------- OTHERS -------</option>
+                        {teacherList.slice(20).map((teacher) => (
                           <option value={teacher.displayName}>
                             {teacher.name}
                           </option>
@@ -640,7 +655,7 @@ function _WeeklyTimetable({
                             const filteredNewTrList = newTrList.filter(
                               (item, index) => {
                                 return newTrList.indexOf(item) == index;
-                              }
+                              },
                             );
                             return {
                               ...prevtrlist,
@@ -672,7 +687,7 @@ function _WeeklyTimetable({
                       className="px-3 py-1 rounded-l bg-gray-200 text-gray-600 cursor-pointer"
                       onClick={() => {
                         setCurrentBatch((oldBatch) =>
-                          oldBatch <= 1 ? oldBatch : oldBatch - 1
+                          oldBatch <= 1 ? oldBatch : oldBatch - 1,
                         );
                       }}
                     >
@@ -685,7 +700,7 @@ function _WeeklyTimetable({
                       className="px-3 py-1 rounded-r bg-gray-200 text-gray-600 cursor-pointer"
                       onClick={() => {
                         setCurrentBatch((oldBatch) =>
-                          oldBatch >= batches ? oldBatch : oldBatch + 1
+                          oldBatch >= batches ? oldBatch : oldBatch + 1,
                         );
                       }}
                     >
@@ -733,6 +748,7 @@ function _WeeklyTimetable({
                 </button>
               </div>
             </div>
+            {console.log(747, isClash)}
 
             {isClash.class && (
               <div className="flex items-center gap-2 bg-red-100 border border-red-400 text-red-700 px-4 py-2 rounded m-2">
