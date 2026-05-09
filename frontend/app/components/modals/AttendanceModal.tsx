@@ -227,7 +227,7 @@ const AttendanceModal = ({
   useEffect(() => {
     (async () => {
       const todayDate = new Date().toISOString().slice(0, 10);
-      const teacherList = await (await request("get", "/teacher")).data.teacher;
+      const teacherList = await (await request("get", `/teacher/indices?date=${todayDate}`, )).data.indices;
       let subjectTeachers = {};
       trTts.forEach(async (tr, i) => {
         console.log(9997, tr, i);
@@ -283,7 +283,8 @@ const AttendanceModal = ({
                 console.log(99987, "false", tr);
               }
             }
-            console.log(6868, biggeFiltere, classe, periodKey);
+            biggeFiltere.sort((a,b) => a.index - b.index)
+            console.log(6868, biggeFiltere, teacherList, filteredTeacherList,  classe, periodKey);
             subjectTeachers = {
               ...subjectTeachers,
               [i]: {
