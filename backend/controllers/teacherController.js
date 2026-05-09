@@ -357,7 +357,7 @@ const getTeachersIndices = async (req, res) => {
 
     const index = Object.values(periods).filter((a) => a).length;
     console.log(teacher)
-    const { password, username,subjects,tier, __v, ...noteacher } = teacher._doc;
+    const { ...noteacher } = teacher._doc;
     
     indices.push({...noteacher, index})
 
