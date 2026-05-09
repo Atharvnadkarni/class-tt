@@ -33,4 +33,6 @@ teacherRouter.delete("/:id", deleteTeacher);
 teacherRouter.get("/workload/:id", getTeacherWorkload);
 teacherRouter.get("/indices/:id", getTeacherIndices);
 
+
+
 module.exports = teacherRouter;

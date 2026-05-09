@@ -125,16 +125,16 @@ function _TimetablePage() {
     mode: null | "add" | "edit";
     sub: null;
   }>({ mode: null, sub: null });
-  const [teachers, setTeachers] = useState();
+  const teachers = useAppSelector(state => state.teacher.teachers)
   useEffect(() => {
-    const fetchTeachers = async () => {
-      const teachers = await (
-        await request("get", "/teacher", {
-          headers: { Authorization: `Bearer ${user.token}` },
-        })
-      ).data.teacher;
-      setTeachers(teachers);
-    };
+    // const fetchTeachers = async () => {
+    //   const teachers = await (
+    //     await request("get", "/teacher", {
+    //       headers: { Authorization: `Bearer ${user.token}` },
+    //     })
+    //   ).data.teacher;
+    //   setTeachers(teachers);
+    // };
     const teacher = JSON.parse(localStorage.getItem("user"));
     teacherTier.current = teacher.tier;
     setViewingOwnTt(teacher.tier == Tier.TEACHER);

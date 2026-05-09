@@ -18,7 +18,7 @@ import DeleteModal from "../components/modals/DeleteModal";
 import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { useRequest } from "../hooks/useRequest";
-import { useAppSelector } from "@/context/contextHooks";
+import { useAppDispatch, useAppSelector } from "@/context/contextHooks";
 import Dashboard from "../components/Dashboard";
 
 interface Sub {
@@ -36,7 +36,8 @@ const getLocalStorageItem = (key: string, defaultValue: string): string => {
 
 const SubstitutionPage = () => {
   const [subs, setSubs] = useState<Sub[]>([]);
-  const [teachers, setTeachers] = useState([]);
+  const teachers = useAppSelector(state => state.teacher.teachers)
+  const dispatch = useAppDispatch()
   const [dropdownData, setDropdownData] = useState({
     class: null,
     date: null,
@@ -61,13 +62,9 @@ const SubstitutionPage = () => {
       const subs = await (
         await request("get", "/substitution")
       ).data.substitutions;
-      setSubs(subs);
-    };
-    const fetchTeachers = async () => {
-      const teachers = await (await request("get", "/teacher")).data.teacher;
-      setTeachers(teachers);
-    };
-    fetchTeachers();
+      setSubs(subs);}
+    // dispatch
+    // fetchTeachers();
     fetchSubs();
     // Only run on client
     if (typeof window !== "undefined") {

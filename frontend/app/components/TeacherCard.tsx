@@ -7,10 +7,12 @@ import { useState } from "react";
 import { Tier } from "@/types";
 import WorkloadModal from "./modals/WorkloadModal";
 import { useRequest } from "../hooks/useRequest";
-import { useAppSelector } from "@/context/contextHooks";
+import { useAppDispatch, useAppSelector } from "@/context/contextHooks";
+import { setTeachersList } from "@/context/teacherSlice";
 
 const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
   const user = useAppSelector((state) => state.user.user);
+  const dispatch = useAppDispatch();
   const [workloadVisible, setWorkloadVisible] = useState(false);
   const [deleteModalId, setDeleteModalId] = useState(null);
   const { request, isLoading, error } = useRequest();
@@ -19,6 +21,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
     await request("delete", `/teacher/${_id}`);
     const newTeachers = await request("get", "/teacher").data.teacher;
     setAllTeachers(newTeachers);
+    dispatch(setTeachersList(newTeachers))
   };
   return (
     <div

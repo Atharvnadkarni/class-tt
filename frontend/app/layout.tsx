@@ -2,6 +2,9 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Providers from "@/context/providers/Providers";
 import AttendanceAlert from "./components/AttendanceAlert";
+import { useAppSelector } from "@/context/contextHooks";
+import { setTeachersList } from "@/context/teacherSlice";
+import { useEffect } from "react";
 
 export const metadata: Metadata = {
   title: "Schedulr Timetable Manager",
@@ -14,6 +17,15 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = useAppSelector(state => state.user.user);
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+      const fetchTeachers = async () => {
+        const teachers = await request("get", "/teacher");
+        dispatch(setTeachersList(teachers.data.teacher));
+      };
+      fetchTeachers();
+    }, [user]);
   return (
     <html lang="en">
       <head>

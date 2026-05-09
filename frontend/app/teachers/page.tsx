@@ -47,15 +47,10 @@ export default function TeacherPage() {
 
   const [allTeachers, setAllTeachers] = useState([]);
   const user = useAppSelector((state) => state.user.user);
+  const teachers = useAppSelector((state) => state.teacher.teachers);
   const { request, isLoading, error } = useRequest();
 
-  useEffect(() => {
-    const fetchTeachers = async () => {
-      const teachers = await request("get", "/teacher");
-      setAllTeachers(teachers.data.teacher);
-    };
-    fetchTeachers();
-  }, [user]);
+  
   const router = useRouter();
 
   return !user ? (

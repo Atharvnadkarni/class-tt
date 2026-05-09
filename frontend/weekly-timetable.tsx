@@ -16,6 +16,7 @@ import axios from "axios";
 import { subjectList, subjects, subjectToDisplayName } from "./subjects";
 import { Tier } from "./types";
 import { useRequest } from "./app/hooks/useRequest";
+import { useSelector } from "react-redux";
 
 interface TimetableEntry {
   subject: string[];
@@ -421,7 +422,7 @@ function _WeeklyTimetable({
     setTeachers({ [currentBatch]: [] });
   };
 
-  const [teacherList, setTeacherList] = useState([]);
+  const teacherList = useSelector(state => state.teacher.teachers)
   const [batches, setBatches] = useState(1);
   const [currentBatch, setCurrentBatch] = useState(1);
   const { request, isLoading, error } = useRequest();
@@ -432,18 +433,7 @@ function _WeeklyTimetable({
   const formatDate = (date: Date) => date && date.toISOString().slice(0, 10);
 
   useEffect(() => {
-    const fetchTeachers = async () => {
-      const todayDate = new Date();
-      const formattedDate = formatDate(todayDate);
-      const teachers = await request(
-        "get",
-        `/teacher/indices?date=${formattedDate}`,
-      );
-      setTeacherList(
-        teachers.data.indices.toSorted((a, b) => a.index - b.index),
-      );
-    };
-    fetchTeachers();
+   
   }, []);
   return (
     <>

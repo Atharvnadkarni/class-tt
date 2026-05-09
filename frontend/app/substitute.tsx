@@ -27,15 +27,15 @@ const SubstituteButton = ({ currentClass }) => {
     period: 1,
     teacher: "",
   });
-  const [teachers, setTeachers] = useState([]);
+  const teachers = useAppSelector((state) => state.teacher.teachers)
   const { request, isLoading, error } = useRequest({ token: user.token });
-  useEffect(() => {
-    const fetchTeachers = async () => {
-      const teachers = await (await request("get", "/teacher")).data.teacher;
-      setTeachers(teachers);
-    };
-    fetchTeachers();
-  }, []);
+  // useEffect(() => {
+  //   // const fetchTeachers = async () => {
+  //   //   const teachers = await (await request("get", "/teacher")).data.teacher;
+  //   //   setTeachers(teachers);
+  //   // };
+  //   fetchTeachers();
+  // }, []);
   const user = useAppSelector((state) => state.user.user);
   const handleSave = async () => {
     const newSub = await (

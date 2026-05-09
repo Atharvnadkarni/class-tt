@@ -223,11 +223,12 @@ const AttendanceModal = ({
   }, [trTts]);
 
   const teacherDropdowns = useRef({});
+  const state = useAppSelector(state => state)
 
   useEffect(() => {
     (async () => {
       const todayDate = new Date().toISOString().slice(0, 10);
-      const teacherList = await (await request("get", `/teacher/indices?date=${todayDate}`, )).data.indices;
+      const teacherList = state.teacher.teachers
       let subjectTeachers = {};
       trTts.forEach(async (tr, i) => {
         console.log(9997, tr, i);

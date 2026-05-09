@@ -14,7 +14,7 @@ import { useAppSelector } from "@/context/contextHooks";
 const socket = io("https://class-tt-backend.onrender.com");
 
 const AttendancePage = () => {
-  const [teachers, setTeachers] = useState([]);
+  const teachers = useAppSelector(state => state.teacher.teachers)
   const [attendanceRecord, setAttendanceRecord] = useState({});
   const oldAttendanceRecord = useRef({});
   const attendanceSockets = useAppSelector((state) => state.attendance.record);
@@ -25,14 +25,14 @@ const AttendancePage = () => {
   }, [attendanceSockets]);
   useEffect(() => {
     (async () => {
-      const res = await request("get", "/teacher");
-      const teacherData = res.data.teacher;
-      setTeachers(teacherData);
+      // const res = await request("get", "/teacher");
+      // const teacherData = res.data.teacher;
+      // setTeachers(teacherData);
       const attendanceObj = JSON.parse(
         (await request("get", "/attendance")).data.attendance,
       ).attendance;
       const allPresentRecord = {};
-      teacherData.forEach((teacher: { name: string }) => {
+      teachers.forEach((teacher: { name: string }) => {
         allPresentRecord[teacher.name] = true;
       });
       setAttendanceRecord(

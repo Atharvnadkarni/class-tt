@@ -5,9 +5,11 @@ import { use, useEffect, useState, useTransition } from "react";
 import bcrypt from "bcryptjs";
 import { useSelector } from "react-redux";
 import { Tier } from "@/types";
-import { useAppSelector } from "@/context/contextHooks";
+import { useAppDispatch, useAppSelector } from "@/context/contextHooks";
+import { setTeachersList } from "@/context/teacherSlice";
 
 const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
+  const dispatch = useAppDispatch()
   const [formData, setFormData] = useState({
     subject: "",
     div: "",
@@ -80,6 +82,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     const newTeachers = await request("get", "/teacher");
     setMode(null);
     setAllTeachers(newTeachers.data.teacher);
+    dispatch(setTeachersList(newTeachers));
     setSubs([]);
   };
   const handleEditSave = async (_id) => {
@@ -122,6 +125,7 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
     const newTeachers = await request("get", "/teacher");
     setMode(null);
     setAllTeachers(newTeachers.data.teacher);
+    dispatch(setTeachersList(newTeachers))
     setSubs([]);
   };
   useEffect(() => {
