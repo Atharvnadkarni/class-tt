@@ -23,7 +23,7 @@ interface Teacher {
       _id: false;
       subject: string;
       classes: any;
-    }
+    },
   ];
 }
 
@@ -34,13 +34,25 @@ export default function TeacherPage() {
   }>({ mode: null, teacher: null });
 
   const [subs, setSubs] = useState([]);
-  const teacherTier = useRef(Tier.TEACHER);
+  // const teacherTier = useRef(Tier.TEACHER);
+  const [teacherTier, setTeacherTier] = useState({ current: Tier.TEACHER });
 
   useEffect(() => {
     if (typeof window !== "undefined") {
       const { tier } = JSON.parse(
         window.localStorage.getItem("user") ??
-          JSON.stringify({ tier: Tier.TEACHER })
+          JSON.stringify({ tier: Tier.TEACHER }),
+      );
+
+      setTeacherTier({current: tier});
+    }
+  }, []);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const { tier } = JSON.parse(
+        window.localStorage.getItem("user") ??
+          JSON.stringify({ tier: Tier.TEACHER }),
       );
       teacherTier.current = tier;
     }
@@ -50,10 +62,9 @@ export default function TeacherPage() {
   const user = useAppSelector((state) => state.user.user);
   const allTeachers = useAppSelector((state) => state.teacher.teachers);
   const dispatch = useAppDispatch();
-  const setAllTeachers = (newSet: any) => dispatch(setTeachersList(newSet))
+  const setAllTeachers = (newSet: any) => dispatch(setTeachersList(newSet));
   const { request, isLoading, error } = useRequest();
 
-  
   const router = useRouter();
 
   return !user ? (
