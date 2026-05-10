@@ -28,18 +28,14 @@ const TableConstraints = ({
   constraints,
   title,
   description,
-  inputRefs: [firstInputRefs, secondInputRefs]
+  inputRefs: [firstInputRefs, secondInputRefs],
 }) => {
   return (
     <div>
       {/* <form> */}
       <label className="flex flex-col gap-2 mb-2">
-        <h3 className="text-2xl font-semibold text-gray-800">Batchwise</h3>
-        <p className="text-sm font-regular text-gray-400">
-          All the pairs that are made here will always be batchwise! For
-          example, you can put WE and ATL or WE and MM and they will always be
-          batchwise, that is WE will always be with ATL or MM!
-        </p>
+        <h3 className="text-2xl font-semibold text-gray-800">{title}</h3>
+        <p className="text-sm font-regular text-gray-400">{description}</p>
       </label>
       <table className="w-full">
         <thead>
@@ -372,6 +368,176 @@ const TableConstraints = ({
     </div>
   );
 };
+const InputConstraint = ({
+  thingToDisplay,
+  setConstraints,
+  constraints,
+  title,
+  description,
+  inputRef,
+}) => {
+  return (
+    <div>
+      {/* <form> */}
+      <label className="flex flex-col gap-2 mb-2">
+        <h3 className="text-2xl font-semibold text-gray-800">{title}</h3>
+        <p className="text-sm font-regular text-gray-400">{description}</p>
+      </label>
+      <table className="w-full">
+        
+        <tbody>
+          <tr className="border-b border-gray-100 min-h-7">
+            <td className="px-4 py-3   min-h-7 text-left text-sm gap-2 font-semibold text-gray-700 border-2 rounded-l-lg border-gray-200 w-[25%]">
+              <div className="flex gap-2">
+                {constraints?.[thingToDisplay].map((elem, j) => (
+                  <div className="bg-blue-300 p-2 gap-2 min-w-2 flex flex-row items-center">
+                    {elem}{" "}
+                    <a
+                      href="#"
+                      onClick={() => {
+                        setConstraints((c) => {
+                          const newThingo = c[thingToDisplay].filter(
+                            (_elem, jnd) => jnd != j,
+                          );
+
+                          // console.log(j, i, newBatchwise)
+                          return { ...c, [thingToDisplay]: newThingo };
+                        });
+                      }}
+                    >
+                      <X className="w-[15px]" />
+                    </a>
+                  </div>
+                ))}
+                <input
+                  type="text"
+                  list="listian"
+                  className="flex-1"
+                  placeholder=""
+                  ref={(el) => {
+                    inputRef.current = el;
+                  }}
+                  onChange={(e) => {
+                    console.log("Heahahoom", e);
+                    if (e.target.value.slice(-1) == " ") {
+                      console.log("Heahahoomie!");
+                      setConstraints((c) => ({
+                        ...c,
+                        [thingToDisplay]: [
+                          ...c[thingToDisplay],
+                          e.target.value.trim(),
+                        ],
+                      }));
+                      setTimeout(() => {
+                        e.target.blur();
+                        e.target.value = "";
+                        const lastFirstInputRef = inputRef.current;
+                        console.log(inputRef);
+                        lastFirstInputRef?.focus();
+                      }, 0);
+                    }
+                  }}
+                />
+              </div>
+            </td>
+          </tr>
+          {/* <button><Plus className="w-2" /></button> */}
+          <datalist
+            id="listian"
+            onSelect={(e) => {
+              alert("HEAHEHAHEA HE CHANGED!!");
+            }}
+          >
+            {subjectList.map((sub) => (
+              <option value={sub}>{sub}</option>
+            ))}
+          </datalist>
+        </tbody>
+      </table>
+      {/* <table className="w-full min-w-[1200px]">
+            {/* Table Header - Periods across the top 
+            <thead>
+              <tr className="bg-gray-50 border-b border-gray-200">
+                <th className="px-4 py-3 text-left text-sm font-semibold text-gray-700 border-r border-gray-200 w-24 sticky left-0 bg-[#efd584] z-10">
+                  Day/Period
+                </th>
+                {periods.map((period) => (
+                  <th
+                    key={period.name}
+                    className={`px-3 py-3 text-center text-sm font-semibold border-r border-gray-200 last:border-r-0 min-w-[100px] !bg-highlight ${
+                      period.name === "Break"
+                        ? "!bg-gray-300 text-black"
+                        : "text-gray-700"
+                    }`}
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-bold">{period.name}</span>
+                      <span
+                        className={`text-xs font-normal mt-1 ${
+                          period.name === "Break"
+                            ? "text-black"
+                            : "text-gray-700"
+                        }`}
+                      >
+                        {period.time}
+                      </span>
+                    </div>
+                  </th>
+                ))}
+              </tr>
+            </thead>
+
+            {/* Table Body - Days as rows 
+            <tbody>
+              {days.map((day, dayIndex) => (
+                <tr
+                  key={day}
+                  className="border-b border-gray-200 hover:bg-gray-50 transition-colors bg-white"
+                >
+                  {/* Day Name 
+                  <td className="px-4 py-4 text-sm font-medium text-white border-r border-gray-200 sticky left-0 bg-contrast z-10">
+                    {day}
+                  </td>
+
+                  {/* Period Columns 
+                  {periods.map((period) => (
+                    <td
+                      key={`${day}-${period.name}`}
+                      className={`px-3 py-4 text-sm text-center last:border-r-0 transition-colors min-h-[60px] ${
+                        period.name === "Break"
+                          ? "bg-gray-200 border-gray-300 border-b"
+                          : isReadOnly
+                          ? "border-r cursor-default"
+                          : "hover:bg-blue-50 cursor-pointer border-gray-200 border-r"
+                      }`}
+                      onClick={() => handleCellClick(day, period)}
+                    >
+                      <div
+                        className={`min-h-[32px] flex items-center justify-center `}
+                      >
+                        {getCellContent(day, period)}
+                      </div>
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          </table> */}
+      {/* <input
+              type="text"
+              // defaultValue={formatDate(new Date())}
+              onChange={(e) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  date: new Date(e.target.value),
+                }));
+              }}
+              className="px-3 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            /> */}
+      {/* </form> */}
+    </div>
+  );
+};
 
 const ConstraintModal = ({
   open,
@@ -398,15 +564,20 @@ const ConstraintModal = ({
       [["Art"], ["Art"]],
       [["Comp"], ["Comp"]],
     ],
-    notSameDay: [
-      [["Music", "GK"], ["Music", "LS"]],
-
+    farFarAway: [
+      [
+        ["Music", "GK"],
+        ["Music", "LS"],
+      ],
     ],
+    notSameDay: ["PE", "Games", "Yoga", "MA"]
   });
   const batchwiseFir = useRef<HTMLInputElement[] | null>([]);
   const consecutiveFir = useRef<HTMLInputElement[] | null>([]);
   const batchwiseSir = useRef<HTMLInputElement[] | null>([]);
   const consecutiveSir = useRef<HTMLInputElement[] | null>([]);
+
+  const notSameDayRef = useRef<HTMLInputElement | null>();
   // const [batchwiseSir, consecutiveSir] = useRef<HTMLInputElement[][] | null>([[], []]);
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -451,35 +622,38 @@ const ConstraintModal = ({
           <div className="mx-auto flex overflow-x-auto flex-1 flex-col gap-2 w-full px-10">
             <TableConstraints
               constraints={constraints}
-              description="A"
-              title="B"
+              title="Batchwise"
+              description="All the pairs that are made here will always be batchwise! For
+          example, you can put WE and ATL or WE and MM and they will always be
+          batchwise, that is WE will always be with ATL or MM!"
               setConstraints={setConstraints}
               thingToDisplay={"batchwise"}
               inputRefs={[batchwiseFir, batchwiseSir]}
             />
             <TableConstraints
               constraints={constraints}
-              description="A"
-              title="B"
+              title="Consecutives"
+              description="The pairs of subjects will always be next to each other, such as both Computer periods or both Art periods!"
               setConstraints={setConstraints}
               thingToDisplay={"consecutive"}
               inputRefs={[consecutiveFir, consecutiveSir]}
             />
+
             <TableConstraints
               constraints={constraints}
-              description="A"
-              title="B"
+              title="Far Far Away"
+              description="The subjects will be in opposite sides of the week - one will be on Monday, Tuesday or Wednesday, and the other will be on Wednesday, Thursday, Friday or Saturday. (They won't both be on Wednesday)"
               setConstraints={setConstraints}
-              thingToDisplay={"consecutive"}
+              thingToDisplay={"farfaraway"}
               inputRefs={[consecutiveFir, consecutiveSir]}
             />
-            <TableConstraints
+            <InputConstraint
               constraints={constraints}
-              description="A"
-              title="B"
+              title="Not Same Day"
+              description="The subjects will be in opposite sides of the week - one will be on Monday, Tuesday or Wednesday, and the other will be on Wednesday, Thursday, Friday or Saturday. (They won't both be on Wednesday)"
               setConstraints={setConstraints}
               thingToDisplay={"notSameDay"}
-              inputRefs={[consecutiveFir, consecutiveSir]}
+              inputRef={notSameDayRef}
             />
           </div>
         </div>
