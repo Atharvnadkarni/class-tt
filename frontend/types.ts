@@ -1,7 +1,8 @@
 export enum Tier {
   PRINCIPAL = "Principal",
   VP = "Vice-Principal",
-  COORDINATOR = "Coordinator",
+  AVP = "Assistant Vice Principal",
+  HOD = "Head of Department"
   TEACHER = "Teacher"
 }
 

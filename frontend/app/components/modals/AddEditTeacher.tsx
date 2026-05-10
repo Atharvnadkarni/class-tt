@@ -346,7 +346,8 @@ const AddEditTeacher = ({ mode, setMode, allTeachers, setAllTeachers }) => {
                   >
                     <option value={Tier.PRINCIPAL}>Principal</option>
                     <option value={Tier.VP}>Vice-Principal</option>
-                    <option value={Tier.COORDINATOR}>Coordinator</option>
+                    <option value={Tier.AVP}>Assistant Vice Principal</option>
+                    <option value={Tier.HOD}>Head of Department</option>
                     <option value={Tier.TEACHER}>Teacher</option>
                   </select>
                   {/* {} */}
