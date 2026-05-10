@@ -14,6 +14,7 @@ import {
   Calendar,
   CalendarCheck,
   ClockIcon,
+  Sparkles,
 } from "lucide-react";
 import { useState, useEffect, Suspense, useRef } from "react";
 import AdminTeacherDetails from "../components/AdminTeacherDetails";
@@ -30,6 +31,7 @@ import { useRequest } from "../hooks/useRequest";
 import { Tier } from "@/types";
 import { useAppSelector } from "@/context/contextHooks";
 import Dashboard from "../components/Dashboard";
+import GenerateModal from "../components/modals/GenerateModal";
 
 export default function TimetablePage(props) {
   return (
@@ -163,6 +165,13 @@ function _TimetablePage() {
           <div className="flex items-center gap-4">
             <div className="flex flex-col sm:flex-row gap-2">
               <button
+                className="px-4 py-2 bg-purple-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={() => setGenerateOpen(true)}
+              >
+                <Sparkles className="h-4 w-4" />
+                Generate
+              </button>
+              <button
                 className="px-4 py-2 bg-highlight text-black  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
                 onClick={() => setViewingOwnTt((oldvot) => !oldvot)}
               >
@@ -220,6 +229,11 @@ function _TimetablePage() {
             setMode,
             teachers,
           }}
+        />
+        <GenerateModal
+          open={generateOpen}
+          setOpen={setGenerateOpen}
+          
         />
         {/* <TeacherDetails /> */}
         {/* 
