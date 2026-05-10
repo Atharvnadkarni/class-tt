@@ -11,8 +11,9 @@ import { useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import { Tier } from "@/types";
 import { useRequest } from "../hooks/useRequest";
-import { useAppSelector } from "@/context/contextHooks";
+import { useAppDispatch, useAppSelector } from "@/context/contextHooks";
 import Dashboard from "../components/Dashboard";
+import { setTeachersList } from "@/context/teacherSlice";
 
 interface Teacher {
   name: String;
@@ -45,9 +46,11 @@ export default function TeacherPage() {
     }
   }, []);
 
-  const [allTeachers, setAllTeachers] = useState([]);
+  // const [allTeachers, setAllTeachers] = useState([]);
   const user = useAppSelector((state) => state.user.user);
-  const teachers = useAppSelector((state) => state.teacher.teachers);
+  const allTeachers = useAppSelector((state) => state.teacher.teachers);
+  const dispatch = useAppDispatch();
+  const setAllTeachers = (newSet: any) => dispatch(setTeachersList(newSet))
   const { request, isLoading, error } = useRequest();
 
   
