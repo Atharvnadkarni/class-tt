@@ -138,7 +138,7 @@ function _TimetablePage() {
     const teacher = JSON.parse(localStorage.getItem("user"));
     teacherTier.current = teacher.tier;
     setViewingOwnTt(teacher.tier == Tier.TEACHER);
-    fetchTeachers();
+    // fetchTeachers();
   }, []);
   return !user ? (
     router.push("/login")
