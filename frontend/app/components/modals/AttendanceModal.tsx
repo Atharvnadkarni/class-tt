@@ -265,19 +265,19 @@ const AttendanceModal = ({
               });
 
             let biggeFiltere = [];
-            for (const tr of filteredTeacherList) {
-              const substitutionHistory = await (
+            const substitutionHistory = await (
                 await request(
                   "get",
-                  "/substitution?teacher=" +
-                    tr.name +
-                    "&date=" +
+                  "/substitution?date=" +
                     todayDate +
                     "&period=" +
                     periodNum
                 )
               ).data.substitutions;
-              if (substitutionHistory.length == 0) {
+              const teachersOfSubs = substitutionHistory.map(sub => sub.teacher)
+            for (const tr of filteredTeacherList) {
+              // if ()
+              if (!teachersOfSubs.includes(tr)) {
                 console.log("FROME");
                 biggeFiltere.push(tr);
               } else {
