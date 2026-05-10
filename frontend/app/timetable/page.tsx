@@ -128,6 +128,7 @@ function _TimetablePage() {
     sub: null;
   }>({ mode: null, sub: null });
   const teachers = useAppSelector(state => state.teacher.teachers)
+  const [generateOpen, setGenerateOpen] = useState(false);
   useEffect(() => {
     // const fetchTeachers = async () => {
     //   const teachers = await (
