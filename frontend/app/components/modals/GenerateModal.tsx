@@ -1,4 +1,4 @@
-import { subjectList, subjectToDisplayName } from "@/subjects";
+import { classes, subjectList, subjectToDisplayName } from "@/subjects";
 import { ReportRange } from "@/types";
 import { useRequest } from "@/app/hooks/useRequest";
 import { formatDate, setWeek } from "date-fns";
@@ -33,7 +33,7 @@ const GenerateModal = ({
   setOpen: (v: boolean) => void;
   // teacher: any;
 }) => {
-  const teachers = useAppSelector(state => state.teacher.teachers)
+  const teachers = useAppSelector((state) => state.teacher.teachers);
   const inputFile = useRef<HTMLInputElement | null>(null);
   const handleClick = () => {
     inputFile.current?.click();
@@ -41,7 +41,7 @@ const GenerateModal = ({
   const handleDLClick = () => {
     const wb = XLSX.utils.book_new();
 
-    const data = []
+    const data = [];
     // Template data
     const headerData = ["No", "Name"];
     for (const subject of subjectList) {
@@ -55,12 +55,23 @@ const GenerateModal = ({
 
     // Create worksheet
     const ws = XLSX.utils.aoa_to_sheet(data);
+    const getCellWidth = (text, min = 10, max = 50) => {
+      const length = text?.toString().length || 0;
+
+      return Math.max(min, Math.min(length + 2, max));
+    };
 
     // Column widths
-    ws["!cols"] = [ { wch: 5 },{ wch: 20 } ,...(subjectList.map(_ => ({wch:5})))];
+    ws["!cols"] = [
+      { wch: 5 },
+      { wch: 20 },
+      ...subjectList.map((sub) => ({ wch: 10 })),
+    ];
 
     // Add worksheet to workbook
-    XLSX.utils.book_append_sheet(wb, ws, "");
+    for (const classe of classes) {
+      XLSX.utils.book_append_sheet(wb, ws, classe.join(""));
+    }
 
     // Download file
     XLSX.writeFile(wb, "teacher_template.xlsx");
@@ -133,6 +144,7 @@ Monply Report
 </button>
 </div> */}
             </div>
+            {/* <div> */}
             <div className="mx-auto flex items-center justify-center overflow-x-auto flex-1 flex-col">
               <input
                 type="file"
@@ -141,20 +153,22 @@ Monply Report
                 style={{ display: "none" }}
                 onChange={handleFile}
               />
-              <button
-                className="px-4 py-2 bg-purple-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2 mb-5"
-                onClick={handleClick}
-              >
-                <Upload className="h-4 w-4" />
-                Upload Workload File (*.xlsx, *.csv)
-              </button>
-              <button
-                className="px-4 py-2 bg-orange-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
-                onClick={handleDLClick}
-              >
-                <Download className="h-4 w-4" />
-                Download Template
-              </button>
+              <div className="flex flex-row gap-2">
+                <button
+                  className="px-4 py-2 bg-purple-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  onClick={handleClick}
+                >
+                  <Upload className="h-4 w-4" />
+                  Upload Workload File (*.xlsx, *.csv)
+                </button>
+                <button
+                  className="px-4 py-2 bg-orange-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                  onClick={handleDLClick}
+                >
+                  <Download className="h-4 w-4" />
+                  Download Template
+                </button>
+              </div>
               <div className="spacer w-full flex-1" />
               <div className="flex items-center overflow-x-auto flex-row pb-4 px-4 gap-2">
                 <h3 className="text-lg font-semibold text-gray-800">
