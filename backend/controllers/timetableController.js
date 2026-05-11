@@ -168,4 +168,4 @@ const generateTimeTable = async (req, res) => {
   generator.printTimetable("7B");
 };
 
-module.exports = { getTimetable, saveTimetable };
+module.exports = { getTimetable, saveTimetable, generateTimeTable };
