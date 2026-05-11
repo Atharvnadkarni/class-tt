@@ -59,7 +59,7 @@ const generateTimeTable = async (req, res) => {
       )[0];
       const nameindex = Object.keys(tr).filter((k) => tr[k] == name)[0];
       const nokey = tr[firstKey] == name ? Object.keys(tr)[1] : firstKey;
-      const { [nokey]: _, [nameindex]: _, ...subjects } = tr;
+      const { [nokey]: _, [nameindex]: _2, ...subjects } = tr;
       value[name] = { subjects };
     });
     return value;
