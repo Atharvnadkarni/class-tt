@@ -1,11 +1,19 @@
-import { subjectToDisplayName } from "@/subjects";
+import { subjectList, subjectToDisplayName } from "@/subjects";
 import { ReportRange } from "@/types";
 import { useRequest } from "@/app/hooks/useRequest";
 import { formatDate, setWeek } from "date-fns";
-import { ChevronLeft, ChevronRight, Sparkles, Upload, X } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Download,
+  Sparkles,
+  Upload,
+  X,
+} from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import ConstraintModal from "./ConstraintModal";
+import { useAppSelector } from "@/context/contextHooks";
 
 const formatDate = (date: Date) => date && date.toISOString().slice(0, 10);
 
@@ -25,9 +33,37 @@ const GenerateModal = ({
   setOpen: (v: boolean) => void;
   // teacher: any;
 }) => {
+  const teachers = useAppSelector(state => state.teacher.teachers)
   const inputFile = useRef<HTMLInputElement | null>(null);
   const handleClick = () => {
     inputFile.current?.click();
+  };
+  const handleDLClick = () => {
+    const wb = XLSX.utils.book_new();
+
+    const data = []
+    // Template data
+    const headerData = ["No", "Name"];
+    for (const subject of subjectList) {
+      headerData.push(subject);
+    }
+    data.push(headerData);
+    // const [no, name, ...smth] = headerData;
+    teachers.forEach((teacher, index) => {
+      data.push([index + 1, teacher?.name ?? teacher]);
+    });
+
+    // Create worksheet
+    const ws = XLSX.utils.aoa_to_sheet(data);
+
+    // Column widths
+    ws["!cols"] = [ { wch: 5 },{ wch: 20 } ,...(subjectList.map(_ => ({wch:5})))];
+
+    // Add worksheet to workbook
+    XLSX.utils.book_append_sheet(wb, ws, "");
+
+    // Download file
+    XLSX.writeFile(wb, "teacher_template.xlsx");
   };
 
   const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -106,11 +142,18 @@ Monply Report
                 onChange={handleFile}
               />
               <button
-                className="px-4 py-2 bg-purple-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                className="px-4 py-2 bg-purple-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2 mb-5"
                 onClick={handleClick}
               >
                 <Upload className="h-4 w-4" />
                 Upload Workload File (*.xlsx, *.csv)
+              </button>
+              <button
+                className="px-4 py-2 bg-orange-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center gap-2"
+                onClick={handleDLClick}
+              >
+                <Download className="h-4 w-4" />
+                Download Template
               </button>
               <div className="spacer w-full flex-1" />
               <div className="flex items-center overflow-x-auto flex-row pb-4 px-4 gap-2">
