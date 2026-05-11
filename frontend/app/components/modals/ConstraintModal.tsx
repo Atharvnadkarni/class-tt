@@ -542,6 +542,8 @@ const InputConstraint = ({
 const ConstraintModal = ({
   open,
   setOpen,
+  constraints,
+  setConstraints
   // teacher,
 }: {
   open: boolean;
@@ -553,25 +555,7 @@ const ConstraintModal = ({
     inputFile.current?.click();
   };
 
-  const [constraints, setConstraints] = useState({
-    batchwise: [
-      [["ATL"], ["WE", "MA"]],
-      [["Art"], ["CH", "HW"]],
-      [["Music"], ["LS", "GK"]],
-    ],
-    consecutive: [
-      [["ATL"], ["ATL"]],
-      [["Art"], ["Art"]],
-      [["Comp"], ["Comp"]],
-    ],
-    farFarAway: [
-      [
-        ["Music", "GK"],
-        ["Music", "LS"],
-      ],
-    ],
-    notSameDay: ["PE", "Games", "Yoga", "MA"]
-  });
+  
   const batchwiseFir = useRef<HTMLInputElement[] | null>([]);
   const consecutiveFir = useRef<HTMLInputElement[] | null>([]);
   const batchwiseSir = useRef<HTMLInputElement[] | null>([]);

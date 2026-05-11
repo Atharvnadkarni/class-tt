@@ -35,6 +35,7 @@ const GenerateModal = ({
 }) => {
   const teachers = useAppSelector((state) => state.teacher.teachers);
   const inputFile = useRef<HTMLInputElement | null>(null);
+  const [workloadData, setWorkloadData] = useState({})
   const handleClick = () => {
     inputFile.current?.click();
   };
@@ -102,6 +103,29 @@ const GenerateModal = ({
   };
 
   const [constraintsOpen, setConstraintsOpen] = useState(false);
+  const [constraints, setConstraints] = useState({
+    batchwise: [
+      [["ATL"], ["WE", "MA"]],
+      [["Art"], ["CH", "HW"]],
+      [["Music"], ["LS", "GK"]],
+    ],
+    consecutive: [
+      [["ATL"], ["ATL"]],
+      [["Art"], ["Art"]],
+      [["Comp"], ["Comp"]],
+    ],
+    farFarAway: [
+      [
+        ["Music", "GK"],
+        ["Music", "LS"],
+      ],
+    ],
+    notSameDay: ["PE", "Games", "Yoga", "MA"],
+  });
+  const {request, isLoading, error} = useRequest();
+  const handleSubmit = async () => {
+    await request("post", "/timetable/generate", {workload: workloadData, constraints});
+  }
 
   if (open) {
     return (
@@ -183,7 +207,7 @@ Monply Report
               </div>
               <button
                 className="px-4 py-2 bg-purple-700 text-white  text-sm font-medium rounded-lg transition-colors flex items-center mb-8"
-                onClick={() => {}}
+                onClick={handleSubmit}
               >
                 <Sparkles className="h-4 w-4" />
                 &nbsp;Generate
@@ -234,7 +258,11 @@ Monply Report
             {/* )} */}
           </div>
         </div>
-        <ConstraintModal open={constraintsOpen} setOpen={setConstraintsOpen} />
+        <ConstraintModal
+          open={constraintsOpen}
+          setOpen={setConstraintsOpen}
+          {...{ constraints, setConstraints }}
+        />
       </>
     );
   }
