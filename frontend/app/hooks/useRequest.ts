@@ -12,7 +12,7 @@ import { useAppDispatch } from "@/context/contextHooks";
 
 export const useRequest = (options: UseRequestOptions = {}) => {
   const baseURL =
-    options.baseURL || "https://class-tt-backend.onrender.com/api";
+    options.baseURL || "http://localhost:4000/api";
   let token = "";
   if (typeof window !== "undefined") {
     const userStr = window.localStorage.getItem("user");

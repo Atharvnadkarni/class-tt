@@ -51,19 +51,41 @@ const saveTimetable = async (req, res) => {
 };
 const generateTimeTable = async (req, res) => {
   const modifyFormat = (formatOriginal) => {
-    const value = {};
-    formatOriginal.forEach((tr) => {
-      const firstkey = Object.keys(tr)[0];
-      const name = Object.values(tr).filter(
-        (val) => typeof val === "string",
-      )[0];
-      const nameindex = Object.keys(tr).filter((k) => tr[k] == name)[0];
-      const nokey = tr[firstKey] == name ? Object.keys(tr)[1] : firstKey;
-      const { [nokey]: _, [nameindex]: _2, ...subjects } = tr;
-      value[name] = { subjects };
+  const splitSubjects = ["ATL", "Art", "Comp", "Music"];
+
+  const value = {};
+
+  formatOriginal.forEach((tr) => {
+    const firstKey = Object.keys(tr)[0];
+
+    const name = Object.values(tr).filter(
+      (val) => typeof val === "string",
+    )[0];
+
+    const nameindex = Object.keys(tr).filter((k) => tr[k] == name)[0];
+
+    const nokey = tr[firstKey] == name ? Object.keys(tr)[1] : firstKey;
+
+    const { [nokey]: _, [nameindex]: _2, ...subjects } = tr;
+
+    const newSubjects = {};
+
+    Object.entries(subjects).forEach(([subject, count]) => {
+      if (splitSubjects.includes(subject) && Number(count) === 2) {
+        newSubjects[`${subject}1`] = 1;
+        newSubjects[`${subject}2`] = 1;
+      } else {
+        newSubjects[subject] = count;
+      }
     });
-    return value;
-  };
+
+    value[name] = {
+      subjects: newSubjects,
+    };
+  });
+
+  return value;
+};
   const transformConstraints = (data) => {
     const result = {
       notSameDay: [],
@@ -160,12 +182,20 @@ const generateTimeTable = async (req, res) => {
     return result;
   };
   const {workloads:origLoads, constraints:origStraints, className} = req.body;
-  const generator = new SingleClassTimetableGenerator();
   const workloads = modifyFormat(origLoads);
   const constraints = transformConstraints(origStraints);
-  console.log(workloads, constraints);
+  const generator = new SingleClassTimetableGenerator(workloads, constraints);
   const newTimetable = generator.generate("7B");
-  generator.printTimetable("7B");
+  try {
+    // const { body } = req;
+    await redisClient.set("timetable", JSON.stringify(newTimetable));
+    res.status(200).json({
+      message: "Timetable saved successfully",
+      timetable: JSON.stringify(newTimetable),
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
 };
 
 module.exports = { getTimetable, saveTimetable, generateTimeTable };

@@ -35,7 +35,7 @@ const GenerateModal = ({
 }) => {
   const teachers = useAppSelector((state) => state.teacher.teachers);
   const inputFile = useRef<HTMLInputElement | null>(null);
-  const [workloadData, setWorkloadData] = useState({})
+  const workloadData = useRef()
   const handleClick = () => {
     inputFile.current?.click();
   };
@@ -97,7 +97,7 @@ const GenerateModal = ({
       const jsonData = XLSX.utils.sheet_to_json(sheet);
 
       console.log(jsonData);
-      setWorkloadData(jsonData)
+      workloadData.current = jsonData
     };
     reader.readAsArrayBuffer(file);
   };
@@ -123,9 +123,22 @@ const GenerateModal = ({
     notSameDay: ["PE", "Games", "Yoga", "MA"],
   });
   const {request, isLoading, error} = useRequest();
+  const [currentClass, setCurrentClass] = useState<string>("");
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const storedClass =
+      localStorage.getItem("currentClass") ?? localStorage.getItem("className") ?? "";
+    setCurrentClass(storedClass);
+  }, []);
+
   const handleSubmit = async () => {
-    await request("post", "/timetable/generate", {workload: workloadData, constraints});
-  }
+    await request("post", "/timetable/generate", {
+      workloads: workloadData.current,
+      constraints,
+      className: currentClass,
+    });
+  };
 
   if (open) {
     return (

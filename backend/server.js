@@ -16,7 +16,13 @@ initSocket(io);
 (async () => await connectRedis(io))();
 
 app.use(express.json());
-app.use(morgan("combined"));
+app.use((req, res, next) => {
+  res.on("finish", () => {
+    console.log(req.method, req.url, req.headers, req.body, req.query, req.params, res.statusCode);
+  });
+  next();
+});
+// app.use(morgan("dev"));
 app.use(cors());
 app.use("/api", router);
 
