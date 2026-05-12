@@ -187,8 +187,9 @@ const generateTimeTable = async (req, res) => {
   const generator = new SingleClassTimetableGenerator(workloads, constraints);
   const newTimetable = generator.generate("7B");
   try {
+    const oldTimetable = await redisClient.get("timetable")
     // const { body } = req;
-    await redisClient.set("timetable", JSON.stringify(newTimetable));
+    await redisClient.set("timetable", JSON.stringify({...JSON.parse(oldTimetable), [className]:newTimetable));
     res.status(200).json({
       message: "Timetable saved successfully",
       timetable: JSON.stringify(newTimetable),

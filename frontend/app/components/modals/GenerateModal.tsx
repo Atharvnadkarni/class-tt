@@ -138,6 +138,7 @@ const GenerateModal = ({
       constraints,
       className: currentClass,
     });
+    location.reload();
   };
 
   if (open) {
