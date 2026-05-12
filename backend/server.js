@@ -5,7 +5,7 @@ const cors = require("cors");
 const createSocketFromApp = require("./socket");
 const { connectRedis, subscriberClient } = require("./redis");
 const { initSocket } = require("./utils/socketManager");
-const { morgan } = require("morgan");
+const morgan = require("morgan");
 
 require("dotenv").config();
 
