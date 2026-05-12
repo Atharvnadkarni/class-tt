@@ -16,7 +16,7 @@ initSocket(io);
 (async () => await connectRedis(io))();
 
 app.use(express.json());
-app.use(morgan());
+app.use(morgan("combined"));
 app.use(cors());
 app.use("/api", router);
 
