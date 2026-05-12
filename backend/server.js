@@ -5,6 +5,7 @@ const cors = require("cors");
 const createSocketFromApp = require("./socket");
 const { connectRedis, subscriberClient } = require("./redis");
 const { initSocket } = require("./utils/socketManager");
+const { morgan } = require("morgan");
 
 require("dotenv").config();
 
@@ -15,9 +16,7 @@ initSocket(io);
 (async () => await connectRedis(io))();
 
 app.use(express.json());
-app.use((req, res, next) => {
-  next();
-});
+app.use(morgan());
 app.use(cors());
 app.use("/api", router);
 
