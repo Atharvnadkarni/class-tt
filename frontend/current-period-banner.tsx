@@ -212,20 +212,20 @@ export default function CurrentPeriodBanner({
   const [isBreak, setIsBreak] = useState(false);
 
   // Sample timetable data - what's being taught when
-  const timetableData: { [key: string]: TimetableEntry } = {
-    "Monday-1": { subject: "Mathematics", class: "9A" },
-    "Monday-2": { subject: "Physics", class: "10B" },
-    "Monday-3": { subject: "Chemistry", class: "11A" },
-    "Monday-4": { subject: "Biology", class: "12A" },
-    "Tuesday-1": { subject: "Physics", class: "9C" },
-    "Tuesday-2": { subject: "Mathematics", class: "10A" },
-    "Tuesday-3": { subject: "Chemistry", class: "11B" },
-    "Tuesday-4": { subject: "English", class: "7A" }, // This is the current period at 9:45
-    "Tuesday-5": { subject: "Biology", class: "12B" },
-    "Wednesday-1": { subject: "Mathematics", class: "9A" },
-    "Wednesday-2": { subject: "Physics", class: "10A" },
-    // Add more as needed...
-  };
+  // const timetableData: { [key: string]: TimetableEntry } = {
+  //   "Monday-1": { subject: "Mathematics", class: "9A" },
+  //   "Monday-2": { subject: "Physics", class: "10B" },
+  //   "Monday-3": { subject: "Chemistry", class: "11A" },
+  //   "Monday-4": { subject: "Biology", class: "12A" },
+  //   "Tuesday-1": { subject: "Physics", class: "9C" },
+  //   "Tuesday-2": { subject: "Mathematics", class: "10A" },
+  //   "Tuesday-3": { subject: "Chemistry", class: "11B" },
+  //   "Tuesday-4": { subject: "English", class: "7A" }, // This is the current period at 9:45
+  //   "Tuesday-5": { subject: "Biology", class: "12B" },
+  //   "Wednesday-1": { subject: "Mathematics", class: "9A" },
+  //   "Wednesday-2": { subject: "Physics", class: "10A" },
+  //   // Add more as needed...
+  // };
 
   useEffect(() => {
     // Find current period based on demo time
@@ -292,6 +292,8 @@ export default function CurrentPeriodBanner({
       } border-y`}
     >
       <div className="container mx-auto px-4 py-3">
+
+       
         <div className="flex items-center justify-center gap-2">
           <div
             className={`h-2.5 w-2.5 rounded-full ${
@@ -306,7 +308,7 @@ export default function CurrentPeriodBanner({
             {isBreak ? (
               "Break Time"
             ) : currentSubject ? (
-              <>{currentSubject}</>
+              <>{Object.values(currentSubject.subject).join("/")} - Period {currentPeriod.name}</>
             ) : (
               `Period ${currentPeriod.name}`
             )}
