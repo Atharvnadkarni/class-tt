@@ -210,7 +210,7 @@ const TableConstraints = ({
                   type="text"
                   list="listian"
                   className="w-full"
-                  placeholder="Indesign"
+                  placeholder="Type here..."
                   onChange={(e) => {
                     console.log("Heahahoom", e);
                     if (e.target.value.slice(-1) == " ") {
@@ -253,7 +253,7 @@ const TableConstraints = ({
                 <input
                   type="text"
                   className="w-full"
-                  placeholder="Indesign"
+                  placeholder="Type here..."
                   onChange={(e) => {
                     console.log("Heahahoom", e);
                     if (e.target.value.slice(-1) == " ") {
@@ -384,7 +384,6 @@ const InputConstraint = ({
         <p className="text-sm font-regular text-gray-400">{description}</p>
       </label>
       <table className="w-full">
-        
         <tbody>
           <tr className="border-b border-gray-100 min-h-7">
             <td className="px-4 py-3   min-h-7 text-left text-sm gap-2 font-semibold text-gray-700 border-2 rounded-l-lg border-gray-200 w-[25%]">
@@ -543,7 +542,7 @@ const ConstraintModal = ({
   open,
   setOpen,
   constraints,
-  setConstraints
+  setConstraints,
   // teacher,
 }: {
   open: boolean;
@@ -555,7 +554,6 @@ const ConstraintModal = ({
     inputFile.current?.click();
   };
 
-  
   const batchwiseFir = useRef<HTMLInputElement[] | null>([]);
   const consecutiveFir = useRef<HTMLInputElement[] | null>([]);
   const batchwiseSir = useRef<HTMLInputElement[] | null>([]);
