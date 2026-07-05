@@ -11,10 +11,10 @@ import { io } from "socket.io-client";
 import Dashboard from "../components/Dashboard";
 import { useAppSelector } from "@/context/contextHooks";
 
-const socket = io("https://class-tt-backend.onrender.com");
+const socket = io("http://localhost:4000");
 
 const AttendancePage = () => {
-  const teachers = useAppSelector(state => state.teacher.teachers)
+  const teachers = useAppSelector((state) => state.teacher.teachers);
   const [attendanceRecord, setAttendanceRecord] = useState({});
   const oldAttendanceRecord = useRef({});
   const attendanceSockets = useAppSelector((state) => state.attendance.record);
