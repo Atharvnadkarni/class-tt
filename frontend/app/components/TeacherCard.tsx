@@ -87,7 +87,7 @@ const TeacherCard = ({ teacher, setMode, setAllTeachers, tier }) => {
           </p>
           <p className="text-xs/[15px] md:text-sm/[18px] text-gray-600">
             {teacher.tier ?? Tier.TEACHER}{" "}
-            {teacher.editableClasses.length > 0 &&
+            {teacher.editableClasses.filter(a => a != 0).length > 0 &&
               `for Classes ${teacher.editableClasses.join("-")}`}
           </p>
         </div>
