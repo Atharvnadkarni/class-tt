@@ -35,7 +35,7 @@ const GenerateModal = ({
 }) => {
   const teachers = useAppSelector((state) => state.teacher.teachers);
   const inputFile = useRef<HTMLInputElement | null>(null);
-  const workloadData = useRef()
+  const workloadData = useRef();
   const handleClick = () => {
     inputFile.current?.click();
   };
@@ -86,19 +86,126 @@ const GenerateModal = ({
 
     reader.onload = (event) => {
       const data = new Uint8Array(event.target?.result as ArrayBuffer);
-
       const workbook = XLSX.read(data, { type: "array" });
 
-      // Get first sheet
-      const sheetName = workbook.SheetNames[0];
-      const sheet = workbook.Sheets[sheetName];
+      const teachers: any[] = [];
 
-      // Convert to JSON
-      const jsonData = XLSX.utils.sheet_to_json(sheet);
+      workbook.SheetNames.filter((s) => s !== "Export Summary").forEach(
+        (sheetName) => {
+          const ws = workbook.Sheets[sheetName];
 
-      console.log(jsonData);
-      workloadData.current = jsonData
+          const rows = XLSX.utils.sheet_to_json(ws, {
+            header: 1,
+            defval: "",
+            blankrows: true,
+          }) as any[][];
+
+          // Each teacher occupies 4 columns
+          const starts = [0, 4, 8];
+
+          for (const start of starts) {
+            let teacher: any = null;
+
+            for (const row of rows) {
+              const c0 = row[start] ?? "";
+              const c1 = row[start + 1] ?? "";
+              const c2 = row[start + 2] ?? "";
+              const c3 = row[start + 3] ?? "";
+
+              // -------------------------
+              // New teacher
+              // -------------------------
+              if (typeof c0 === "string") {
+                const m = c0.trim().match(/^(T\d+)\s+(.+)$/i);
+
+                if (m) {
+                  if (teacher) teachers.push(teacher);
+
+                  teacher = {
+                    sheet: sheetName,
+                    name: m[1],
+                    class: m[2].replace(/\s+/g, ""),
+                    total: Number(c2) || 0,
+                    substitution: 0,
+                    clubs: "",
+                    committees: "",
+                    workload: [],
+                  };
+
+                  continue;
+                }
+              }
+
+              if (!teacher) continue;
+
+              // -------------------------
+              // Clubs
+              // -------------------------
+              if (c0 === "Clubs") {
+                teacher.clubs = String(c1).trim();
+                continue;
+              }
+
+              // -------------------------
+              // Committees
+              // -------------------------
+              if (c0 === "Committees") {
+                teacher.committees = String(c1).trim();
+                continue;
+              }
+
+              // -------------------------
+              // Substitution
+              // -------------------------
+              if (c1 === "Substitution") {
+                teacher.substitution = Number(c2) || 0;
+                continue;
+              }
+
+              // -------------------------
+              // Ignore total rows
+              // -------------------------
+              if (c1 === "" && typeof c2 === "number" && c2 === teacher.total) {
+                continue;
+              }
+
+              // -------------------------
+              // Ignore blank rows
+              // -------------------------
+              if (c0 === "" && c1 === "" && c2 === "" && c3 === "") {
+                continue;
+              }
+
+              // -------------------------
+              // Workload / Extra Duty
+              // -------------------------
+              if (c1 !== "" && typeof c2 === "number") {
+                teacher.workload.push({
+                  task: String(c1).trim(),
+                  periods: Number(c2),
+                });
+                continue;
+              }
+
+              // Duties that appear in first column
+              if (c0 !== "" && typeof c2 === "number") {
+                teacher.workload.push({
+                  task: String(c0).trim(),
+                  periods: Number(c2),
+                });
+              }
+            }
+
+            if (teacher) teachers.push(teacher);
+          }
+        },
+      );
+
+      console.log(teachers);
+      workloadData.current = teachers;
+    teachers.sort((a,b) => a.name.at(1).charCodeAt(0) - b.name.at(1).charCodeAt(0))
     };
+
     reader.readAsArrayBuffer(file);
   };
 
@@ -122,13 +229,15 @@ const GenerateModal = ({
     ],
     notSameDay: ["PE", "Games", "Yoga", "MA"],
   });
-  const {request, isLoading, error} = useRequest();
+  const { request, isLoading, error } = useRequest();
   const [currentClass, setCurrentClass] = useState<string>("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     const storedClass =
-      localStorage.getItem("currentClass") ?? localStorage.getItem("className") ?? "";
+      localStorage.getItem("currentClass") ??
+      localStorage.getItem("className") ??
+      "";
     setCurrentClass(storedClass);
   }, []);
 
