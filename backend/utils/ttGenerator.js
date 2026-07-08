@@ -44,36 +44,41 @@ async function main() {
   ];
   const workload = {
     Shwetambari: {
-      French: 4,
+      FK: 6,
+      CFK: 1,
+      NSSNCC: 1,
+      ATLMA: 1,
+      SCILWE: 1,
+      MUSLS: 1,
+      LIB: 1,
+      SDDANCE: 1,
+    },
+    Melifa: {
+      ENG: 5,
+      ATLCE: 1,
+      HISTPS: 3,
+      SDDANCE: 1,
+    },
+    Shaefali: {
+      MATH: 7,
+      YOGAMM: 1,
+    },
+    Shilpa: {
+      BIO: 3,
+    },
+    Calorina: {
+      CHEM: 3,
+    },
+    Priyanka: {
+      PHYS: 3,
     },
   };
-  const fullWorkload = {
-    MUSLS: 1,
-    SDDANCE: 1,
-    ENG: 5,
-    MATH: 7,
-    BIO: 3,
-    SCILWE: 1,
-    CFK: 1,
-    FK: 6,
-    CHEM: 3,
-    LIB: 1,
-    HINDI: 5,
-    MUSGK: 1,
-    PE: 1,
-    PHYS: 3,
-    ATLCE: 1,
-    ATLMA: 1,
-    GEOGECO: 3,
-    HISTPS: 3,
-    COMP1: 1,
-    COMP2: 1,
-    ARTHW: 1,
-    ARTCH: 1,
-    GAMES: 1,
-    NSSNCC: 1,
-    YOGAMM: 1,
-  };
+  const fullWorkload = {};
+  Object.values(workload).forEach((teacherWl) => {
+    Object.entries(teacherWl).forEach(([subject, count]) => {
+      fullWorkload[subject] = (fullWorkload[subject] || 0) + count;
+    });
+  });
   const days = [
     ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9"],
     ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9"],
@@ -293,12 +298,12 @@ async function main() {
 
     const ttteacherAssignments = [];
     timetable.forEach((day) => {
-        const trassignment = {Day: day.Day}
-        for (const [period,sub] of Object.entries(day).slice(1)) {
-            trassignment[period] = teacherAssignments[sub]
-        }
-        ttteacherAssignments.push(trassignment)
-    })
+      const trassignment = { Day: day.Day };
+      for (const [period, sub] of Object.entries(day).slice(1)) {
+        trassignment[period] = teacherAssignments[sub];
+      }
+      ttteacherAssignments.push(trassignment);
+    });
     console.table(ttteacherAssignments);
   } else {
     console.log("No solution");
@@ -428,8 +433,6 @@ async function main() {
 //   const subjects = classes.map(classe => ({[classe]:Object.keys(workloads[classe])}));
 //   console.log(subjects);
 
-  
-
 //   // ------------------------
 //   // Variables
 //   // x[classe][subject][period]
@@ -445,7 +448,6 @@ async function main() {
 //     }
 //   }
 //   }
-  
 
 //   // ------------------------
 //   // Teacher cannot teach two classes at once
@@ -649,7 +651,4 @@ async function main() {
 //   }
 // }
 
-
-
-main()
-
+main();
