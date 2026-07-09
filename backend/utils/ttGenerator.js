@@ -32,7 +32,7 @@ const teacherAssignments = {
   YOGAMM: ["Ashutosh", "Shaefali"],
 };
 
-async function main() {
+async function main(workloads,className) {
   const dayList = [
     "Monday",
     "Tuesday",
@@ -42,40 +42,7 @@ async function main() {
     "Saturday",
     "Sunday",
   ];
-  const workload = {
-    Shwetambari: {
-      FK: 6,
-      CFK: 1,
-      NSSNCC: 1,
-      ATLMA: 1,
-      SCILWE: 1,
-      MUSLS: 1,
-      LIB: 1,
-      SDDANCE: 1,
-    },
-    Melifa: {
-      ENG: 5,
-      ATLCE: 1,
-      HISTPS: 3,
-      SDDANCE: 1,
-    },
-    Shaefali: {
-      MATH: 7,
-      YOGAMM: 1,
-    },
-    Shilpa: {
-      BIO: 3,
-    },
-    Calorina: {
-      CHEM: 3,
-    },
-    Priyanka: {
-      PHYS: 3,
-    },
-    Rona: {
-      MUSGK: 1,
-    },
-  };
+  
   const fullWorkload = {};
   Object.values(workload).forEach((teacherWl) => {
     Object.entries(teacherWl).forEach(([subject, count]) => {
@@ -668,4 +635,5 @@ async function main() {
 //   }
 // }
 
-main();
+
+module.exports = {gen:main}
