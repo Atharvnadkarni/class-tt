@@ -72,6 +72,9 @@ async function main() {
     Priyanka: {
       PHYS: 3,
     },
+    Rona: {
+      MUSGK: 1,
+    },
   };
   const fullWorkload = {};
   Object.values(workload).forEach((teacherWl) => {
@@ -79,6 +82,7 @@ async function main() {
       fullWorkload[subject] = (fullWorkload[subject] || 0) + count;
     });
   });
+  console.log("yyz", workload, fullWorkload);
   const days = [
     ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9"],
     ["T1", "T2", "T3", "T4", "T5", "T6", "T7", "T8", "T9"],
@@ -152,8 +156,13 @@ async function main() {
   }
 
   for (const constraint of constraints) {
+    
     if (constraint.putTogether) {
       const [a, b] = constraint.putTogether;
+      if (!x[a] || !x[b]) {
+        console.warn(`Skipping constraint: ${a}, ${b}`);
+        continue;
+      }
 
       const possiblePairs = [];
 
@@ -168,7 +177,7 @@ async function main() {
           const second = periods[day * 9 + p + 1];
 
           const pair = model.newBoolVar(`${a}_${b}_${first}`);
-
+          // console.log("xxx",a,b,first,x)
           model.addImplication(pair, x[a][first]);
           model.addImplication(pair, x[b][second]);
 
@@ -194,7 +203,15 @@ async function main() {
       // Exactly one consecutive placement
       model.addExactlyOne(possiblePairs);
     } else if (constraint.notSameDay) {
+      
       const [a, b] = constraint.notSameDay;
+      if (!x[a] || !x[b]) {
+        console.warn(`Skipping constraint: ${a}, ${b}`);
+        continue;
+      }
+      console.log(a, b);
+      console.log("x[a] exists?", !!x[a]);
+      console.log("x[b] exists?", !!x[b]);
 
       for (const day of days) {
         model.addLessOrEqual(
@@ -304,7 +321,7 @@ async function main() {
       }
       ttteacherAssignments.push(trassignment);
     });
-    console.table(ttteacherAssignments);
+    console.table(timetable);
   } else {
     console.log("No solution");
   }

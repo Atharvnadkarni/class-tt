@@ -1,5 +1,6 @@
 const { redisClient } = require("../redis");
 const { SingleClassTimetableGenerator } = require("../utils/timetableGen");
+const {main: generateClass} = require("../utils/ttGenerator")
 
 const getTimetable = async (req, res) => {
   const { teacher } = req.query;
@@ -86,106 +87,91 @@ const generateTimeTable = async (req, res) => {
 
   return value;
 };
-  const transformConstraints = (data) => {
-    const result = {
-      notSameDay: [],
-      nextTo: [],
-      batchwisies: [],
-      farfaraway: [],
-    };
+const SUBJECT_MAP = [
+  { regex: /^French/i, code: "FK" },
+  { regex: /^Communicative French/i, code: "CFK" },
+  { regex: /^English/i, code: "ENG" },
+  { regex: /^Math/i, code: "MATH" },
+  { regex: /^Physics/i, code: "PHYS" },
+  { regex: /^Chemistry/i, code: "CHEM" },
+  { regex: /^Biology/i, code: "BIO" },
+  { regex: /^Soc\.?\s*Sci/i, code: "SS" },
+  { regex: /^History/i, code: "HIST" },
+  { regex: /^Geog/i, code: "GEOG" },
 
-    const generatedMap = {};
+  // Periods
+  { regex: /^WE/i, code: "SCILWE" },
+  { regex: /^Sci\.?\s*Lab/i, code: "SCILWE" },
+  { regex: /^Sci\s*Lab/i, code: "SCILWE" },
 
-    // Create numbered subjects
-    const ensureGenerated = (subject, count = 2) => {
-      if (!generatedMap[subject]) {
-        generatedMap[subject] = [];
-      }
+  { regex: /^MA/i, code: "ATLMA" },
+  { regex: /^CE/i, code: "ATLCE" },
 
-      while (generatedMap[subject].length < count) {
-        generatedMap[subject].push(
-          `${subject}${generatedMap[subject].length + 1}`,
-        );
-      }
+  { regex: /^MM/i, code: "YOGAMM" },
+  { regex: /^Yoga/i, code: "YOGAMM" },
 
-      return generatedMap[subject];
-    };
+  { regex: /^LS/i, code: "MUSLS" },
+  { regex: /^Lib/i, code: "LIB" },
+  { regex: /^Library/i, code: "LIB" },
 
-    // ----------------------------
-    // CONSECUTIVE -> nextTo
-    // ATL + ATL => ATL1 + ATL2
-    // ----------------------------
-    data.consecutive.forEach((group) => {
-      const subject = group[0][0];
+  { regex: /^NSS/i, code: "NSSNCC" },
+  { regex: /^Dance Assist/i, code: "SDDANCE" },
+];
 
-      const generated = ensureGenerated(subject, 2);
+function transformWorkload(data, targetClass = "8B") {
+  const workload = {};
 
-      result.nextTo.push([generated[0], generated[1]]);
-    });
+  function parseSubject(task) {
+    const match = SUBJECT_MAP.find((x) => x.regex.test(task));
+    return match ? match.code : null;
+  }
 
-    // ----------------------------
-    // BATCHWISE
-    // [["ATL"], ["WE", "MA"]]
-    // =>
-    // [["ATL1"], ["WE"]]
-    // [["ATL2"], ["MA"]]
-    // ----------------------------
-    data.batchwise.forEach((group) => {
-      const subject = group[0][0];
-      const teachers = group[1];
+  function getClasses(task) {
+    const matches = task.match(/\d+\s*[A-Z]+/gi);
+    if (!matches) return [];
 
-      const generated = ensureGenerated(subject, teachers.length);
+    const classes = [];
 
-      teachers.forEach((teacher, i) => {
-        result.batchwisies.push([[generated[i]], [teacher]]);
+    matches.forEach((m) => {
+      const grade = m.match(/\d+/)[0];
+      const divs = m.match(/[A-Z]+$/)[0];
+
+      divs.split("").forEach((div) => {
+        classes.push(`${grade}${div}`);
       });
     });
 
-    // ----------------------------
-    // FAR FAR AWAY
-    // ----------------------------
-    data.farFarAway.forEach((group) => {
-      const transformed = [];
+    return classes;
+  }
 
-      group.forEach((pair) => {
-        const newPair = [];
+  data.forEach((teacher) => {
+    const teacherWorkload = {};
 
-        pair.forEach((item) => {
-          if (generatedMap[item]) {
-            newPair.push(...generatedMap[item]);
-          } else {
-            newPair.push(item);
-          }
-        });
+    teacher.workload.forEach((entry) => {
+      const subject = parseSubject(entry.task);
+      if (!subject) return;
 
-        transformed.push(newPair);
-      });
+      const classes = getClasses(entry.task);
 
-      result.farfaraway.push(transformed);
+      if (!classes.includes(targetClass)) return;
+
+      const periods = Math.round(entry.periods / classes.length);
+
+      teacherWorkload[subject] =
+        (teacherWorkload[subject] || 0) + periods;
     });
 
-    // ----------------------------
-    // NOT SAME DAY
-    // Add generated pairs together
-    // ----------------------------
+    if (Object.keys(teacherWorkload).length) {
+      workload[teacher.name] = teacherWorkload;
+    }
+  });
 
-    // Add all duplicated/generated subjects
-    Object.entries(generatedMap).forEach(([subject, values]) => {
-      if (values.length > 1) {
-        result.notSameDay.push(values);
-      }
-    });
-
-    // Original list
-    result.notSameDay.push(data.notSameDay);
-
-    return result;
-  };
+  return workload;
+}
   const {workloads:origLoads, constraints:origStraints, className} = req.body;
   const workloads = modifyFormat(origLoads);
-  const constraints = transformConstraints(origStraints);
-  const generator = new SingleClassTimetableGenerator(workloads, constraints);
-  const newTimetable = generator.generate("7B");
+  const constraints = transformWorkload(origStraints);
+  const a = await generateClass(workloads)
   try {
     const oldTimetable = await redisClient.get("timetable")
     // const { body } = req;
