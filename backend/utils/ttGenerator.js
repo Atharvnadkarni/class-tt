@@ -32,7 +32,7 @@ const teacherAssignments = {
   YOGAMM: ["Ashutosh", "Shaefali"],
 };
 
-async function main(workloads,className) {
+async function main(workload,className, allTimetables) {
   const dayList = [
     "Monday",
     "Tuesday",

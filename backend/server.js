@@ -18,7 +18,7 @@ initSocket(io);
 app.use(express.json());
 app.use((req, res, next) => {
   res.on("finish", () => {
-    console.log(req.method, req.url, req.headers, req.body, req.query, req.params, res.statusCode);
+    console.log(req.method, req.url, req.body, res.statusCode);
   });
   next();
 });
